@@ -261,137 +261,7 @@ export function useGame() {
     [getCurrentScene, handleMove, handleTakeItem, addMessage, decreaseLight, hapticFeedback]
   );
 
-  const parseCommand = useCallback(
-    (input: string) => {
-      const command = input.toLowerCase().trim();
-      const words = command.split(/\s+/);
-      const verb = words[0];
-      const target = words.slice(1).join(" ");
-
-      addMessage("action", `> ${input}`);
-
-      switch (verb) {
-        case "help":
-          addMessage("system", HELP_TEXT);
-          break;
-
-        case "look":
-          const scene = getCurrentScene();
-          addMessage("narration", scene.description);
-          decreaseLight(1);
-          break;
-
-        case "inventory":
-        case "inv":
-        case "i":
-          if (gameState.inventory.length === 0) {
-            addMessage("system", "Your pockets are empty.");
-          } else {
-            const items = gameState.inventory
-              .map((id) => ITEMS[id]?.name || id)
-              .join(", ");
-            addMessage("system", `You are carrying: ${items}`);
-          }
-          break;
-
-        case "take":
-        case "get":
-        case "grab":
-          if (!target) {
-            addMessage("system", "Take what?");
-            break;
-          }
-          const availableActions = getAvailableActions();
-          const takeAction = availableActions.find(
-            (a) =>
-              a.addsItem &&
-              (a.addsItem.toLowerCase().includes(target) ||
-                ITEMS[a.addsItem]?.name.toLowerCase().includes(target))
-          );
-          if (takeAction && takeAction.addsItem) {
-            handleTakeItem(takeAction.addsItem, takeAction.id);
-          } else {
-            addMessage("system", "You don't see that here.");
-          }
-          break;
-
-        case "use":
-          if (!target) {
-            addMessage("system", "Use what?");
-            break;
-          }
-          const itemToUse = gameState.inventory.find(
-            (id) =>
-              id.toLowerCase().includes(target) ||
-              ITEMS[id]?.name.toLowerCase().includes(target)
-          );
-          if (itemToUse) {
-            handleUseItem(itemToUse);
-          } else {
-            addMessage("system", "You don't have that.");
-          }
-          break;
-
-        case "go":
-        case "move":
-        case "walk":
-          const direction = target || "";
-          handleDirection(direction);
-          break;
-
-        case "north":
-        case "n":
-          handleDirection("north");
-          break;
-
-        case "south":
-        case "s":
-          handleDirection("south");
-          break;
-
-        case "east":
-        case "e":
-          handleDirection("east");
-          break;
-
-        case "west":
-        case "w":
-          handleDirection("west");
-          break;
-
-        case "save":
-          handleSave();
-          break;
-
-        case "load":
-          handleLoad();
-          break;
-
-        case "new":
-          handleNewGame();
-          break;
-
-        default:
-          addMessage(
-            "system",
-            `Unknown command: "${verb}". Type "help" for a list of commands.`
-          );
-      }
-
-      checkLightWarning();
-    },
-    [
-      gameState,
-      getCurrentScene,
-      getAvailableActions,
-      handleTakeItem,
-      handleUseItem,
-      addMessage,
-      decreaseLight,
-      checkLightWarning,
-    ]
-  );
-
+  // Move these BEFORE parseCommand to avoid hoisting issues
   const handleDirection = useCallback(
     (direction: string) => {
       const dirMap: Record<string, string> = {
@@ -465,6 +335,222 @@ export function useGame() {
     setMessages([...newMessages, sceneMessage]);
     hapticFeedback("medium");
   }, [hapticFeedback]);
+
+  const parseCommand = useCallback(
+    (input: string) => {
+      const rawInput = input.trim();
+      const command = rawInput.toLowerCase();
+      
+      const stripArticles = (text: string) => 
+        text.replace(/\b(the|a|an|some|my|that|this)\b/gi, "").replace(/\s+/g, " ").trim();
+      
+      const cleanCommand = stripArticles(command);
+      const words = cleanCommand.split(/\s+/);
+
+      addMessage("action", `> ${rawInput}`);
+
+      // Natural language patterns for LOOK
+      if (
+        command === "look" ||
+        command === "look around" ||
+        command === "examine" ||
+        command === "examine room" ||
+        command === "examine surroundings" ||
+        command === "inspect" ||
+        command === "observe" ||
+        command === "check surroundings" ||
+        command === "where am i" ||
+        command === "what do i see" ||
+        command === "describe"
+      ) {
+        const scene = getCurrentScene();
+        addMessage("narration", scene.description);
+        decreaseLight(1);
+        checkLightWarning();
+        return;
+      }
+
+      // Natural language patterns for HELP
+      if (
+        command === "help" ||
+        command === "?" ||
+        command === "commands" ||
+        command === "what can i do" ||
+        command === "how to play" ||
+        command === "instructions"
+      ) {
+        addMessage("system", HELP_TEXT);
+        return;
+      }
+
+      // Natural language patterns for INVENTORY
+      if (
+        command === "inventory" ||
+        command === "inv" ||
+        command === "i" ||
+        command === "items" ||
+        command === "check inventory" ||
+        command === "show inventory" ||
+        command === "what do i have" ||
+        command === "what am i carrying" ||
+        command === "my items" ||
+        command === "bag" ||
+        command === "backpack" ||
+        command === "pockets"
+      ) {
+        if (gameState.inventory.length === 0) {
+          addMessage("system", "Your pockets are empty.");
+        } else {
+          const items = gameState.inventory
+            .map((id) => ITEMS[id]?.name || id)
+            .join(", ");
+          addMessage("system", `You are carrying: ${items}`);
+        }
+        return;
+      }
+
+      // Natural language patterns for SAVE/LOAD/NEW
+      if (command === "save" || command === "save game" || command === "save progress") {
+        handleSave();
+        return;
+      }
+      if (command === "load" || command === "load game" || command === "restore" || command === "continue") {
+        handleLoad();
+        return;
+      }
+      if (command === "new" || command === "new game" || command === "restart" || command === "start over") {
+        handleNewGame();
+        return;
+      }
+
+      // Natural language patterns for TAKE/PICK UP/GRAB
+      const takePatterns = [
+        /^(take|get|grab|pick up|collect|pick|acquire|snag|retrieve)\s+(.+)$/i,
+      ];
+      for (const pattern of takePatterns) {
+        const match = cleanCommand.match(pattern);
+        if (match) {
+          const target = stripArticles(match[2]);
+          if (!target) {
+            addMessage("system", "Take what?");
+            checkLightWarning();
+            return;
+          }
+          const availableActions = getAvailableActions();
+          const takeAction = availableActions.find(
+            (a) =>
+              a.addsItem &&
+              (a.addsItem.toLowerCase().includes(target) ||
+                ITEMS[a.addsItem]?.name.toLowerCase().includes(target))
+          );
+          if (takeAction && takeAction.addsItem) {
+            handleTakeItem(takeAction.addsItem, takeAction.id);
+          } else {
+            addMessage("system", "You don't see that here.");
+          }
+          checkLightWarning();
+          return;
+        }
+      }
+
+      // Natural language patterns for USE
+      const usePatterns = [
+        /^(use|activate|apply|consume|drink|eat|light|burn)\s+(.+)$/i,
+      ];
+      for (const pattern of usePatterns) {
+        const match = cleanCommand.match(pattern);
+        if (match) {
+          const target = stripArticles(match[2]);
+          if (!target) {
+            addMessage("system", "Use what?");
+            checkLightWarning();
+            return;
+          }
+          const itemToUse = gameState.inventory.find(
+            (id) =>
+              id.toLowerCase().includes(target) ||
+              ITEMS[id]?.name.toLowerCase().includes(target)
+          );
+          if (itemToUse) {
+            handleUseItem(itemToUse);
+          } else {
+            addMessage("system", "You don't have that.");
+          }
+          checkLightWarning();
+          return;
+        }
+      }
+
+      // Natural language patterns for MOVEMENT
+      const movePatterns = [
+        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(to\s+)?(the\s+)?(north|south|east|west|n|s|e|w)$/i,
+        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(north|south|east|west|n|s|e|w)(ward|wards)?$/i,
+      ];
+      for (const pattern of movePatterns) {
+        const match = command.match(pattern);
+        if (match) {
+          const dirWord = match[match.length - 1].replace(/ward(s)?$/i, "");
+          handleDirection(dirWord);
+          checkLightWarning();
+          return;
+        }
+      }
+
+      // Direct direction commands
+      const directDirections: Record<string, string> = {
+        north: "north",
+        south: "south",
+        east: "east",
+        west: "west",
+        n: "north",
+        s: "south",
+        e: "east",
+        w: "west",
+      };
+      if (directDirections[words[0]]) {
+        handleDirection(directDirections[words[0]]);
+        checkLightWarning();
+        return;
+      }
+
+      // Fallback: try to match any item name for implicit take
+      const availableActions = getAvailableActions();
+      const implicitTake = availableActions.find(
+        (a) =>
+          a.addsItem &&
+          (cleanCommand.includes(a.addsItem.toLowerCase()) ||
+            ITEMS[a.addsItem]?.name.toLowerCase().split(" ").some(word => cleanCommand.includes(word)))
+      );
+      if (implicitTake && implicitTake.addsItem) {
+        if (command.includes("pick") || command.includes("grab") || command.includes("take") || command.includes("get")) {
+          handleTakeItem(implicitTake.addsItem, implicitTake.id);
+          checkLightWarning();
+          return;
+        }
+      }
+
+      // Unknown command
+      addMessage(
+        "system",
+        `I don't understand "${rawInput}". Try commands like "look", "take lamp", "go east", or type "help".`
+      );
+      checkLightWarning();
+    },
+    [
+      gameState,
+      getCurrentScene,
+      getAvailableActions,
+      handleTakeItem,
+      handleUseItem,
+      addMessage,
+      decreaseLight,
+      checkLightWarning,
+      handleSave,
+      handleLoad,
+      handleNewGame,
+      handleDirection,
+    ]
+  );
 
   useEffect(() => {
     if (initialized.current) return;

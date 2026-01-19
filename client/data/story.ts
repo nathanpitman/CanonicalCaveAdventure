@@ -203,14 +203,21 @@ export const INTRO_MESSAGES = [
 ];
 
 export const HELP_TEXT = `COMMANDS:
-• look - Examine your surroundings
-• inventory (or inv) - Check your items
-• take <item> - Pick up an item
-• use <item> - Use an item
-• go <direction> - Move (north/south/east/west)
-• save - Save your progress
-• load - Load saved game
-• new - Start a new game
-• help - Show this message
+You can use natural language! Try phrases like:
 
-Tap quick action buttons or type commands.`;
+LOOKING AROUND:
+• "look" or "look around" or "examine"
+
+ITEMS:
+• "pick up the lamp" or "take lamp" or "grab rope"
+• "use fuel" or "light the lamp"
+• "inventory" or "what do I have"
+
+MOVEMENT:
+• "go north" or "head east" or just "north"
+
+GAME:
+• "save" or "load" or "new game"
+• "help" or "?"
+
+Tap quick action buttons or type naturally!`;
