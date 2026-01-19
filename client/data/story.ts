@@ -15,6 +15,8 @@ export interface Scene {
   id: string;
   title: string;
   description: string;
+  descriptionWithoutItems?: string;
+  itemDescriptions?: Record<string, string>;
   actions: Action[];
   items?: string[];
 }
@@ -78,6 +80,11 @@ export const SCENES: Record<string, Scene> = {
     title: "Base of the Chasm",
     description:
       "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a tunnel to the east.\n\nAn old oil lamp lies nearby, its glass clouded but intact.",
+    descriptionWithoutItems:
+      "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a tunnel to the east.",
+    itemDescriptions: {
+      lamp: "An old oil lamp lies nearby, its glass clouded but intact.",
+    },
     actions: [
       { id: "look", label: "LOOK AROUND", type: "command", command: "look" },
       {
@@ -109,6 +116,12 @@ export const SCENES: Record<string, Scene> = {
     title: "Old Gear Room",
     description:
       "A cramped alcove filled with rusted mining equipment. Broken carts, bent rails, and piles of debris clutter the space. The air is thick with dust.\n\nAmong the wreckage, you spot a small fuel canister and a coil of rope.",
+    descriptionWithoutItems:
+      "A cramped alcove filled with rusted mining equipment. Broken carts, bent rails, and piles of debris clutter the space. The air is thick with dust.\n\nThe wreckage has been picked over. Nothing useful remains.",
+    itemDescriptions: {
+      fuel: "A small fuel canister lies among the debris.",
+      rope: "A coil of rope hangs from a broken cart.",
+    },
     actions: [
       { id: "look", label: "LOOK", type: "command", command: "look" },
       {
@@ -151,6 +164,12 @@ export const SCENES: Record<string, Scene> = {
     title: "Underground Stream",
     description:
       "Water rushes through a channel carved by centuries of flow. The stream is waist-deep and fast-moving, disappearing into a gap too small to follow.\n\nOn a ledge above the water, you notice a stick of chalk and a rusty pickaxe.",
+    descriptionWithoutItems:
+      "Water rushes through a channel carved by centuries of flow. The stream is waist-deep and fast-moving, disappearing into a gap too small to follow.\n\nThe ledge above the water is bare now.",
+    itemDescriptions: {
+      chalk: "A stick of white chalk rests on the ledge.",
+      pickaxe: "A rusty pickaxe leans against the rock wall.",
+    },
     actions: [
       { id: "look", label: "LOOK", type: "command", command: "look" },
       {
