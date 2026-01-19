@@ -31,8 +31,6 @@ export default function GameScreen() {
     getAvailableActions,
     handleAction,
     parseCommand,
-    handleSave,
-    handleLoad,
     handleNewGame,
   } = useGame();
 
@@ -53,16 +51,6 @@ export default function GameScreen() {
   const handleMenuNewGame = () => {
     setMenuVisible(false);
     handleNewGame();
-  };
-
-  const handleMenuSave = () => {
-    setMenuVisible(false);
-    handleSave();
-  };
-
-  const handleMenuLoad = () => {
-    setMenuVisible(false);
-    handleLoad();
   };
 
   const handleMenuHelp = () => {
@@ -132,8 +120,6 @@ export default function GameScreen() {
         visible={menuVisible}
         onClose={() => setMenuVisible(false)}
         onNewGame={handleMenuNewGame}
-        onSave={handleMenuSave}
-        onLoad={handleMenuLoad}
         onHelp={handleMenuHelp}
       />
 

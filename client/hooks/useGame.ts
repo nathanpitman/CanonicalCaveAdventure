@@ -328,29 +328,17 @@ export function useGame() {
     [getAvailableActions, handleMove, addMessage]
   );
 
-  const handleSave = useCallback(async () => {
-    const success = await saveGame(gameState, messages);
-    if (success) {
-      addMessage("system", "Game saved.");
-      hapticFeedback("success");
-    } else {
-      addMessage("system", "Failed to save game.");
-      hapticFeedback("error");
-    }
-  }, [gameState, messages, addMessage, hapticFeedback]);
-
-  const handleLoad = useCallback(async () => {
-    const saveData = await loadGame();
-    if (saveData) {
-      setGameState(saveData.gameState);
-      setMessages(saveData.messages);
-      addMessage("system", "Game loaded.");
-      hapticFeedback("success");
-    } else {
-      addMessage("system", "No save found.");
-      hapticFeedback("warning");
-    }
-  }, [addMessage, hapticFeedback]);
+  // Autosave effect - saves whenever game state or messages change
+  useEffect(() => {
+    // Don't save during initial load or if game hasn't started
+    if (isLoading || messages.length === 0) return;
+    
+    const autosave = async () => {
+      await saveGame(gameState, messages);
+    };
+    
+    autosave();
+  }, [gameState, messages, isLoading]);
 
   const handleNewGame = useCallback(async () => {
     await deleteSave();
@@ -448,15 +436,7 @@ export function useGame() {
         return;
       }
 
-      // Natural language patterns for SAVE/LOAD/NEW
-      if (command === "save" || command === "save game" || command === "save progress") {
-        handleSave();
-        return;
-      }
-      if (command === "load" || command === "load game" || command === "restore" || command === "continue") {
-        handleLoad();
-        return;
-      }
+      // Natural language patterns for NEW GAME
       if (command === "new" || command === "new game" || command === "restart" || command === "start over") {
         handleNewGame();
         return;
@@ -584,8 +564,6 @@ export function useGame() {
       addMessage,
       decreaseLight,
       checkLightWarning,
-      handleSave,
-      handleLoad,
       handleNewGame,
       handleDirection,
     ]
@@ -633,8 +611,6 @@ export function useGame() {
     getAvailableActions,
     handleAction,
     parseCommand,
-    handleSave,
-    handleLoad,
     handleNewGame,
   };
 }

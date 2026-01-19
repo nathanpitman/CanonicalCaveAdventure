@@ -26,8 +26,6 @@ interface GameMenuProps {
   visible: boolean;
   onClose: () => void;
   onNewGame: () => void;
-  onSave: () => void;
-  onLoad: () => void;
   onHelp: () => void;
 }
 
@@ -88,8 +86,6 @@ export function GameMenu({
   visible,
   onClose,
   onNewGame,
-  onSave,
-  onLoad,
   onHelp,
 }: GameMenuProps) {
   const { theme } = useTheme();
@@ -138,8 +134,6 @@ export function GameMenu({
 
         <View style={styles.menuItems}>
           <MenuItem icon="plus-circle" label="New Game" onPress={onNewGame} danger />
-          <MenuItem icon="save" label="Save Game" onPress={onSave} />
-          <MenuItem icon="download" label="Load Game" onPress={onLoad} />
           <MenuItem icon="help-circle" label="Help" onPress={onHelp} />
         </View>
 
