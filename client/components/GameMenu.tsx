@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -90,64 +90,112 @@ export function GameMenu({
 }: GameMenuProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleRestartPress = () => {
+    setShowConfirm(true);
+  };
+
+  const handleConfirmRestart = () => {
+    setShowConfirm(false);
+    onNewGame();
+  };
+
+  const handleCancelRestart = () => {
+    setShowConfirm(false);
+  };
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="none"
-      onRequestClose={onClose}
-    >
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <Animated.View
-          entering={FadeIn.duration(200)}
-          exiting={FadeOut.duration(200)}
-          style={[styles.backdrop, { backgroundColor: "rgba(0,0,0,0.6)" }]}
-        />
-      </Pressable>
-
-      <Animated.View
-        entering={SlideInLeft.duration(300).springify()}
-        exiting={SlideOutLeft.duration(200)}
-        style={[
-          styles.menuContainer,
-          {
-            backgroundColor: theme.backgroundDefault,
-            paddingTop: insets.top + Spacing.xl,
-            paddingBottom: insets.bottom + Spacing.xl,
-          },
-        ]}
+    <>
+      <Modal
+        visible={visible}
+        transparent
+        animationType="none"
+        onRequestClose={onClose}
       >
-        <View style={styles.header}>
-          <Image
-            source={require("../../assets/images/icon.png")}
-            style={styles.logo}
-            resizeMode="contain"
+        <Pressable style={styles.overlay} onPress={onClose}>
+          <Animated.View
+            entering={FadeIn.duration(200)}
+            exiting={FadeOut.duration(200)}
+            style={[styles.backdrop, { backgroundColor: "rgba(0,0,0,0.6)" }]}
           />
-          <ThemedText type="h3" style={styles.title}>
-            Ascent
-          </ThemedText>
-          <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
-            A Text Adventure
-          </ThemedText>
-        </View>
-
-        <View style={styles.menuItems}>
-          <MenuItem icon="plus-circle" label="New Game" onPress={onNewGame} danger />
-          <MenuItem icon="help-circle" label="Help" onPress={onHelp} />
-        </View>
-
-        <Pressable
-          onPress={onClose}
-          style={[styles.closeButton, { borderColor: theme.textSecondary }]}
-        >
-          <Feather name="x" size={20} color={theme.textSecondary} />
-          <ThemedText style={[styles.closeLabel, { color: theme.textSecondary }]}>
-            Close
-          </ThemedText>
         </Pressable>
-      </Animated.View>
-    </Modal>
+
+        <Animated.View
+          entering={SlideInLeft.duration(300).springify()}
+          exiting={SlideOutLeft.duration(200)}
+          style={[
+            styles.menuContainer,
+            {
+              backgroundColor: theme.backgroundDefault,
+              paddingTop: insets.top + Spacing.xl,
+              paddingBottom: insets.bottom + Spacing.xl,
+            },
+          ]}
+        >
+          <View style={styles.header}>
+            <Image
+              source={require("../../assets/images/icon.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <ThemedText type="h3" style={styles.title}>
+              Ascent
+            </ThemedText>
+            <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
+              A Text Adventure
+            </ThemedText>
+          </View>
+
+          <View style={styles.menuItems}>
+            <MenuItem icon="rotate-ccw" label="Restart Story" onPress={handleRestartPress} danger />
+            <MenuItem icon="help-circle" label="Help" onPress={onHelp} />
+          </View>
+
+          <Pressable
+            onPress={onClose}
+            style={[styles.closeButton, { borderColor: theme.textSecondary }]}
+          >
+            <Feather name="x" size={20} color={theme.textSecondary} />
+            <ThemedText style={[styles.closeLabel, { color: theme.textSecondary }]}>
+              Close
+            </ThemedText>
+          </Pressable>
+        </Animated.View>
+      </Modal>
+
+      <Modal
+        visible={showConfirm}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCancelRestart}
+      >
+        <View style={styles.confirmOverlay}>
+          <View style={[styles.confirmBox, { backgroundColor: theme.backgroundSecondary }]}>
+            <ThemedText type="h4" style={styles.confirmTitle}>
+              Restart Story?
+            </ThemedText>
+            <ThemedText style={[styles.confirmText, { color: theme.textSecondary }]}>
+              All progress will be lost. Are you sure you want to start over?
+            </ThemedText>
+            <View style={styles.confirmButtons}>
+              <Pressable
+                onPress={handleCancelRestart}
+                style={[styles.confirmButton, { borderColor: theme.textSecondary }]}
+              >
+                <ThemedText style={{ color: theme.textSecondary }}>Cancel</ThemedText>
+              </Pressable>
+              <Pressable
+                onPress={handleConfirmRestart}
+                style={[styles.confirmButton, styles.confirmButtonDanger, { backgroundColor: theme.danger }]}
+              >
+                <ThemedText style={{ color: "#FFFFFF", fontWeight: "600" }}>Restart</ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 }
 
@@ -207,5 +255,41 @@ const styles = StyleSheet.create({
   },
   closeLabel: {
     fontSize: 14,
+  },
+  confirmOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: Spacing.xl,
+  },
+  confirmBox: {
+    width: "100%",
+    maxWidth: 320,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.xl,
+  },
+  confirmTitle: {
+    textAlign: "center",
+    marginBottom: Spacing.md,
+  },
+  confirmText: {
+    textAlign: "center",
+    marginBottom: Spacing.xl,
+    lineHeight: 22,
+  },
+  confirmButtons: {
+    flexDirection: "row",
+    gap: Spacing.md,
+  },
+  confirmButton: {
+    flex: 1,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  confirmButtonDanger: {
+    borderWidth: 0,
   },
 });
