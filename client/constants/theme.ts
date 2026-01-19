@@ -1,30 +1,47 @@
 import { Platform } from "react-native";
 
-const tintColorLight = "#007AFF";
-const tintColorDark = "#0A84FF";
+const amberPrimary = "#FF9500";
+const amberDark = "#CC7700";
+const amberDim = "#664400";
 
 export const Colors = {
   light: {
-    text: "#11181C",
-    buttonText: "#FFFFFF",
-    tabIconDefault: "#687076",
-    tabIconSelected: tintColorLight,
-    link: "#007AFF",
-    backgroundRoot: "#FFFFFF", // Elevation 0
-    backgroundDefault: "#F2F2F2", // Elevation 1
-    backgroundSecondary: "#E6E6E6", // Elevation 2
-    backgroundTertiary: "#D9D9D9", // Elevation 3
+    text: "#E8DDD0",
+    textSecondary: "#A89580",
+    textDisabled: "#5A5248",
+    buttonText: "#0A0A0A",
+    tabIconDefault: "#A89580",
+    tabIconSelected: amberPrimary,
+    link: amberPrimary,
+    backgroundRoot: "#0A0A0A",
+    backgroundDefault: "#1A1612",
+    backgroundSecondary: "#2A2218",
+    backgroundTertiary: "#3A3228",
+    primary: amberPrimary,
+    primaryDark: amberDark,
+    primaryDim: amberDim,
+    danger: "#D32F2F",
+    success: "#66BB6A",
+    border: amberDim,
   },
   dark: {
-    text: "#ECEDEE",
-    buttonText: "#FFFFFF",
-    tabIconDefault: "#9BA1A6",
-    tabIconSelected: tintColorDark,
-    link: "#0A84FF",
-    backgroundRoot: "#1F2123", // Elevation 0
-    backgroundDefault: "#2A2C2E", // Elevation 1
-    backgroundSecondary: "#353739", // Elevation 2
-    backgroundTertiary: "#404244", // Elevation 3
+    text: "#E8DDD0",
+    textSecondary: "#A89580",
+    textDisabled: "#5A5248",
+    buttonText: "#0A0A0A",
+    tabIconDefault: "#A89580",
+    tabIconSelected: amberPrimary,
+    link: amberPrimary,
+    backgroundRoot: "#0A0A0A",
+    backgroundDefault: "#1A1612",
+    backgroundSecondary: "#2A2218",
+    backgroundTertiary: "#3A3228",
+    primary: amberPrimary,
+    primaryDark: amberDark,
+    primaryDim: amberDim,
+    danger: "#D32F2F",
+    success: "#66BB6A",
+    border: amberDim,
   },
 };
 
@@ -93,13 +110,9 @@ export const Typography = {
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: "system-ui",
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: "ui-serif",
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: "ui-rounded",
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: "ui-monospace",
   },
   default: {
