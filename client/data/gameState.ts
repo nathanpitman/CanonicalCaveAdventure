@@ -9,6 +9,7 @@ export interface Message {
 
 export interface GameState {
   sceneId: string;
+  previousSceneId: string | null;
   inventory: string[];
   flags: Record<string, boolean>;
   stats: {
@@ -28,6 +29,7 @@ const STORAGE_KEY = "ascent_save_v1";
 
 export const initialGameState: GameState = {
   sceneId: "chasm_base",
+  previousSceneId: null,
   inventory: [],
   flags: {},
   stats: {

@@ -159,6 +159,7 @@ export function useGame() {
 
       setGameState((prev) => ({
         ...prev,
+        previousSceneId: prev.sceneId,
         sceneId: toSceneId,
       }));
 
@@ -175,6 +176,32 @@ export function useGame() {
     },
     [addMessage, decreaseLight, hapticFeedback, getSceneDescription]
   );
+
+  const handleGoBack = useCallback(() => {
+    if (!gameState.previousSceneId) {
+      addMessage("system", "You can't go back any further.");
+      return;
+    }
+
+    const previousScene = SCENES[gameState.previousSceneId];
+    if (!previousScene) {
+      addMessage("system", "You can't go back that way.");
+      return;
+    }
+
+    addMessage("action", "> GO BACK");
+    
+    setGameState((prev) => ({
+      ...prev,
+      previousSceneId: prev.sceneId,
+      sceneId: prev.previousSceneId!,
+    }));
+
+    decreaseLight(1);
+    addMessage("narration", getSceneDescription(gameState.previousSceneId));
+    hapticFeedback("light");
+    checkLightWarning();
+  }, [gameState.previousSceneId, addMessage, decreaseLight, getSceneDescription, hapticFeedback, checkLightWarning]);
 
   const handleTakeItem = useCallback(
     (itemId: string, actionId: string) => {
@@ -500,6 +527,21 @@ export function useGame() {
         }
       }
 
+      // Natural language patterns for GO BACK
+      if (
+        command === "go back" ||
+        command === "back" ||
+        command === "return" ||
+        command === "retreat" ||
+        command === "go back the way i came" ||
+        command === "turn back" ||
+        command === "retrace" ||
+        command === "retrace my steps"
+      ) {
+        handleGoBack();
+        return;
+      }
+
       // Natural language patterns for MOVEMENT
       const movePatterns = [
         /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(to\s+)?(the\s+)?(north|south|east|west|n|s|e|w)$/i,
@@ -551,7 +593,7 @@ export function useGame() {
       // Unknown command
       addMessage(
         "system",
-        `I don't understand "${rawInput}". Try commands like "look", "take lamp", "go east", or type "help".`
+        `I don't understand "${rawInput}". Try commands like "look", "take lamp", "go east", "go back", or type "help".`
       );
       checkLightWarning();
     },
@@ -566,6 +608,7 @@ export function useGame() {
       checkLightWarning,
       handleNewGame,
       handleDirection,
+      handleGoBack,
     ]
   );
 
