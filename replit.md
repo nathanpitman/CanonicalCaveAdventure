@@ -18,12 +18,14 @@ client/
 ├── components/       # Reusable UI components
 │   ├── ActionButton.tsx      # Quick action buttons
 │   ├── CommandInput.tsx      # Text command input
-│   ├── GameHeader.tsx        # Header with lamp indicator
+│   ├── GameHeader.tsx        # Header with lamp indicator + minimap button
 │   ├── GameMenu.tsx          # Slide-out menu
 │   ├── GameOverModal.tsx     # Win/lose screen
 │   ├── HelpModal.tsx         # Help/commands reference
 │   ├── LampIndicator.tsx     # Circular fuel gauge
 │   ├── MessageBubble.tsx     # Narrative text bubbles
+│   ├── Minimap.tsx           # Chronological journey display
+│   ├── MinimapDrawer.tsx     # Slide-out minimap for portrait mode
 │   └── ...
 ├── data/
 │   ├── story.ts              # All scenes, items, and game content
@@ -48,19 +50,24 @@ server/
 
 - **Chat-like narrative feed**: Story unfolds through styled message bubbles
 - **Quick action buttons**: Contextual actions for each scene
-- **Text command input**: Type commands like "look", "take lamp", "go east"
+- **Natural language commands**: Type phrases like "pick up the lamp", "head east", "what do i have"
 - **Lamp fuel system**: Light decreases each turn; find fuel to survive
-- **Save/Load**: Progress saved to device storage
+- **Autosave**: Game automatically saves after every state change
+- **Dynamic descriptions**: Room descriptions update when items are taken
+- **Go back command**: Return to previous room with "go back" or "back"
+- **Chronological minimap**: Shows your journey through visited scenes
+  - Portrait mode: Slide-out drawer accessible via map icon
+  - Landscape mode: Permanent sidebar on the left
 - **6 explorable scenes**: From chasm base to exit slope
 
 ## Commands
 
 - `look` - Examine surroundings
-- `inventory` / `inv` - Check items
-- `take <item>` - Pick up an item
+- `inventory` / `inv` / `what do i have` - Check items
+- `take <item>` / `pick up <item>` / `grab <item>` - Pick up an item
 - `use <item>` - Use an item
-- `go <direction>` - Move (north/south/east/west)
-- `save` / `load` / `new` - Game management
+- `go <direction>` / `head <direction>` - Move (north/south/east/west)
+- `go back` / `back` / `return` - Return to previous room
 - `help` - Show all commands
 
 ## Design
@@ -78,7 +85,13 @@ server/
 
 ## Recent Changes
 
+- Added chronological minimap showing visited scenes
+  - Portrait: slide-out drawer with swipe-to-close
+  - Landscape: permanent sidebar on left
+- Added "go back" command to return to previous room
+- Implemented autosave (replaces manual save/load)
+- Added natural language command parsing
+- Dynamic room descriptions that update when items are taken
 - Initial MVP implementation with all 6 scenes
 - Lamp fuel indicator with pulse animation when low
-- Save/Load functionality with AsyncStorage
 - Game over screen for escape success
