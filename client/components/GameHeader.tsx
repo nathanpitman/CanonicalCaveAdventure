@@ -60,40 +60,35 @@ export function GameHeader({
           },
         ]}
       >
-        {showMinimapButton && onMinimapPress ? (
-          <AnimatedPressable
-            onPress={onMinimapPress}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            style={[styles.headerTouchable, headerAnimatedStyle]}
-            testID="minimap-button"
-          >
-            <View style={styles.mapIconContainer}>
-              <Feather name="map" size={18} color={theme.primary} />
-            </View>
+        <View style={styles.headerRow}>
+          <View style={styles.spacer}>
+            {hasLamp ? <LampIndicator light={light} /> : null}
+          </View>
+          
+          {showMinimapButton && onMinimapPress ? (
+            <AnimatedPressable
+              onPress={onMinimapPress}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              style={[styles.titleTouchable, headerAnimatedStyle]}
+              testID="minimap-button"
+            >
+              <Feather name="map" size={16} color={theme.primary} style={styles.mapIcon} />
+              <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
+                {fullTitle}
+              </ThemedText>
+              <Feather name="chevron-down" size={12} color={theme.textSecondary} style={styles.chevron} />
+            </AnimatedPressable>
+          ) : (
             <View style={styles.titleContainer}>
               <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
                 {fullTitle}
               </ThemedText>
-              <Feather name="chevron-down" size={12} color={theme.textSecondary} />
             </View>
-            <View style={styles.rightContainer}>
-              {hasLamp ? <LampIndicator light={light} /> : <View style={styles.placeholder} />}
-            </View>
-          </AnimatedPressable>
-        ) : (
-          <View style={styles.headerRow}>
-            <View style={styles.placeholder} />
-            <View style={styles.titleCenterContainer}>
-              <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
-                {fullTitle}
-              </ThemedText>
-            </View>
-            <View style={styles.rightContainer}>
-              {hasLamp ? <LampIndicator light={light} /> : <View style={styles.placeholder} />}
-            </View>
-          </View>
-        )}
+          )}
+          
+          <View style={styles.spacer} />
+        </View>
       </View>
       <LinearGradient
         colors={[theme.backgroundRoot, "transparent"]}
@@ -109,45 +104,37 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   container: {
-    flexDirection: "row",
-    alignItems: "center",
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.md,
   },
-  headerTouchable: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-  },
   headerRow: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
-  mapIconContainer: {
-    padding: Spacing.xs,
+  spacer: {
+    width: 50,
+    alignItems: "flex-start",
   },
-  titleContainer: {
-    flex: 1,
+  titleTouchable: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    flex: 1,
   },
-  titleCenterContainer: {
+  titleContainer: {
     flex: 1,
     alignItems: "center",
+  },
+  mapIcon: {
+    marginRight: 6,
+  },
+  chevron: {
+    marginLeft: 4,
   },
   sceneTitle: {
     fontSize: 14,
     fontWeight: "600",
-  },
-  rightContainer: {
-    minWidth: 44,
-    alignItems: "flex-end",
-  },
-  placeholder: {
-    width: 44,
   },
   fadeGradient: {
     position: "absolute",

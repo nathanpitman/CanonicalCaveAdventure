@@ -2,7 +2,6 @@ import React from "react";
 import { View, StyleSheet, Modal, ScrollView, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { FadeIn, SlideInUp } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -18,16 +17,19 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
 
+  if (!visible) return null;
+
   return (
-    <Modal visible={visible} transparent animationType="none">
-      <Animated.View
-        entering={FadeIn.duration(200)}
-        style={[styles.backdrop, { backgroundColor: "rgba(0,0,0,0.6)" }]}
-      >
+    <Modal 
+      visible={visible} 
+      transparent 
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <View style={[styles.backdrop, { backgroundColor: "rgba(0,0,0,0.6)" }]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
 
-        <Animated.View
-          entering={SlideInUp.duration(300).springify()}
+        <View
           style={[
             styles.card,
             {
@@ -38,7 +40,7 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
         >
           <View style={styles.header}>
             <ThemedText type="h4">How to Play</ThemedText>
-            <Pressable onPress={onClose} style={styles.closeButton}>
+            <Pressable onPress={onClose} style={styles.closeButton} testID="help-close-button">
               <Feather name="x" size={24} color={theme.textSecondary} />
             </Pressable>
           </View>
@@ -71,10 +73,16 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
                   Explore thoroughly. Some items are essential for escape.
                 </ThemedText>
               </View>
+              <View style={styles.tip}>
+                <Feather name="briefcase" size={16} color={theme.primary} />
+                <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
+                  Type "inventory" or "inv" to see what you're carrying.
+                </ThemedText>
+              </View>
             </View>
           </ScrollView>
-        </Animated.View>
-      </Animated.View>
+        </View>
+      </View>
     </Modal>
   );
 }

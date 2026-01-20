@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -13,6 +13,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
   runOnJS,
   interpolate,
   Extrapolation,
@@ -40,9 +41,19 @@ const COLLAPSED_HEIGHT = 75;
 const EXPANDED_HEIGHT = 165;
 const DRAG_THRESHOLD = 50;
 
+const PLACEHOLDER_EXAMPLES = [
+  "look around",
+  "take lamp",
+  "go north",
+  "use rope",
+  "inventory",
+  "examine walls",
+  "pick up canister",
+  "head east",
+];
+
 function getActionIcon(action: Action): keyof typeof Feather.glyphMap {
   const label = action.label.toLowerCase();
-  const id = action.id.toLowerCase();
   
   if (label.includes("look") || label.includes("examine")) return "eye";
   if (label.includes("take") || label.includes("pick") || label.includes("grab")) return "download";
@@ -75,8 +86,10 @@ export function CommandInput({
   const [command, setCommand] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const inputRef = useRef<TextInput>(null);
   const buttonScale = useSharedValue(1);
+  const placeholderOpacity = useSharedValue(1);
   
   const translateY = useSharedValue(0);
   const isExpanded = useSharedValue(false);
@@ -84,6 +97,25 @@ export function CommandInput({
 
   const totalCollapsedHeight = COLLAPSED_HEIGHT + insets.bottom;
   const totalExpandedHeight = EXPANDED_HEIGHT + insets.bottom;
+
+  useEffect(() => {
+    if (isFocused || command.length > 0) return;
+
+    const interval = setInterval(() => {
+      placeholderOpacity.value = withTiming(0, { duration: 300 }, (finished) => {
+        if (finished) {
+          runOnJS(setPlaceholderIndex)((prev) => (prev + 1) % PLACEHOLDER_EXAMPLES.length);
+          placeholderOpacity.value = withTiming(1, { duration: 300 });
+        }
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isFocused, command, placeholderOpacity]);
+
+  const placeholderAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: placeholderOpacity.value,
+  }));
 
   const collapse = () => {
     translateY.value = withSpring(0, { damping: 20, stiffness: 200 });
@@ -206,6 +238,8 @@ export function CommandInput({
     };
   });
 
+  const currentPlaceholder = PLACEHOLDER_EXAMPLES[placeholderIndex];
+
   return (
     <>
       <GestureDetector gesture={panGesture}>
@@ -235,21 +269,29 @@ export function CommandInput({
               },
             ]}
           >
-            <TextInput
-              ref={inputRef}
-              style={[styles.input, { color: theme.text }, Platform.OS === "web" && { outlineStyle: "none" as any }]}
-              placeholder="Enter command..."
-              placeholderTextColor={theme.textDisabled}
-              value={command}
-              onChangeText={setCommand}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              onSubmitEditing={handleSubmit}
-              returnKeyType="send"
-              autoCapitalize="none"
-              autoCorrect={false}
-              testID="command-input"
-            />
+            <View style={styles.inputWrapper}>
+              {!isFocused && command.length === 0 ? (
+                <Animated.View style={[styles.placeholderContainer, placeholderAnimatedStyle]}>
+                  <ThemedText style={[styles.placeholder, { color: theme.textDisabled }]}>
+                    {currentPlaceholder}
+                  </ThemedText>
+                </Animated.View>
+              ) : null}
+              <TextInput
+                ref={inputRef}
+                style={[styles.input, { color: theme.text }, Platform.OS === "web" && { outlineStyle: "none" as any }]}
+                placeholderTextColor="transparent"
+                value={command}
+                onChangeText={setCommand}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                onSubmitEditing={handleSubmit}
+                returnKeyType="send"
+                autoCapitalize="none"
+                autoCorrect={false}
+                testID="command-input"
+              />
+            </View>
             <AnimatedPressable
               onPress={handleSubmit}
               onPressIn={handleButtonPressIn}
@@ -321,14 +363,16 @@ export function CommandInput({
             <Pressable
               onPress={handleHelpPress}
               style={[styles.menuButton, { backgroundColor: theme.backgroundSecondary }]}
+              testID="help-button"
             >
               <Feather name="help-circle" size={20} color={theme.primary} />
-              <ThemedText style={styles.menuLabel}>Help</ThemedText>
+              <ThemedText style={styles.menuLabel}>How to Play</ThemedText>
             </Pressable>
 
             <Pressable
               onPress={handleRestartPress}
               style={[styles.menuButton, { backgroundColor: theme.backgroundSecondary }]}
+              testID="restart-button"
             >
               <Feather name="rotate-ccw" size={20} color={theme.danger} />
               <ThemedText style={[styles.menuLabel, { color: theme.danger }]}>
@@ -394,6 +438,20 @@ const styles = StyleSheet.create({
     paddingLeft: Spacing.lg,
     paddingRight: Spacing.xs,
     borderWidth: 1,
+  },
+  inputWrapper: {
+    flex: 1,
+    position: "relative",
+    justifyContent: "center",
+  },
+  placeholderContainer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    pointerEvents: "none",
+  },
+  placeholder: {
+    fontSize: 16,
   },
   input: {
     flex: 1,

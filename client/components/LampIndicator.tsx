@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Pressable, Modal } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import Animated, {
   useAnimatedProps,
@@ -8,12 +8,15 @@ import Animated, {
   withTiming,
   useSharedValue,
   useAnimatedStyle,
+  withSpring,
+  FadeIn,
+  FadeOut,
 } from "react-native-reanimated";
 import { useEffect } from "react";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { BorderRadius, Spacing } from "@/constants/theme";
 
 interface LampIndicatorProps {
   light: number;
@@ -23,13 +26,14 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export function LampIndicator({ light }: LampIndicatorProps) {
   const { theme } = useTheme();
-  const [showPopover, setShowPopover] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const size = 44;
   const strokeWidth = 3;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
 
   const pulseScale = useSharedValue(1);
+  const tooltipScale = useSharedValue(0);
 
   useEffect(() => {
     if (light <= 20 && light > 0) {
@@ -46,6 +50,13 @@ export function LampIndicator({ light }: LampIndicatorProps) {
     }
   }, [light, pulseScale]);
 
+  useEffect(() => {
+    tooltipScale.value = withSpring(showTooltip ? 1 : 0, {
+      damping: 15,
+      stiffness: 300,
+    });
+  }, [showTooltip, tooltipScale]);
+
   const getColor = () => {
     if (light <= 20) return theme.danger;
     if (light <= 40) return theme.primaryDark;
@@ -60,9 +71,48 @@ export function LampIndicator({ light }: LampIndicatorProps) {
     transform: [{ scale: pulseScale.value }],
   }));
 
+  const tooltipStyle = useAnimatedStyle(() => ({
+    opacity: tooltipScale.value,
+    transform: [{ scale: tooltipScale.value }],
+  }));
+
+  const handlePress = () => {
+    setShowTooltip(true);
+  };
+
+  const handlePressOut = () => {
+    setShowTooltip(false);
+  };
+
   return (
-    <>
-      <Pressable onPress={() => setShowPopover(true)} testID="lamp-indicator">
+    <View style={styles.wrapper}>
+      {showTooltip ? (
+        <Animated.View
+          entering={FadeIn.duration(150)}
+          exiting={FadeOut.duration(100)}
+          style={[
+            styles.tooltip,
+            tooltipStyle,
+            { backgroundColor: theme.backgroundSecondary },
+          ]}
+        >
+          <ThemedText style={[styles.tooltipTitle, { color: theme.primary }]}>
+            Lamp Fuel
+          </ThemedText>
+          <ThemedText style={[styles.tooltipText, { color: theme.textSecondary }]}>
+            Actions consume fuel. Find canisters to refuel.
+          </ThemedText>
+          <View
+            style={[styles.tooltipArrow, { borderTopColor: theme.backgroundSecondary }]}
+          />
+        </Animated.View>
+      ) : null}
+
+      <Pressable
+        onPressIn={handlePress}
+        onPressOut={handlePressOut}
+        testID="lamp-indicator"
+      >
         <Animated.View style={[styles.container, pulseStyle]}>
           <Svg width={size} height={size} style={styles.svg}>
             <Circle
@@ -93,36 +143,14 @@ export function LampIndicator({ light }: LampIndicatorProps) {
           </View>
         </Animated.View>
       </Pressable>
-
-      <Modal
-        visible={showPopover}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowPopover(false)}
-      >
-        <Pressable 
-          style={styles.popoverOverlay} 
-          onPress={() => setShowPopover(false)}
-        >
-          <View style={[styles.popover, { backgroundColor: theme.backgroundSecondary }]}>
-            <ThemedText type="h4" style={styles.popoverTitle}>
-              Lamp Fuel
-            </ThemedText>
-            <ThemedText style={[styles.popoverText, { color: theme.textSecondary }]}>
-              This shows how much fuel remains in your lamp. Each action consumes fuel. 
-              When the lamp runs out, darkness consumes you.
-            </ThemedText>
-            <ThemedText style={[styles.popoverHint, { color: theme.primary }]}>
-              Find fuel canisters to keep your light burning.
-            </ThemedText>
-          </View>
-        </Pressable>
-      </Modal>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    position: "relative",
+  },
   container: {
     position: "relative",
     alignItems: "center",
@@ -141,28 +169,34 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "700",
   },
-  popoverOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.6)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: Spacing.xl,
+  tooltip: {
+    position: "absolute",
+    right: 0,
+    bottom: 54,
+    width: 140,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.sm,
+    zIndex: 100,
   },
-  popover: {
-    maxWidth: 300,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.lg,
+  tooltipTitle: {
+    fontSize: 11,
+    fontWeight: "700",
+    marginBottom: 2,
   },
-  popoverTitle: {
-    marginBottom: Spacing.sm,
+  tooltipText: {
+    fontSize: 10,
+    lineHeight: 14,
   },
-  popoverText: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: Spacing.md,
-  },
-  popoverHint: {
-    fontSize: 13,
-    fontWeight: "600",
+  tooltipArrow: {
+    position: "absolute",
+    right: 14,
+    bottom: -6,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 6,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
   },
 });
