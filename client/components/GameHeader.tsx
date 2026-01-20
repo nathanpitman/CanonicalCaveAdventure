@@ -66,20 +66,6 @@ export function GameHeader({
         },
       ]}
     >
-      {showMinimapButton && onMinimapPress ? (
-        <AnimatedPressable
-          onPress={onMinimapPress}
-          onPressIn={handleMapPressIn}
-          onPressOut={handleMapPressOut}
-          style={[styles.menuButton, mapAnimatedStyle]}
-          testID="minimap-button"
-        >
-          <Feather name="map" size={24} color={theme.primary} />
-        </AnimatedPressable>
-      ) : (
-        <View style={styles.menuButton} />
-      )}
-
       <AnimatedPressable
         onPress={onMenuPress}
         onPressIn={handleMenuPressIn}
@@ -89,6 +75,18 @@ export function GameHeader({
       >
         <Feather name="menu" size={24} color={theme.text} />
       </AnimatedPressable>
+
+      {showMinimapButton && onMinimapPress ? (
+        <AnimatedPressable
+          onPress={onMinimapPress}
+          onPressIn={handleMapPressIn}
+          onPressOut={handleMapPressOut}
+          style={[styles.mapButton, mapAnimatedStyle]}
+          testID="minimap-button"
+        >
+          <Feather name="map" size={22} color={theme.primary} />
+        </AnimatedPressable>
+      ) : null}
 
       <View style={styles.spacer} />
 
@@ -106,6 +104,10 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     padding: Spacing.sm,
+  },
+  mapButton: {
+    padding: Spacing.sm,
+    marginLeft: Spacing.xs,
   },
   spacer: {
     flex: 1,

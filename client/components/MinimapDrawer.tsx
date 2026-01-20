@@ -3,8 +3,6 @@ import {
   View,
   StyleSheet,
   Pressable,
-  Dimensions,
-  Platform,
 } from "react-native";
 import Animated, {
   useSharedValue,
@@ -67,18 +65,16 @@ export function MinimapDrawer({
     transform: [{ translateX: translateX.value }],
   }));
 
-  const overlayStyle = useAnimatedStyle(() => ({
+  const overlayOpacity = useAnimatedStyle(() => ({
     opacity: (translateX.value + DRAWER_WIDTH) / DRAWER_WIDTH * 0.5,
-    pointerEvents: visible ? ("auto" as const) : ("none" as const),
   }));
 
-  if (!visible && translateX.value <= -DRAWER_WIDTH + 5) {
-    return null;
-  }
-
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      <Animated.View style={[styles.overlay, overlayStyle]}>
+    <View
+      style={StyleSheet.absoluteFill}
+      pointerEvents={visible ? "auto" : "none"}
+    >
+      <Animated.View style={[styles.overlay, overlayOpacity]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
       </Animated.View>
 
