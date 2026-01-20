@@ -161,7 +161,7 @@ export function useGame() {
         ...prev,
         previousSceneId: prev.sceneId,
         sceneId: toSceneId,
-        visitHistory: [...prev.visitHistory, toSceneId],
+        visitHistory: [...(prev.visitHistory || [prev.sceneId]), toSceneId],
       }));
 
       decreaseLight(1);
@@ -198,7 +198,7 @@ export function useGame() {
       ...prev,
       previousSceneId: prev.sceneId,
       sceneId: targetSceneId!,
-      visitHistory: [...prev.visitHistory, targetSceneId!],
+      visitHistory: [...(prev.visitHistory || [prev.sceneId]), targetSceneId!],
     }));
 
     decreaseLight(1);
