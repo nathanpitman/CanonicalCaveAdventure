@@ -71,12 +71,6 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
                   Explore thoroughly. Some items are essential for escape.
                 </ThemedText>
               </View>
-              <View style={styles.tip}>
-                <Feather name="save" size={16} color={theme.primary} />
-                <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
-                  Save often. The chasm is unforgiving.
-                </ThemedText>
-              </View>
             </View>
           </ScrollView>
         </Animated.View>

@@ -235,8 +235,7 @@ ITEMS:
 MOVEMENT:
 • "go north" or "head east" or just "north"
 
-GAME:
-• "save" or "load" or "new game"
-• "help" or "?"
+OTHER:
+• "help" or "?" - show commands
 
-Tap quick action buttons or type naturally!`;
+Your progress is saved automatically.`;
