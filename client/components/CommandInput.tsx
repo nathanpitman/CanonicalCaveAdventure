@@ -19,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -261,36 +262,45 @@ export function CommandInput({
           </View>
 
           {actions.length > 0 ? (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.actionsContainer}
-              style={styles.actionsScroll}
-            >
-              {actions.map((action) => (
-                <Pressable
-                  key={action.id}
-                  onPress={() => onAction(action)}
-                  style={[
-                    styles.actionPill,
-                    { 
-                      backgroundColor: theme.backgroundSecondary,
-                      borderColor: theme.primary + "40",
-                    },
-                  ]}
-                  testID={`action-${action.id}`}
-                >
-                  <Feather 
-                    name={getActionIcon(action)} 
-                    size={14} 
-                    color={theme.primary} 
-                  />
-                  <ThemedText style={[styles.actionLabel, { color: theme.primary }]}>
-                    {action.label}
-                  </ThemedText>
-                </Pressable>
-              ))}
-            </ScrollView>
+            <View style={styles.actionsWrapper}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.actionsContainer}
+                style={styles.actionsScroll}
+              >
+                {actions.map((action) => (
+                  <Pressable
+                    key={action.id}
+                    onPress={() => onAction(action)}
+                    style={[
+                      styles.actionPill,
+                      { 
+                        backgroundColor: theme.backgroundSecondary,
+                        borderColor: theme.primary + "40",
+                      },
+                    ]}
+                    testID={`action-${action.id}`}
+                  >
+                    <Feather 
+                      name={getActionIcon(action)} 
+                      size={14} 
+                      color={theme.primary} 
+                    />
+                    <ThemedText style={[styles.actionLabel, { color: theme.primary }]}>
+                      {action.label}
+                    </ThemedText>
+                  </Pressable>
+                ))}
+              </ScrollView>
+              <LinearGradient
+                colors={["transparent", theme.backgroundRoot]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.actionsFade}
+                pointerEvents="none"
+              />
+            </View>
           ) : null}
 
           <Animated.View style={[styles.menuContainer, menuOpacity]}>
@@ -383,13 +393,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  actionsScroll: {
+  actionsWrapper: {
+    position: "relative",
     marginTop: Spacing.sm,
+  },
+  actionsScroll: {
     maxHeight: 36,
   },
   actionsContainer: {
     gap: Spacing.sm,
-    paddingRight: Spacing.md,
+    paddingRight: 40,
+  },
+  actionsFade: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 40,
   },
   actionPill: {
     flexDirection: "row",
