@@ -8,8 +8,9 @@ import {
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
+  withTiming,
   runOnJS,
+  Easing,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -41,9 +42,9 @@ export function MinimapDropdown({
   const screenWidth = Dimensions.get("window").width;
 
   useEffect(() => {
-    translateY.value = withSpring(visible ? 0 : -DROPDOWN_HEIGHT - insets.top - 50, {
-      damping: 20,
-      stiffness: 200,
+    translateY.value = withTiming(visible ? 0 : -DROPDOWN_HEIGHT - insets.top - 50, {
+      duration: 250,
+      easing: Easing.out(Easing.cubic),
     });
   }, [visible, translateY, insets.top]);
 
@@ -56,15 +57,15 @@ export function MinimapDropdown({
     })
     .onEnd((event) => {
       if (event.translationY < -50 || event.velocityY < -500) {
-        translateY.value = withSpring(-DROPDOWN_HEIGHT - insets.top - 50, {
-          damping: 20,
-          stiffness: 200,
+        translateY.value = withTiming(-DROPDOWN_HEIGHT - insets.top - 50, {
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
         });
         runOnJS(onClose)();
       } else {
-        translateY.value = withSpring(0, {
-          damping: 20,
-          stiffness: 200,
+        translateY.value = withTiming(0, {
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
         });
       }
     });
