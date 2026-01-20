@@ -35,9 +35,9 @@ interface CommandInputProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const COLLAPSED_HEIGHT = 130;
-const EXPANDED_HEIGHT = 260;
-const DRAG_THRESHOLD = 60;
+const COLLAPSED_HEIGHT = 115;
+const EXPANDED_HEIGHT = 190;
+const DRAG_THRESHOLD = 50;
 
 function getActionIcon(action: Action): keyof typeof Feather.glyphMap {
   const label = action.label.toLowerCase();
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   },
   actionsScroll: {
     marginTop: Spacing.sm,
-    maxHeight: 40,
+    maxHeight: 36,
   },
   actionsContainer: {
     gap: Spacing.sm,
@@ -395,29 +395,32 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    paddingVertical: 6,
     borderRadius: BorderRadius.full,
     borderWidth: 1,
-    gap: Spacing.xs,
+    gap: 6,
   },
   actionLabel: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "600",
-    textTransform: "uppercase",
   },
   menuContainer: {
-    marginTop: Spacing.lg,
-    gap: Spacing.md,
+    flexDirection: "row",
+    marginTop: Spacing.md,
+    gap: Spacing.sm,
   },
   menuButton: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    padding: Spacing.md,
+    justifyContent: "center",
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
     borderRadius: BorderRadius.md,
-    gap: Spacing.md,
+    gap: Spacing.sm,
   },
   menuLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "500",
   },
   confirmOverlay: {
