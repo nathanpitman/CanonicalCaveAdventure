@@ -24,7 +24,7 @@ client/
 │   ├── LampIndicator.tsx     # Circular fuel gauge
 │   ├── MessageBubble.tsx     # Narrative text bubbles
 │   ├── Minimap.tsx           # Chronological journey display
-│   ├── MinimapDrawer.tsx     # Slide-out minimap for portrait mode
+│   ├── MinimapDropdown.tsx   # Slide-down minimap from top (portrait)
 │   └── ...
 ├── data/
 │   ├── story.ts              # All scenes, items, and game content
@@ -84,6 +84,15 @@ server/
 
 ## Recent Changes
 
+- Updated header to show scene title with minimap access
+  - Map icon + scene title + chevron on left (clickable)
+  - Clicking header slides down minimap from top
+  - Lamp indicator only appears after picking up lamp
+  - Lamp indicator has info popover explaining fuel system
+- Action pills in command panel
+  - Hidden in collapsed state, fade in when expanded
+  - Press state shows reversed/inverted colors
+  - Gradient fade on right edge when scrolling
 - Moved action shortcuts into slide-up command panel
   - Actions now appear as pill buttons with icons below the input
   - Icons chosen based on action type (eye for look, arrows for move, etc.)
@@ -91,7 +100,7 @@ server/
   - Drag up to reveal Help and Restart Story options
   - Removed hamburger menu in favor of this integrated UI
 - Added chronological minimap showing visited scenes
-  - Portrait: slide-out drawer with swipe-to-close
+  - Portrait: slide-down dropdown from top
   - Landscape: permanent sidebar on left
 - Added "go back" command to return to previous room
 - Implemented autosave (replaces manual save/load)
