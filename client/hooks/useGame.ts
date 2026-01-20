@@ -161,6 +161,7 @@ export function useGame() {
         ...prev,
         previousSceneId: prev.sceneId,
         sceneId: toSceneId,
+        visitHistory: [...prev.visitHistory, toSceneId],
       }));
 
       decreaseLight(1);
@@ -191,14 +192,17 @@ export function useGame() {
 
     addMessage("action", "> GO BACK");
     
+    const targetSceneId = gameState.previousSceneId;
+    
     setGameState((prev) => ({
       ...prev,
       previousSceneId: prev.sceneId,
-      sceneId: prev.previousSceneId!,
+      sceneId: targetSceneId!,
+      visitHistory: [...prev.visitHistory, targetSceneId!],
     }));
 
     decreaseLight(1);
-    addMessage("narration", getSceneDescription(gameState.previousSceneId));
+    addMessage("narration", getSceneDescription(targetSceneId));
     hapticFeedback("light");
     checkLightWarning();
   }, [gameState.previousSceneId, addMessage, decreaseLight, getSceneDescription, hapticFeedback, checkLightWarning]);
