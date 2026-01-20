@@ -36,8 +36,8 @@ interface CommandInputProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const COLLAPSED_HEIGHT = 115;
-const EXPANDED_HEIGHT = 190;
+const COLLAPSED_HEIGHT = 75;
+const EXPANDED_HEIGHT = 165;
 const DRAG_THRESHOLD = 50;
 
 function getActionIcon(action: Action): keyof typeof Feather.glyphMap {
@@ -184,6 +184,16 @@ export function CommandInput({
     return { opacity };
   });
 
+  const actionsOpacity = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      translateY.value,
+      [-(totalExpandedHeight - totalCollapsedHeight) * 0.3, 0],
+      [1, 0],
+      Extrapolation.CLAMP
+    );
+    return { opacity };
+  });
+
   const handleIndicatorStyle = useAnimatedStyle(() => {
     const rotation = interpolate(
       translateY.value,
@@ -262,7 +272,7 @@ export function CommandInput({
           </View>
 
           {actions.length > 0 ? (
-            <View style={styles.actionsWrapper}>
+            <Animated.View style={[styles.actionsWrapper, actionsOpacity]}>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -294,13 +304,13 @@ export function CommandInput({
                 ))}
               </ScrollView>
               <LinearGradient
-                colors={["transparent", theme.backgroundRoot]}
+                colors={["transparent", theme.backgroundDefault]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.actionsFade}
                 pointerEvents="none"
               />
-            </View>
+            </Animated.View>
           ) : null}
 
           <Animated.View style={[styles.menuContainer, menuOpacity]}>
@@ -423,6 +433,7 @@ const styles = StyleSheet.create({
   actionLabel: {
     fontSize: 13,
     fontWeight: "600",
+    lineHeight: 14,
   },
   menuContainer: {
     flexDirection: "row",
