@@ -5,8 +5,10 @@ import {
   FlatList,
   ActivityIndicator,
   ScrollView,
+  useWindowDimensions,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MessageBubble } from "@/components/MessageBubble";
 import { ActionButton } from "@/components/ActionButton";
@@ -15,14 +17,20 @@ import { GameHeader } from "@/components/GameHeader";
 import { GameMenu } from "@/components/GameMenu";
 import { GameOverModal } from "@/components/GameOverModal";
 import { HelpModal } from "@/components/HelpModal";
+import { Minimap } from "@/components/Minimap";
+import { MinimapDrawer } from "@/components/MinimapDrawer";
 import { useTheme } from "@/hooks/useTheme";
 import { useGame } from "@/hooks/useGame";
 import { Spacing } from "@/constants/theme";
 import { Message } from "@/data/gameState";
 import { Action } from "@/data/story";
 
+const SIDEBAR_WIDTH = 260;
+
 export default function GameScreen() {
   const { theme } = useTheme();
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const {
     gameState,
     messages,
@@ -36,8 +44,10 @@ export default function GameScreen() {
 
   const [menuVisible, setMenuVisible] = useState(false);
   const [helpVisible, setHelpVisible] = useState(false);
+  const [minimapVisible, setMinimapVisible] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
+  const isLandscape = width > height && width >= 700;
   const actions = getAvailableActions();
 
   useEffect(() => {
@@ -75,11 +85,13 @@ export default function GameScreen() {
     );
   }
 
-  return (
-    <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
+  const gameContent = (
+    <View style={styles.gameArea}>
       <GameHeader
         light={gameState.stats.light}
         onMenuPress={() => setMenuVisible(true)}
+        onMinimapPress={() => setMinimapVisible(true)}
+        showMinimapButton={!isLandscape}
       />
 
       <KeyboardAvoidingView style={styles.content} behavior="padding">
@@ -134,6 +146,40 @@ export default function GameScreen() {
       ) : null}
     </View>
   );
+
+  if (isLandscape) {
+    return (
+      <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
+        <View style={styles.landscapeLayout}>
+          <View
+            style={[
+              styles.sidebar,
+              { paddingTop: insets.top, paddingBottom: insets.bottom },
+            ]}
+          >
+            <Minimap
+              visitHistory={gameState.visitHistory || ["chasm_base"]}
+              currentSceneId={gameState.sceneId}
+            />
+          </View>
+          {gameContent}
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
+      {gameContent}
+
+      <MinimapDrawer
+        visible={minimapVisible}
+        visitHistory={gameState.visitHistory || ["chasm_base"]}
+        currentSceneId={gameState.sceneId}
+        onClose={() => setMinimapVisible(false)}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -144,6 +190,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  landscapeLayout: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  sidebar: {
+    width: SIDEBAR_WIDTH,
+    backgroundColor: "#1A1612",
+  },
+  gameArea: {
+    flex: 1,
   },
   content: {
     flex: 1,

@@ -15,17 +15,29 @@ import { Spacing } from "@/constants/theme";
 interface GameHeaderProps {
   light: number;
   onMenuPress: () => void;
+  onMinimapPress?: () => void;
+  showMinimapButton?: boolean;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function GameHeader({ light, onMenuPress }: GameHeaderProps) {
+export function GameHeader({
+  light,
+  onMenuPress,
+  onMinimapPress,
+  showMinimapButton = false,
+}: GameHeaderProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const menuScale = useSharedValue(1);
+  const mapScale = useSharedValue(1);
 
   const menuAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: menuScale.value }],
+  }));
+
+  const mapAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: mapScale.value }],
   }));
 
   const handleMenuPressIn = () => {
@@ -34,6 +46,14 @@ export function GameHeader({ light, onMenuPress }: GameHeaderProps) {
 
   const handleMenuPressOut = () => {
     menuScale.value = withSpring(1, { damping: 15, stiffness: 300 });
+  };
+
+  const handleMapPressIn = () => {
+    mapScale.value = withSpring(0.9, { damping: 15, stiffness: 300 });
+  };
+
+  const handleMapPressOut = () => {
+    mapScale.value = withSpring(1, { damping: 15, stiffness: 300 });
   };
 
   return (
@@ -46,6 +66,20 @@ export function GameHeader({ light, onMenuPress }: GameHeaderProps) {
         },
       ]}
     >
+      {showMinimapButton && onMinimapPress ? (
+        <AnimatedPressable
+          onPress={onMinimapPress}
+          onPressIn={handleMapPressIn}
+          onPressOut={handleMapPressOut}
+          style={[styles.menuButton, mapAnimatedStyle]}
+          testID="minimap-button"
+        >
+          <Feather name="map" size={24} color={theme.primary} />
+        </AnimatedPressable>
+      ) : (
+        <View style={styles.menuButton} />
+      )}
+
       <AnimatedPressable
         onPress={onMenuPress}
         onPressIn={handleMenuPressIn}
