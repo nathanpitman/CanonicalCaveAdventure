@@ -77,12 +77,17 @@ export function LampIndicator({ light }: LampIndicatorProps) {
   }));
 
   const handlePress = () => {
-    setShowTooltip(true);
+    setShowTooltip((prev) => !prev);
   };
 
-  const handlePressOut = () => {
-    setShowTooltip(false);
-  };
+  useEffect(() => {
+    if (showTooltip) {
+      const timer = setTimeout(() => {
+        setShowTooltip(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showTooltip]);
 
   return (
     <View style={styles.wrapper}>
@@ -95,6 +100,7 @@ export function LampIndicator({ light }: LampIndicatorProps) {
             tooltipStyle,
             { backgroundColor: theme.backgroundSecondary },
           ]}
+          testID="lamp-tooltip"
         >
           <ThemedText style={[styles.tooltipTitle, { color: theme.primary }]}>
             Lamp Fuel
@@ -109,8 +115,7 @@ export function LampIndicator({ light }: LampIndicatorProps) {
       ) : null}
 
       <Pressable
-        onPressIn={handlePress}
-        onPressOut={handlePressOut}
+        onPress={handlePress}
         testID="lamp-indicator"
       >
         <Animated.View style={[styles.container, pulseStyle]}>
