@@ -9,11 +9,14 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { LampIndicator } from "@/components/LampIndicator";
+import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing } from "@/constants/theme";
 
 interface GameHeaderProps {
   light: number;
+  sceneTitle: string;
+  hasLamp: boolean;
   onMinimapPress?: () => void;
   showMinimapButton?: boolean;
 }
@@ -22,23 +25,25 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function GameHeader({
   light,
+  sceneTitle,
+  hasLamp,
   onMinimapPress,
   showMinimapButton = false,
 }: GameHeaderProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const mapScale = useSharedValue(1);
+  const headerScale = useSharedValue(1);
 
-  const mapAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: mapScale.value }],
+  const headerAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: headerScale.value }],
   }));
 
-  const handleMapPressIn = () => {
-    mapScale.value = withSpring(0.9, { damping: 15, stiffness: 300 });
+  const handlePressIn = () => {
+    headerScale.value = withSpring(0.98, { damping: 15, stiffness: 300 });
   };
 
-  const handleMapPressOut = () => {
-    mapScale.value = withSpring(1, { damping: 15, stiffness: 300 });
+  const handlePressOut = () => {
+    headerScale.value = withSpring(1, { damping: 15, stiffness: 300 });
   };
 
   return (
@@ -54,20 +59,32 @@ export function GameHeader({
       {showMinimapButton && onMinimapPress ? (
         <AnimatedPressable
           onPress={onMinimapPress}
-          onPressIn={handleMapPressIn}
-          onPressOut={handleMapPressOut}
-          style={[styles.mapButton, mapAnimatedStyle]}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          style={[styles.headerTouchable, headerAnimatedStyle]}
           testID="minimap-button"
         >
-          <Feather name="map" size={22} color={theme.primary} />
+          <View style={styles.mapIconContainer}>
+            <Feather name="map" size={20} color={theme.primary} />
+          </View>
+          <View style={styles.titleContainer}>
+            <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
+              {sceneTitle}
+            </ThemedText>
+            <Feather name="chevron-down" size={14} color={theme.textSecondary} />
+          </View>
         </AnimatedPressable>
       ) : (
-        <View style={styles.placeholder} />
+        <View style={styles.titleOnlyContainer}>
+          <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
+            {sceneTitle}
+          </ThemedText>
+        </View>
       )}
 
-      <View style={styles.spacer} />
-
-      <LampIndicator light={light} />
+      <View style={styles.rightContainer}>
+        {hasLamp ? <LampIndicator light={light} /> : null}
+      </View>
     </View>
   );
 }
@@ -79,13 +96,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.sm,
   },
-  mapButton: {
-    padding: Spacing.sm,
-  },
-  placeholder: {
-    width: 40,
-  },
-  spacer: {
+  headerTouchable: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  mapIconContainer: {
+    padding: Spacing.xs,
+    marginRight: Spacing.sm,
+  },
+  titleContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  titleOnlyContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
+  sceneTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  rightContainer: {
+    minWidth: 44,
+    alignItems: "flex-end",
   },
 });

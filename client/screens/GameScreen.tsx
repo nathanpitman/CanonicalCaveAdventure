@@ -15,11 +15,12 @@ import { GameHeader } from "@/components/GameHeader";
 import { GameOverModal } from "@/components/GameOverModal";
 import { HelpModal } from "@/components/HelpModal";
 import { Minimap } from "@/components/Minimap";
-import { MinimapDrawer } from "@/components/MinimapDrawer";
+import { MinimapDropdown } from "@/components/MinimapDropdown";
 import { useTheme } from "@/hooks/useTheme";
 import { useGame } from "@/hooks/useGame";
 import { Spacing } from "@/constants/theme";
 import { Message } from "@/data/gameState";
+import { SCENES } from "@/data/story";
 
 const SIDEBAR_WIDTH = 260;
 
@@ -44,6 +45,9 @@ export default function GameScreen() {
 
   const isLandscape = width > height && width >= 700;
   const actions = getAvailableActions();
+  const currentScene = SCENES[gameState.sceneId];
+  const sceneTitle = currentScene?.title || "Unknown";
+  const hasLamp = gameState.inventory.includes("lamp");
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -75,6 +79,8 @@ export default function GameScreen() {
     <View style={styles.gameArea}>
       <GameHeader
         light={gameState.stats.light}
+        sceneTitle={sceneTitle}
+        hasLamp={hasLamp}
         onMinimapPress={() => setMinimapVisible(true)}
         showMinimapButton={!isLandscape}
       />
@@ -138,7 +144,7 @@ export default function GameScreen() {
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       {gameContent}
 
-      <MinimapDrawer
+      <MinimapDropdown
         visible={minimapVisible}
         visitHistory={gameState.visitHistory || ["chasm_base"]}
         currentSceneId={gameState.sceneId}
