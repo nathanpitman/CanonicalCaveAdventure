@@ -17,9 +17,8 @@ Ascent is a mobile-first text adventure game where the player has fallen into a 
 client/
 ├── components/       # Reusable UI components
 │   ├── ActionButton.tsx      # Quick action buttons
-│   ├── CommandInput.tsx      # Text command input
+│   ├── CommandInput.tsx      # Slide-up command panel with Help/Restart
 │   ├── GameHeader.tsx        # Header with lamp indicator + minimap button
-│   ├── GameMenu.tsx          # Slide-out menu
 │   ├── GameOverModal.tsx     # Win/lose screen
 │   ├── HelpModal.tsx         # Help/commands reference
 │   ├── LampIndicator.tsx     # Circular fuel gauge
@@ -85,6 +84,9 @@ server/
 
 ## Recent Changes
 
+- Transformed command input into slide-up panel
+  - Drag up to reveal Help and Restart Story options
+  - Removed hamburger menu in favor of this integrated UI
 - Added chronological minimap showing visited scenes
   - Portrait: slide-out drawer with swipe-to-close
   - Landscape: permanent sidebar on left

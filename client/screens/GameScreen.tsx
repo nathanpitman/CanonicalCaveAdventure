@@ -14,7 +14,6 @@ import { MessageBubble } from "@/components/MessageBubble";
 import { ActionButton } from "@/components/ActionButton";
 import { CommandInput } from "@/components/CommandInput";
 import { GameHeader } from "@/components/GameHeader";
-import { GameMenu } from "@/components/GameMenu";
 import { GameOverModal } from "@/components/GameOverModal";
 import { HelpModal } from "@/components/HelpModal";
 import { Minimap } from "@/components/Minimap";
@@ -42,7 +41,6 @@ export default function GameScreen() {
     handleNewGame,
   } = useGame();
 
-  const [menuVisible, setMenuVisible] = useState(false);
   const [helpVisible, setHelpVisible] = useState(false);
   const [minimapVisible, setMinimapVisible] = useState(false);
   const flatListRef = useRef<FlatList>(null);
@@ -58,15 +56,6 @@ export default function GameScreen() {
     }
   }, [messages.length]);
 
-  const handleMenuNewGame = () => {
-    setMenuVisible(false);
-    handleNewGame();
-  };
-
-  const handleMenuHelp = () => {
-    setMenuVisible(false);
-    setTimeout(() => setHelpVisible(true), 300);
-  };
 
   const renderMessage = ({ item, index }: { item: Message; index: number }) => (
     <MessageBubble message={item} index={index} />
@@ -89,7 +78,6 @@ export default function GameScreen() {
     <View style={styles.gameArea}>
       <GameHeader
         light={gameState.stats.light}
-        onMenuPress={() => setMenuVisible(true)}
         onMinimapPress={() => setMinimapVisible(true)}
         showMinimapButton={!isLandscape}
       />
@@ -125,15 +113,12 @@ export default function GameScreen() {
           </View>
         ) : null}
 
-        <CommandInput onSubmit={parseCommand} />
+        <CommandInput
+          onSubmit={parseCommand}
+          onHelp={() => setHelpVisible(true)}
+          onRestart={handleNewGame}
+        />
       </KeyboardAvoidingView>
-
-      <GameMenu
-        visible={menuVisible}
-        onClose={() => setMenuVisible(false)}
-        onNewGame={handleMenuNewGame}
-        onHelp={handleMenuHelp}
-      />
 
       <HelpModal visible={helpVisible} onClose={() => setHelpVisible(false)} />
 

@@ -14,7 +14,6 @@ import { Spacing } from "@/constants/theme";
 
 interface GameHeaderProps {
   light: number;
-  onMenuPress: () => void;
   onMinimapPress?: () => void;
   showMinimapButton?: boolean;
 }
@@ -23,30 +22,16 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function GameHeader({
   light,
-  onMenuPress,
   onMinimapPress,
   showMinimapButton = false,
 }: GameHeaderProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const menuScale = useSharedValue(1);
   const mapScale = useSharedValue(1);
-
-  const menuAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: menuScale.value }],
-  }));
 
   const mapAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: mapScale.value }],
   }));
-
-  const handleMenuPressIn = () => {
-    menuScale.value = withSpring(0.9, { damping: 15, stiffness: 300 });
-  };
-
-  const handleMenuPressOut = () => {
-    menuScale.value = withSpring(1, { damping: 15, stiffness: 300 });
-  };
 
   const handleMapPressIn = () => {
     mapScale.value = withSpring(0.9, { damping: 15, stiffness: 300 });
@@ -66,16 +51,6 @@ export function GameHeader({
         },
       ]}
     >
-      <AnimatedPressable
-        onPress={onMenuPress}
-        onPressIn={handleMenuPressIn}
-        onPressOut={handleMenuPressOut}
-        style={[styles.menuButton, menuAnimatedStyle]}
-        testID="menu-button"
-      >
-        <Feather name="menu" size={24} color={theme.text} />
-      </AnimatedPressable>
-
       {showMinimapButton && onMinimapPress ? (
         <AnimatedPressable
           onPress={onMinimapPress}
@@ -86,7 +61,9 @@ export function GameHeader({
         >
           <Feather name="map" size={22} color={theme.primary} />
         </AnimatedPressable>
-      ) : null}
+      ) : (
+        <View style={styles.placeholder} />
+      )}
 
       <View style={styles.spacer} />
 
@@ -102,12 +79,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.sm,
   },
-  menuButton: {
-    padding: Spacing.sm,
-  },
   mapButton: {
     padding: Spacing.sm,
-    marginLeft: Spacing.xs,
+  },
+  placeholder: {
+    width: 40,
   },
   spacer: {
     flex: 1,
