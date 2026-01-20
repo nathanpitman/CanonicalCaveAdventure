@@ -283,23 +283,27 @@ export function CommandInput({
                   <Pressable
                     key={action.id}
                     onPress={() => onAction(action)}
-                    style={[
+                    style={({ pressed }) => [
                       styles.actionPill,
                       { 
-                        backgroundColor: theme.backgroundSecondary,
-                        borderColor: theme.primary + "40",
+                        backgroundColor: pressed ? theme.primary : theme.backgroundSecondary,
+                        borderColor: pressed ? theme.primary : theme.primary + "40",
                       },
                     ]}
                     testID={`action-${action.id}`}
                   >
-                    <Feather 
-                      name={getActionIcon(action)} 
-                      size={14} 
-                      color={theme.primary} 
-                    />
-                    <ThemedText style={[styles.actionLabel, { color: theme.primary }]}>
-                      {action.label}
-                    </ThemedText>
+                    {({ pressed }) => (
+                      <>
+                        <Feather 
+                          name={getActionIcon(action)} 
+                          size={14} 
+                          color={pressed ? theme.backgroundDefault : theme.primary} 
+                        />
+                        <ThemedText style={[styles.actionLabel, { color: pressed ? theme.backgroundDefault : theme.primary }]}>
+                          {action.label}
+                        </ThemedText>
+                      </>
+                    )}
                   </Pressable>
                 ))}
               </ScrollView>
