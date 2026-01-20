@@ -5,6 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
   useWindowDimensions,
+  Pressable,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,13 +13,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MessageBubble } from "@/components/MessageBubble";
 import { CommandInput } from "@/components/CommandInput";
 import { GameHeader } from "@/components/GameHeader";
-import { GameOverModal } from "@/components/GameOverModal";
 import { HelpModal } from "@/components/HelpModal";
 import { Minimap } from "@/components/Minimap";
 import { MinimapDropdown } from "@/components/MinimapDropdown";
+import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useGame } from "@/hooks/useGame";
-import { Spacing } from "@/constants/theme";
+import { Spacing, BorderRadius } from "@/constants/theme";
 import { Message } from "@/data/gameState";
 import { SCENES } from "@/data/story";
 
@@ -98,24 +99,39 @@ export default function GameScreen() {
           }}
         />
 
-        <CommandInput
-          onSubmit={parseCommand}
-          onHelp={() => setHelpVisible(true)}
-          onRestart={handleNewGame}
-          actions={actions}
-          onAction={handleAction}
-        />
+        {gameOver ? (
+          <View
+            style={[
+              styles.gameOverBar,
+              {
+                backgroundColor: theme.backgroundDefault,
+                borderTopColor: theme.backgroundSecondary,
+                paddingBottom: insets.bottom + Spacing.md,
+              },
+            ]}
+          >
+            <Pressable
+              onPress={handleNewGame}
+              style={[styles.playAgainButton, { backgroundColor: theme.primary }]}
+              testID="play-again-button"
+            >
+              <ThemedText style={[styles.playAgainText, { color: theme.buttonText }]}>
+                Play Again
+              </ThemedText>
+            </Pressable>
+          </View>
+        ) : (
+          <CommandInput
+            onSubmit={parseCommand}
+            onHelp={() => setHelpVisible(true)}
+            onRestart={handleNewGame}
+            actions={actions}
+            onAction={handleAction}
+          />
+        )}
       </KeyboardAvoidingView>
 
       <HelpModal visible={helpVisible} onClose={() => setHelpVisible(false)} />
-
-      {gameOver ? (
-        <GameOverModal
-          visible={true}
-          type={gameOver}
-          onNewGame={handleNewGame}
-        />
-      ) : null}
     </View>
   );
 
@@ -180,5 +196,21 @@ const styles = StyleSheet.create({
   messageList: {
     padding: Spacing.lg,
     paddingBottom: Spacing.md,
+  },
+  gameOverBar: {
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.lg,
+    borderTopWidth: 1,
+  },
+  playAgainButton: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: BorderRadius.full,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  playAgainText: {
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

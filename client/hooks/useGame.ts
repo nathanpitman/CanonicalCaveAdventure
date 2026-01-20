@@ -140,14 +140,21 @@ export function useGame() {
     if (gameState.stats.light <= 20 && gameState.stats.light > 0) {
       addMessage("warning", "Your lamp flickers weakly. The oil is running low...");
       hapticFeedback("warning");
-    } else if (gameState.stats.light === 0) {
+    } else if (gameState.stats.light === 0 && !gameOver) {
       addMessage(
         "warning",
         "Darkness closes in. Your lamp has gone out. You stumble blindly..."
       );
+      setTimeout(() => {
+        addMessage(
+          "narration",
+          "The lamp sputters and dies. In the absolute darkness of the deep earth, you are lost forever."
+        );
+        setGameOver("died");
+      }, 1500);
       hapticFeedback("error");
     }
-  }, [gameState.stats.light, addMessage, hapticFeedback]);
+  }, [gameState.stats.light, addMessage, hapticFeedback, gameOver]);
 
   const handleMove = useCallback(
     (toSceneId: string) => {
@@ -170,6 +177,10 @@ export function useGame() {
 
       if (toSceneId === "exit_slope") {
         setTimeout(() => {
+          addMessage(
+            "narration",
+            "You emerge from the chasm into the light of day. The nightmare is over. You are free."
+          );
           setGameOver("escaped");
           hapticFeedback("success");
         }, 2000);
