@@ -84,6 +84,9 @@ server/
 
 ## Recent Changes
 
+- Moved action shortcuts into slide-up command panel
+  - Actions now appear as pill buttons with icons below the input
+  - Icons chosen based on action type (eye for look, arrows for move, etc.)
 - Transformed command input into slide-up panel
   - Drag up to reveal Help and Restart Story options
   - Removed hamburger menu in favor of this integrated UI

@@ -6,7 +6,7 @@ import {
   Pressable,
   Platform,
   Modal,
-  useWindowDimensions,
+  ScrollView,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import Animated, {
@@ -23,23 +23,54 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius } from "@/constants/theme";
+import { Action } from "@/data/story";
 
 interface CommandInputProps {
   onSubmit: (command: string) => void;
   onHelp: () => void;
   onRestart: () => void;
+  actions: Action[];
+  onAction: (action: Action) => void;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const COLLAPSED_HEIGHT = 80;
-const EXPANDED_HEIGHT = 220;
+const COLLAPSED_HEIGHT = 130;
+const EXPANDED_HEIGHT = 260;
 const DRAG_THRESHOLD = 60;
 
-export function CommandInput({ onSubmit, onHelp, onRestart }: CommandInputProps) {
+function getActionIcon(action: Action): keyof typeof Feather.glyphMap {
+  const label = action.label.toLowerCase();
+  const id = action.id.toLowerCase();
+  
+  if (label.includes("look") || label.includes("examine")) return "eye";
+  if (label.includes("take") || label.includes("pick") || label.includes("grab")) return "download";
+  if (label.includes("use")) return "tool";
+  if (action.type === "move" || label.includes("go") || label.includes("climb") || label.includes("enter")) {
+    if (label.includes("north") || label.includes("up")) return "arrow-up";
+    if (label.includes("south") || label.includes("down")) return "arrow-down";
+    if (label.includes("east") || label.includes("right")) return "arrow-right";
+    if (label.includes("west") || label.includes("left")) return "arrow-left";
+    return "navigation";
+  }
+  if (label.includes("light")) return "sun";
+  if (label.includes("drink") || label.includes("water")) return "droplet";
+  if (label.includes("read")) return "book-open";
+  if (label.includes("open")) return "unlock";
+  if (label.includes("close")) return "lock";
+  
+  return "chevron-right";
+}
+
+export function CommandInput({ 
+  onSubmit, 
+  onHelp, 
+  onRestart,
+  actions,
+  onAction,
+}: CommandInputProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { height: screenHeight } = useWindowDimensions();
   const [command, setCommand] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -229,6 +260,39 @@ export function CommandInput({ onSubmit, onHelp, onRestart }: CommandInputProps)
             </AnimatedPressable>
           </View>
 
+          {actions.length > 0 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.actionsContainer}
+              style={styles.actionsScroll}
+            >
+              {actions.map((action) => (
+                <Pressable
+                  key={action.id}
+                  onPress={() => onAction(action)}
+                  style={[
+                    styles.actionPill,
+                    { 
+                      backgroundColor: theme.backgroundSecondary,
+                      borderColor: theme.primary + "40",
+                    },
+                  ]}
+                  testID={`action-${action.id}`}
+                >
+                  <Feather 
+                    name={getActionIcon(action)} 
+                    size={14} 
+                    color={theme.primary} 
+                  />
+                  <ThemedText style={[styles.actionLabel, { color: theme.primary }]}>
+                    {action.label}
+                  </ThemedText>
+                </Pressable>
+              ))}
+            </ScrollView>
+          ) : null}
+
           <Animated.View style={[styles.menuContainer, menuOpacity]}>
             <Pressable
               onPress={handleHelpPress}
@@ -318,6 +382,28 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     alignItems: "center",
     justifyContent: "center",
+  },
+  actionsScroll: {
+    marginTop: Spacing.sm,
+    maxHeight: 40,
+  },
+  actionsContainer: {
+    gap: Spacing.sm,
+    paddingRight: Spacing.md,
+  },
+  actionPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    gap: Spacing.xs,
+  },
+  actionLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    textTransform: "uppercase",
   },
   menuContainer: {
     marginTop: Spacing.lg,

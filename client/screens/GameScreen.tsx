@@ -4,14 +4,12 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
-  ScrollView,
   useWindowDimensions,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MessageBubble } from "@/components/MessageBubble";
-import { ActionButton } from "@/components/ActionButton";
 import { CommandInput } from "@/components/CommandInput";
 import { GameHeader } from "@/components/GameHeader";
 import { GameOverModal } from "@/components/GameOverModal";
@@ -22,7 +20,6 @@ import { useTheme } from "@/hooks/useTheme";
 import { useGame } from "@/hooks/useGame";
 import { Spacing } from "@/constants/theme";
 import { Message } from "@/data/gameState";
-import { Action } from "@/data/story";
 
 const SIDEBAR_WIDTH = 260;
 
@@ -95,28 +92,12 @@ export default function GameScreen() {
           }}
         />
 
-        {actions.length > 0 ? (
-          <View style={styles.actionsContainer}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.actionsScroll}
-            >
-              {actions.map((action: Action) => (
-                <ActionButton
-                  key={action.id}
-                  action={action}
-                  onPress={handleAction}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        ) : null}
-
         <CommandInput
           onSubmit={parseCommand}
           onHelp={() => setHelpVisible(true)}
           onRestart={handleNewGame}
+          actions={actions}
+          onAction={handleAction}
         />
       </KeyboardAvoidingView>
 
@@ -193,11 +174,5 @@ const styles = StyleSheet.create({
   messageList: {
     padding: Spacing.lg,
     paddingBottom: Spacing.md,
-  },
-  actionsContainer: {
-    paddingVertical: Spacing.sm,
-  },
-  actionsScroll: {
-    paddingHorizontal: Spacing.lg,
   },
 });
