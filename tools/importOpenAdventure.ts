@@ -108,6 +108,19 @@ const DISPLAY_NAME_MAP: Record<string, string> = {
   OIL: "Lamp Oil",
   MAGAZINE: "Magazine",
   AXE: "Dwarf's Axe",
+  OBJ_13: "Stone Tablet",
+  OBJ_26: "Stalactite",
+  OBJ_27: "Shadowy Figure",
+  OBJ_29: "Cave Drawings",
+  OBJ_30: "Pirate",
+  OBJ_40: "Carpet",
+  OBJ_47: "Mud",
+  OBJ_48: "Note",
+  OBJ_51: "Diamonds",
+  OBJ_52: "Silver Bars",
+  OBJ_53: "Precious Jewelry",
+  OBJ_63: "Rare Spices",
+  OBJ_69: "Ebony Statuette",
 };
 
 // ============================================================

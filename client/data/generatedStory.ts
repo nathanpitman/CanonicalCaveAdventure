@@ -84,19 +84,19 @@ export const ITEMS: Record<string, Item> = {
   },
   "obj_51": {
     "id": "obj_51",
-    "name": "Several diamonds",
+    "name": "Diamonds",
     "description": "There are diamonds here!",
     "usable": false
   },
   "obj_52": {
     "id": "obj_52",
-    "name": "Bars of silver",
+    "name": "Silver Bars",
     "description": "There are bars of silver here!",
     "usable": false
   },
   "obj_53": {
     "id": "obj_53",
-    "name": "Precious jewelry",
+    "name": "Precious Jewelry",
     "description": "There is precious jewelry here!",
     "usable": false
   },
@@ -156,7 +156,7 @@ export const ITEMS: Record<string, Item> = {
   },
   "obj_63": {
     "id": "obj_63",
-    "name": "Rare spices",
+    "name": "Rare Spices",
     "description": "There are rare spices here!",
     "usable": false
   },
@@ -180,7 +180,7 @@ export const ITEMS: Record<string, Item> = {
   },
   "obj_69": {
     "id": "obj_69",
-    "name": "Ebony statuette",
+    "name": "Ebony Statuette",
     "description": "There is a richly-carved ebony statuette here!",
     "usable": false
   },
@@ -1171,7 +1171,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         "id": "take_obj_51",
-        "label": "TAKE OBJ 51",
+        "label": "TAKE DIAMONDS",
         "type": "event",
         "addsItem": "obj_51",
         "removesAction": true
@@ -1221,7 +1221,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         "id": "take_obj_52",
-        "label": "TAKE OBJ 52",
+        "label": "TAKE SILVER BARS",
         "type": "event",
         "addsItem": "obj_52",
         "removesAction": true
@@ -1259,7 +1259,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         "id": "take_obj_53",
-        "label": "TAKE OBJ 53",
+        "label": "TAKE PRECIOUS JEWELRY",
         "type": "event",
         "addsItem": "obj_53",
         "removesAction": true
@@ -4260,7 +4260,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         "id": "take_obj_63",
-        "label": "TAKE OBJ 63",
+        "label": "TAKE RARE SPICES",
         "type": "event",
         "addsItem": "obj_63",
         "removesAction": true
@@ -6346,7 +6346,7 @@ export const SCENES: Record<string, Scene> = {
       },
       {
         "id": "take_obj_69",
-        "label": "TAKE OBJ 69",
+        "label": "TAKE EBONY STATUETTE",
         "type": "event",
         "addsItem": "obj_69",
         "removesAction": true
