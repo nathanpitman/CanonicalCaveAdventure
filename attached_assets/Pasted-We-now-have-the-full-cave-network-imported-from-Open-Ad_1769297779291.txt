@@ -1,0 +1,54 @@
+We now have the full cave network imported from Open Adventure YAML and exported via generatedStory.ts. My current story.ts still includes extra prototype-only scenes (e.g., east_tunnel, split_passage, exit_slope, etc.) that are no longer needed and may conflict with the imported network.
+
+GOAL:
+- Remove all prototype-only scenes and prototype-only items from story.ts.
+- Keep ONLY the synthetic ASCENT start scene "chasm_base" (required by gameState.ts initialGameState).
+- All other rooms/scenes must come from generatedStory.ts (the imported Open Adventure network).
+- story.ts should act as a patch/overlay layer only.
+
+CONSTRAINTS:
+- Do NOT re-import or regenerate from YAML.
+- Do NOT modify generatedStory.ts.
+- Keep useGame.ts and UI logic unchanged (except if absolutely required to avoid broken win logic).
+- Ensure the app still compiles and starts at "chasm_base".
+
+INSTRUCTIONS:
+1) Open client/data/story.ts and refactor it into an overlay that imports the generated data:
+   import { SCENES as BASE_SCENES, ITEMS as BASE_ITEMS, INTRO_MESSAGES, HELP_TEXT } from "./generatedStory";
+
+2) Build the final exports as:
+   export const ITEMS = { ...BASE_ITEMS };
+   export const SCENES = { ...BASE_SCENES, chasm_base: <ASCENT start scene> };
+
+3) Remove any prototype-only scene definitions from story.ts entirely:
+   - Delete SCENES entries that were part of the 6-scene MVP (east_tunnel, old_gear_room, split_passage, underground_stream, exit_slope, etc.) unless they came from BASE_SCENES (they likely didn’t).
+   - Delete any prototype-only items in story.ts (fuel, rope, chalk, pickaxe etc.) IF they duplicate BASE_ITEMS OR are not needed. Prefer BASE_ITEMS as the source of truth.
+
+4) Keep chasm_base as the only custom scene:
+   - If BASE_SCENES already has "chasm_base", overwrite it with the ASCENT version.
+   - Otherwise inject it.
+   - chasm_base must:
+     - have id "chasm_base"
+     - have LOOK action
+     - optionally have TAKE LAMP if lamp is present there
+     - have exactly ONE outward move (e.g. GO EAST) to an existing deep cave scene id in BASE_SCENES (not a prototype scene).
+   - Choose the target deep cave scene id by picking an existing BASE_SCENES id that is clearly underground (or use the one we already used previously in our deep-start change if present). Confirm it exists.
+
+5) IMPORTANT: Remove any hard-coded win scene dependency from story.ts:
+   - If story.ts had an "exit_slope" win scene, remove it.
+   - Do NOT create new exit/win scenes in this change unless they already exist. This task is only to clean out prototype-only content.
+
+6) Ensure types remain available:
+   - Keep exporting Action/Scene/Item interfaces (either re-export from generatedStory if present OR keep them in story.ts as the canonical types).
+   - Ensure useGame.ts imports still work:
+     import { SCENES, ITEMS, INTRO_MESSAGES, HELP_TEXT, Action } from "@/data/story";
+
+7) After changes, run TypeScript compile / start the app and confirm:
+   - Game starts in chasm_base
+   - Movement from chasm_base leads into BASE_SCENES network
+   - No references remain to prototype-only scenes
+   - No duplicate/conflicting ITEMS exports
+
+DELIVERABLE:
+- Updated client/data/story.ts that only patches BASE_SCENES/BASE_ITEMS and keeps only "chasm_base" as custom.
+- No regeneration, no YAML import changes.
