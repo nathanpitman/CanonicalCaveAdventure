@@ -109,7 +109,7 @@ export function LampIndicator({ light }: LampIndicatorProps) {
             Actions consume fuel. Find canisters to refuel.
           </ThemedText>
           <View
-            style={[styles.tooltipArrow, { borderTopColor: theme.backgroundSecondary }]}
+            style={[styles.tooltipArrow, { borderBottomColor: theme.backgroundSecondary }]}
           />
         </Animated.View>
       ) : null}
@@ -155,6 +155,8 @@ export function LampIndicator({ light }: LampIndicatorProps) {
 const styles = StyleSheet.create({
   wrapper: {
     position: "relative",
+    overflow: "visible",
+    zIndex: 100,
   },
   container: {
     position: "relative",
@@ -176,9 +178,9 @@ const styles = StyleSheet.create({
   },
   tooltip: {
     position: "absolute",
-    right: 0,
-    bottom: 54,
-    width: 140,
+    left: 0,
+    top: 54,
+    width: 160,
     borderRadius: BorderRadius.md,
     padding: Spacing.sm,
     zIndex: 100,
@@ -195,13 +197,14 @@ const styles = StyleSheet.create({
   tooltipArrow: {
     position: "absolute",
     right: 14,
-    bottom: -6,
+    top: -6,
     width: 0,
     height: 0,
     borderLeftWidth: 6,
     borderRightWidth: 6,
-    borderTopWidth: 6,
+    borderBottomWidth: 6,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
+    borderBottomColor: "transparent",
   },
 });
