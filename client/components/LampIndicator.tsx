@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   tooltipArrow: {
     position: "absolute",
-    right: 14,
+    left: 14,
     top: -6,
     width: 0,
     height: 0,

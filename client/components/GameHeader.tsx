@@ -115,6 +115,8 @@ const styles = StyleSheet.create({
   spacer: {
     width: 50,
     alignItems: "flex-start",
+    overflow: "visible",
+    zIndex: 100,
   },
   titleTouchable: {
     flexDirection: "row",
