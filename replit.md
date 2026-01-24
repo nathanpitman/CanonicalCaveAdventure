@@ -84,12 +84,18 @@ server/
 
 ## Recent Changes
 
+- Implemented ASCENT mode (escape-the-cave gameplay)
+  - Player starts deep in the cave and must escape to the surface
+  - chasm_base connects to "reachdead" (deepest room, 27 steps from surface)
+  - Surface exit at "Front of Building" with rescue gate requiring key
+  - Critical items placed along 28-room escape path
+  - Auto-detection of deep start room via BFS distance calculation
+  - Dependency viability pass ensures items appear before needed
 - Imported Open Adventure (Colossal Cave) content
-  - 184 scenes and 26 items from adventure.yaml
+  - 184 scenes and 28 items from adventure.yaml
   - Created import script at tools/importOpenAdventure.ts
   - Original Ascent story backed up to client/data/backup/
   - Extended movement system for 12+ directions
-  - Game starts at custom chasm_base connecting east to classic adventure
 - Updated header to show scene title with minimap access
   - Map icon + scene title + chevron on left (clickable)
   - Clicking header slides down minimap from top
