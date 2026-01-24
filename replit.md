@@ -57,7 +57,7 @@ server/
 - **Chronological minimap**: Shows your journey through visited scenes
   - Portrait mode: Slide-out drawer accessible via map icon
   - Landscape mode: Permanent sidebar on the left
-- **6 explorable scenes**: From chasm base to exit slope
+- **180+ explorable scenes**: Includes classic Colossal Cave Adventure content imported from Open Adventure
 
 ## Commands
 
@@ -65,7 +65,7 @@ server/
 - `inventory` / `inv` / `what do i have` - Check items
 - `take <item>` / `pick up <item>` / `grab <item>` - Pick up an item
 - `use <item>` - Use an item
-- `go <direction>` / `head <direction>` - Move (north/south/east/west)
+- `go <direction>` / `head <direction>` - Move (north/south/east/west/up/down/in/out/ne/nw/se/sw)
 - `go back` / `back` / `return` - Return to previous room
 - `help` - Show all commands
 
@@ -84,6 +84,12 @@ server/
 
 ## Recent Changes
 
+- Imported Open Adventure (Colossal Cave) content
+  - 184 scenes and 26 items from adventure.yaml
+  - Created import script at tools/importOpenAdventure.ts
+  - Original Ascent story backed up to client/data/backup/
+  - Extended movement system for 12+ directions
+  - Game starts at custom chasm_base connecting east to classic adventure
 - Updated header to show scene title with minimap access
   - Map icon + scene title + chevron on left (clickable)
   - Clicking header slides down minimap from top
