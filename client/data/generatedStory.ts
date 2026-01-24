@@ -184,6 +184,18 @@ export const ITEMS: Record<string, Item> = {
     "description": "There is a richly-carved ebony statuette here!",
     "usable": false
   },
+  "oil": {
+    "id": "oil",
+    "name": "Oil",
+    "description": "A oil.",
+    "usable": false
+  },
+  "rescue_key": {
+    "id": "rescue_key",
+    "name": "Rescue Gate Key",
+    "description": "A heavy brass key that might unlock the exit gate.",
+    "usable": false
+  },
   "fuel": {
     "id": "fuel",
     "name": "Lamp Fuel",
@@ -249,6 +261,14 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO NORTH",
         "type": "move",
         "to": "forest1"
+      },
+      {
+        "id": "escape",
+        "label": "UNLOCK THE GATE",
+        "type": "event",
+        "requiresItem": "rescue_key",
+        "setsFlag": "escaped",
+        "removesAction": true
       }
     ]
   },
@@ -591,8 +611,21 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO WEST",
         "type": "move",
         "to": "cobble"
+      },
+      {
+        "id": "take_rescue_key",
+        "label": "TAKE RESCUE GATE KEY",
+        "type": "event",
+        "addsItem": "rescue_key",
+        "removesAction": true
       }
-    ]
+    ],
+    "items": [
+      "rescue_key"
+    ],
+    "itemDescriptions": {
+      "rescue_key": "A heavy brass key that might unlock the exit gate."
+    }
   },
   "cobble": {
     "id": "cobble",
@@ -2451,8 +2484,21 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO NORTH",
         "type": "move",
         "to": "bedquilt"
+      },
+      {
+        "id": "take_bird",
+        "label": "TAKE LITTLE BIRD",
+        "type": "event",
+        "addsItem": "bird",
+        "removesAction": true
       }
-    ]
+    ],
+    "items": [
+      "bird"
+    ],
+    "itemDescriptions": {
+      "bird": "A cheerful little bird is sitting here singing."
+    }
   },
   "secret1": {
     "id": "secret1",
@@ -3848,8 +3894,21 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO NORTH",
         "type": "move",
         "to": "resbottom"
+      },
+      {
+        "id": "take_cage",
+        "label": "TAKE WICKER CAGE",
+        "type": "event",
+        "addsItem": "cage",
+        "removesAction": true
       }
-    ]
+    ],
+    "items": [
+      "cage"
+    ],
+    "itemDescriptions": {
+      "cage": "There is a small wicker cage discarded nearby."
+    }
   },
   "mazeend12": {
     "id": "mazeend12",
@@ -5977,8 +6036,21 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO SOUTH",
         "type": "move",
         "to": "reservoir"
+      },
+      {
+        "id": "take_bottle",
+        "label": "TAKE WATER BOTTLE",
+        "type": "event",
+        "addsItem": "bottle",
+        "removesAction": true
       }
-    ]
+    ],
+    "items": [
+      "bottle"
+    ],
+    "itemDescriptions": {
+      "bottle": "There is a bottle of water here."
+    }
   },
   "resnorth": {
     "id": "resnorth",
@@ -6051,8 +6123,21 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO SOUTHEAST",
         "type": "move",
         "to": "resnorth"
+      },
+      {
+        "id": "take_food",
+        "label": "TAKE TASTY RATIONS",
+        "type": "event",
+        "addsItem": "food",
+        "removesAction": true
       }
-    ]
+    ],
+    "items": [
+      "food"
+    ],
+    "itemDescriptions": {
+      "food": "There is food here."
+    }
   },
   "steep": {
     "id": "steep",
@@ -6088,8 +6173,21 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO NORTHWEST",
         "type": "move",
         "to": "cliffbase"
+      },
+      {
+        "id": "take_keys",
+        "label": "TAKE SET OF KEYS",
+        "type": "event",
+        "addsItem": "keys",
+        "removesAction": true
       }
-    ]
+    ],
+    "items": [
+      "keys"
+    ],
+    "itemDescriptions": {
+      "keys": "There are some keys on the ground here."
+    }
   },
   "cliffbase": {
     "id": "cliffbase",
@@ -6144,8 +6242,21 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO UP",
         "type": "move",
         "to": "clifftop"
+      },
+      {
+        "id": "take_oil",
+        "label": "TAKE OIL",
+        "type": "event",
+        "addsItem": "oil",
+        "removesAction": true
       }
-    ]
+    ],
+    "items": [
+      "oil"
+    ],
+    "itemDescriptions": {
+      "oil": "A oil."
+    }
   },
   "footslip": {
     "id": "footslip",
@@ -6342,8 +6453,8 @@ export const SCENES: Record<string, Scene> = {
   "chasm_base": {
     "id": "chasm_base",
     "title": "Base of the Chasm",
-    "description": "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a tunnel to the east.\n\nAn old oil lamp lies nearby, its glass clouded but intact.",
-    "descriptionWithoutItems": "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a tunnel to the east.",
+    "description": "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a passage to the east.\n\nAn old oil lamp lies nearby, its glass clouded but intact.",
+    "descriptionWithoutItems": "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a passage to the east.",
     "itemDescriptions": {
       "lamp": "An old oil lamp lies nearby, its glass clouded but intact."
     },
@@ -6366,7 +6477,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
-        "to": "start"
+        "to": "reachdead"
       }
     ],
     "items": [
@@ -6390,4 +6501,4 @@ export const INTRO_MESSAGES: Array<{ type: "narration"; text: string }> = [
   }
 ];
 
-export const HELP_TEXT = "COMMANDS:\nYou can use natural language! Try phrases like:\n\nLOOKING AROUND:\n• \"look\" or \"look around\" or \"examine\"\n\nITEMS:\n• \"pick up the lamp\" or \"take lamp\" or \"grab cage\"\n• \"use fuel\" or \"light the lamp\"\n• \"inventory\" or \"what do I have\"\n\nMOVEMENT:\n• \"go north\" or \"head east\" or just \"north\"\n• \"go up\" or \"go down\" or \"go in\" or \"go out\"\n\nOTHER:\n• \"help\" or \"?\" - show commands\n\nYour progress is saved automatically.";
+export const HELP_TEXT = "COMMANDS:\nYou can use natural language! Try phrases like:\n\nLOOKING AROUND:\n• \"look\" or \"look around\" or \"examine\"\n\nITEMS:\n• \"pick up the lamp\" or \"take lamp\" or \"grab cage\"\n• \"use fuel\" or \"light the lamp\"\n• \"inventory\" or \"what do I have\"\n\nMOVEMENT:\n• \"go north\" or \"head east\" or just \"north\"\n• \"go up\" or \"go down\" or \"go in\" or \"go out\"\n\nGOAL:\nFind the RESCUE GATE KEY to unlock the exit and escape!\n\nOTHER:\n• \"help\" or \"?\" - show commands\n\nYour progress is saved automatically.";

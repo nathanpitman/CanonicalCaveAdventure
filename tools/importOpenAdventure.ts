@@ -2,6 +2,42 @@ import * as fs from "fs";
 import * as path from "path";
 import { parse } from "yaml";
 
+// ============================================================
+// ASCENT MODE CONFIGURATION
+// ============================================================
+const ASCENT_MODE = true;
+const ASCENT_START_ROOM_ID = ""; // Leave empty for auto-detection (deepest room)
+const ASCENT_EXIT_ROOM_ID = "";  // Leave empty for auto-detection (surface building)
+
+// Keywords for identifying deep cave rooms
+const DEEP_ROOM_KEYWORDS = [
+  "cave", "cavern", "chamber", "maze", "pit", "hall", "bedquilt", 
+  "deep", "complex", "end of", "low", "below", "y2", "underground",
+  "passage", "crawl", "tunnel", "dark", "narrow", "dead end"
+];
+
+// Keywords for identifying surface/near-surface rooms (to exclude from deep start)
+const SURFACE_KEYWORDS = [
+  "building", "forest", "road", "valley", "streambed", "outside", 
+  "house", "end of road", "hill", "gully", "depression", "slit"
+];
+
+// Critical items that need to be placed along the escape path
+const CRITICAL_ITEMS = [
+  { id: "lamp", milestone: 0, windowSize: 1 },      // At chasm_base (start)
+  { id: "oil", milestone: 0.1, windowSize: 10 },    // Early - within first 10% of path
+  { id: "keys", milestone: 0.15, windowSize: 15 },  // Early
+  { id: "food", milestone: 0.2, windowSize: 20 },   // Within first 20%
+  { id: "bottle", milestone: 0.25, windowSize: 20 },// After water-themed room
+  { id: "cage", milestone: 0.3, windowSize: 15 },   // Before bird
+  { id: "bird", milestone: 0.4, windowSize: 15 },   // Mid-path
+  { id: "rod", milestone: 0.5, windowSize: 15 },    // Mid-path
+  { id: "rescue_key", milestone: 0.85, windowSize: 10 }, // Late, near exit
+];
+
+// ============================================================
+// TYPE DEFINITIONS
+// ============================================================
 interface Action {
   id: string;
   label: string;
@@ -37,6 +73,9 @@ interface Item {
   };
 }
 
+// ============================================================
+// DIRECTION MAPPING
+// ============================================================
 const DIRECTION_MAP: Record<string, { actionId: string; label: string }> = {
   NORTH: { actionId: "go_north", label: "GO NORTH" },
   SOUTH: { actionId: "go_south", label: "GO SOUTH" },
@@ -71,6 +110,9 @@ const DISPLAY_NAME_MAP: Record<string, string> = {
   AXE: "Dwarf's Axe",
 };
 
+// ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
 function toSceneId(locName: string): string {
   return locName.toLowerCase().replace(/^loc_/, "");
 }
@@ -95,6 +137,315 @@ function extractTitle(locId: string, description: { short?: string; long?: strin
   return titleCase(name.replace(/_/g, " "));
 }
 
+function matchesKeywords(text: string, keywords: string[]): boolean {
+  const lower = text.toLowerCase();
+  return keywords.some(kw => lower.includes(kw.toLowerCase()));
+}
+
+// ============================================================
+// GRAPH ALGORITHMS
+// ============================================================
+function buildGraph(scenes: Record<string, Scene>): Map<string, Set<string>> {
+  const graph = new Map<string, Set<string>>();
+  
+  for (const [sceneId, scene] of Object.entries(scenes)) {
+    if (!graph.has(sceneId)) {
+      graph.set(sceneId, new Set());
+    }
+    for (const action of scene.actions) {
+      if (action.type === "move" && action.to && scenes[action.to]) {
+        graph.get(sceneId)!.add(action.to);
+        // Add reverse edge for undirected graph
+        if (!graph.has(action.to)) {
+          graph.set(action.to, new Set());
+        }
+        graph.get(action.to)!.add(sceneId);
+      }
+    }
+  }
+  
+  return graph;
+}
+
+function bfsDistances(graph: Map<string, Set<string>>, startNodes: string[]): Map<string, number> {
+  const distances = new Map<string, number>();
+  const queue: string[] = [];
+  
+  for (const start of startNodes) {
+    if (graph.has(start)) {
+      distances.set(start, 0);
+      queue.push(start);
+    }
+  }
+  
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    const currentDist = distances.get(current)!;
+    
+    for (const neighbor of graph.get(current) || []) {
+      if (!distances.has(neighbor)) {
+        distances.set(neighbor, currentDist + 1);
+        queue.push(neighbor);
+      }
+    }
+  }
+  
+  return distances;
+}
+
+function bfsPath(graph: Map<string, Set<string>>, start: string, end: string): string[] {
+  if (start === end) return [start];
+  
+  const visited = new Set<string>();
+  const parent = new Map<string, string>();
+  const queue: string[] = [start];
+  visited.add(start);
+  
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    
+    for (const neighbor of graph.get(current) || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        parent.set(neighbor, current);
+        queue.push(neighbor);
+        
+        if (neighbor === end) {
+          // Reconstruct path
+          const path: string[] = [end];
+          let node = end;
+          while (parent.has(node)) {
+            node = parent.get(node)!;
+            path.unshift(node);
+          }
+          return path;
+        }
+      }
+    }
+  }
+  
+  return []; // No path found
+}
+
+// ============================================================
+// ASCENT MODE FUNCTIONS
+// ============================================================
+function findDeepStartRoom(
+  scenes: Record<string, Scene>,
+  graph: Map<string, Set<string>>,
+  surfaceNodes: string[]
+): { roomId: string; distance: number; reason: string } {
+  const distances = bfsDistances(graph, surfaceNodes);
+  
+  // Find candidate deep rooms
+  const candidates: Array<{ id: string; dist: number; score: number }> = [];
+  
+  for (const [sceneId, scene] of Object.entries(scenes)) {
+    if (sceneId === "chasm_base") continue;
+    
+    const dist = distances.get(sceneId) || 0;
+    const text = `${scene.title} ${scene.description}`;
+    
+    // Skip surface rooms
+    if (matchesKeywords(text, SURFACE_KEYWORDS)) continue;
+    
+    // Calculate score: distance + keyword bonus
+    let score = dist;
+    if (matchesKeywords(text, DEEP_ROOM_KEYWORDS)) {
+      score += 5; // Bonus for cave-like rooms
+    }
+    
+    candidates.push({ id: sceneId, dist, score });
+  }
+  
+  // Sort by score descending
+  candidates.sort((a, b) => b.score - a.score);
+  
+  // Pick from top 5% by distance
+  const topCandidates = candidates.slice(0, Math.max(5, Math.ceil(candidates.length * 0.05)));
+  const chosen = topCandidates[0];
+  
+  return {
+    roomId: chosen.id,
+    distance: chosen.dist,
+    reason: `Chosen as deepest (distance ${chosen.dist}, score ${chosen.score})`
+  };
+}
+
+function findSurfaceExitRoom(
+  scenes: Record<string, Scene>,
+  graph: Map<string, Set<string>>
+): { roomId: string; reason: string } {
+  // Look for the building/wellhouse area first
+  const candidates: Array<{ id: string; priority: number }> = [];
+  
+  for (const [sceneId, scene] of Object.entries(scenes)) {
+    const text = `${scene.title} ${scene.description}`.toLowerCase();
+    
+    // Prioritize building-related rooms
+    if (text.includes("building") || text.includes("well house") || text.includes("wellhouse")) {
+      candidates.push({ id: sceneId, priority: 10 });
+    } else if (text.includes("end of road") || text.includes("forest")) {
+      candidates.push({ id: sceneId, priority: 5 });
+    } else if (text.includes("outside") || text.includes("road")) {
+      candidates.push({ id: sceneId, priority: 3 });
+    }
+  }
+  
+  candidates.sort((a, b) => b.priority - a.priority);
+  
+  if (candidates.length > 0) {
+    return {
+      roomId: candidates[0].id,
+      reason: `Surface exit (priority ${candidates[0].priority})`
+    };
+  }
+  
+  // Fallback to "start" if it exists
+  if (scenes["start"]) {
+    return { roomId: "start", reason: "Default start location as exit" };
+  }
+  
+  return { roomId: Object.keys(scenes)[0], reason: "First available room" };
+}
+
+function placeItemsAlongPath(
+  scenes: Record<string, Scene>,
+  items: Record<string, Item>,
+  escapePath: string[],
+  startRoomId: string
+): Map<string, string> {
+  const placements = new Map<string, string>(); // itemId -> sceneId
+  
+  console.log("\n--- ITEM PLACEMENT ---");
+  
+  for (const criticalItem of CRITICAL_ITEMS) {
+    const itemId = criticalItem.id;
+    
+    // Skip if item already placed at a good position
+    let existingScene: string | null = null;
+    for (const [sceneId, scene] of Object.entries(scenes)) {
+      if (scene.items?.includes(itemId)) {
+        existingScene = sceneId;
+        break;
+      }
+    }
+    
+    // Calculate target index on path
+    const targetIndex = Math.floor(escapePath.length * criticalItem.milestone);
+    const windowStart = Math.max(0, targetIndex - Math.floor(criticalItem.windowSize / 2));
+    const windowEnd = Math.min(escapePath.length - 1, targetIndex + Math.floor(criticalItem.windowSize / 2));
+    
+    // Check if existing placement is within window
+    if (existingScene) {
+      const existingIndex = escapePath.indexOf(existingScene);
+      if (existingIndex >= windowStart && existingIndex <= windowEnd) {
+        placements.set(itemId, existingScene);
+        console.log(`  ${itemId}: keeping at ${existingScene} (index ${existingIndex})`);
+        continue;
+      }
+    }
+    
+    // Special case: lamp goes to chasm_base
+    if (itemId === "lamp") {
+      placements.set(itemId, "chasm_base");
+      console.log(`  ${itemId}: placed at chasm_base (start room)`);
+      continue;
+    }
+    
+    // Place item in a room within the window
+    const targetRoomIndex = Math.min(windowEnd, Math.max(windowStart, targetIndex));
+    let targetRoom = escapePath[targetRoomIndex];
+    
+    // For rescue_key, ensure it's not in the exit room
+    if (itemId === "rescue_key" && targetRoom === escapePath[escapePath.length - 1]) {
+      targetRoom = escapePath[Math.max(0, escapePath.length - 3)];
+    }
+    
+    placements.set(itemId, targetRoom);
+    console.log(`  ${itemId}: placed at ${targetRoom} (index ${targetRoomIndex}, target was ${targetIndex})`);
+  }
+  
+  return placements;
+}
+
+function applyItemPlacements(
+  scenes: Record<string, Scene>,
+  items: Record<string, Item>,
+  placements: Map<string, string>
+): void {
+  for (const [itemId, sceneId] of placements) {
+    const scene = scenes[sceneId];
+    if (!scene) continue;
+    
+    // Ensure item exists
+    if (!items[itemId]) {
+      // Create the item if it doesn't exist
+      if (itemId === "rescue_key") {
+        items[itemId] = {
+          id: "rescue_key",
+          name: "Rescue Gate Key",
+          description: "A heavy brass key that might unlock the exit gate.",
+          usable: false,
+        };
+      } else {
+        items[itemId] = {
+          id: itemId,
+          name: titleCase(itemId),
+          description: `A ${itemId}.`,
+          usable: false,
+        };
+      }
+    }
+    
+    // Add to scene's items array
+    if (!scene.items) {
+      scene.items = [];
+    }
+    if (!scene.items.includes(itemId)) {
+      scene.items.push(itemId);
+    }
+    
+    // Add item description
+    if (!scene.itemDescriptions) {
+      scene.itemDescriptions = {};
+    }
+    if (!scene.itemDescriptions[itemId]) {
+      scene.itemDescriptions[itemId] = items[itemId].description;
+    }
+    
+    // Add take action if not present
+    const takeActionId = `take_${itemId}`;
+    const hasTakeAction = scene.actions.some(a => a.id === takeActionId);
+    if (!hasTakeAction) {
+      scene.actions.push({
+        id: takeActionId,
+        label: `TAKE ${items[itemId].name.toUpperCase()}`,
+        type: "event",
+        addsItem: itemId,
+        removesAction: true,
+      });
+    }
+  }
+}
+
+function addEscapeAction(scene: Scene): void {
+  // Check if escape action already exists
+  if (scene.actions.some(a => a.id === "escape")) return;
+  
+  scene.actions.push({
+    id: "escape",
+    label: "UNLOCK THE GATE",
+    type: "event",
+    requiresItem: "rescue_key",
+    setsFlag: "escaped",
+    removesAction: true,
+  });
+}
+
+// ============================================================
+// MAIN FUNCTION
+// ============================================================
 function main() {
   const yamlPath = path.resolve("adventure.yaml");
   if (!fs.existsSync(yamlPath)) {
@@ -137,6 +488,9 @@ function main() {
   const ITEMS: Record<string, Item> = {};
   const ignoredDirections = new Set<string>();
 
+  // ============================================================
+  // PARSE ALL LOCATIONS INTO SCENES
+  // ============================================================
   for (const [locId, loc] of locations) {
     if (locId === "LOC_NOWHERE") continue;
     if (!loc.description?.long) continue;
@@ -234,13 +588,86 @@ function main() {
     SCENES[sceneId] = scene;
   }
 
+  // ============================================================
+  // ASCENT MODE: RELOCATE START AND EXIT
+  // ============================================================
+  let ascentStartRoom = "";
+  let ascentExitRoom = "";
+  let escapePath: string[] = [];
+
+  if (ASCENT_MODE) {
+    console.log("\n=== ASCENT MODE ENABLED ===");
+    
+    // Build the room graph
+    const graph = buildGraph(SCENES);
+    
+    // Find surface nodes for distance calculation
+    const surfaceNodes: string[] = [];
+    for (const [sceneId, scene] of Object.entries(SCENES)) {
+      const text = `${scene.title} ${scene.description}`;
+      if (matchesKeywords(text, ["building", "well house", "wellhouse", "end of road"])) {
+        surfaceNodes.push(sceneId);
+      }
+    }
+    if (surfaceNodes.length === 0 && SCENES["start"]) {
+      surfaceNodes.push("start");
+    }
+    console.log(`Surface reference nodes: ${surfaceNodes.join(", ")}`);
+
+    // Determine deep start room
+    if (ASCENT_START_ROOM_ID) {
+      ascentStartRoom = ASCENT_START_ROOM_ID;
+      console.log(`Using configured start room: ${ascentStartRoom}`);
+    } else {
+      const startResult = findDeepStartRoom(SCENES, graph, surfaceNodes);
+      ascentStartRoom = startResult.roomId;
+      console.log(`Auto-selected deep start: ${ascentStartRoom} - ${startResult.reason}`);
+    }
+
+    // Determine surface exit room
+    if (ASCENT_EXIT_ROOM_ID) {
+      ascentExitRoom = ASCENT_EXIT_ROOM_ID;
+      console.log(`Using configured exit room: ${ascentExitRoom}`);
+    } else {
+      const exitResult = findSurfaceExitRoom(SCENES, graph);
+      ascentExitRoom = exitResult.roomId;
+      console.log(`Auto-selected surface exit: ${ascentExitRoom} - ${exitResult.reason}`);
+    }
+
+    // Calculate escape path
+    escapePath = bfsPath(graph, ascentStartRoom, ascentExitRoom);
+    console.log(`Escape path length: ${escapePath.length} rooms`);
+    if (escapePath.length > 0) {
+      console.log(`  From: ${ascentStartRoom} (${SCENES[ascentStartRoom]?.title})`);
+      console.log(`  To: ${ascentExitRoom} (${SCENES[ascentExitRoom]?.title})`);
+    }
+
+    // Place items along escape path
+    if (escapePath.length > 0) {
+      const placements = placeItemsAlongPath(SCENES, ITEMS, escapePath, ascentStartRoom);
+      applyItemPlacements(SCENES, ITEMS, placements);
+    }
+
+    // Add escape action to exit room
+    if (SCENES[ascentExitRoom]) {
+      addEscapeAction(SCENES[ascentExitRoom]);
+      console.log(`Added escape action to: ${ascentExitRoom}`);
+    }
+  }
+
+  // ============================================================
+  // CREATE CHASM_BASE (always required)
+  // ============================================================
+  const chasmBaseExitRoom = ASCENT_MODE && ascentStartRoom ? ascentStartRoom : "start";
+  const chasmBaseExitTitle = SCENES[chasmBaseExitRoom]?.title || "unknown";
+  
   SCENES["chasm_base"] = {
     id: "chasm_base",
     title: "Base of the Chasm",
     description:
-      "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a tunnel to the east.\n\nAn old oil lamp lies nearby, its glass clouded but intact.",
+      `Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a passage to the east.\n\nAn old oil lamp lies nearby, its glass clouded but intact.`,
     descriptionWithoutItems:
-      "Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a tunnel to the east.",
+      `Cold air. Dust. You lie at the bottom of a vertical mining shaft, the distant sky a pale disc far above. Rough-hewn walls rise around you, disappearing into shadow. A faint draft whispers from a passage to the east.`,
     itemDescriptions: {
       lamp: "An old oil lamp lies nearby, its glass clouded but intact.",
     },
@@ -254,11 +681,16 @@ function main() {
         setsFlag: "hasLamp",
         removesAction: true,
       },
-      { id: "go_east", label: "GO EAST", type: "move", to: "start" },
+      { id: "go_east", label: "GO EAST", type: "move", to: chasmBaseExitRoom },
     ],
     items: ["lamp"],
   };
 
+  console.log(`\nchasm_base connects east to: ${chasmBaseExitRoom} (${chasmBaseExitTitle})`);
+
+  // ============================================================
+  // ENSURE ALL CRITICAL ITEMS EXIST
+  // ============================================================
   ITEMS["lamp"] = {
     id: "lamp",
     name: "Oil Lamp",
@@ -277,12 +709,18 @@ function main() {
     },
   };
 
-  if (!SCENES["start"]) {
-    console.error("WARNING: LOC_START not found, checking available scenes...");
-    const availableScenes = Object.keys(SCENES).slice(0, 10);
-    console.log("Available scenes:", availableScenes);
+  if (ASCENT_MODE && !ITEMS["rescue_key"]) {
+    ITEMS["rescue_key"] = {
+      id: "rescue_key",
+      name: "Rescue Gate Key",
+      description: "A heavy brass key that might unlock the exit gate.",
+      usable: false,
+    };
   }
 
+  // ============================================================
+  // VALIDATION
+  // ============================================================
   console.log("\n--- VALIDATION ---");
   console.log(`Total scenes: ${Object.keys(SCENES).length}`);
   console.log(`Total items: ${Object.keys(ITEMS).length}`);
@@ -298,6 +736,49 @@ function main() {
     console.log("\nIgnored direction verbs:", Array.from(ignoredDirections).join(", "));
   }
 
+  // ============================================================
+  // DEPENDENCY REPORT
+  // ============================================================
+  if (ASCENT_MODE && escapePath.length > 0) {
+    console.log("\n=== DEPENDENCY REPORT ===");
+    console.log(`Start room: ${ascentStartRoom} (${SCENES[ascentStartRoom]?.title})`);
+    console.log(`Exit room: ${ascentExitRoom} (${SCENES[ascentExitRoom]?.title})`);
+    console.log(`Path length: ${escapePath.length} rooms`);
+    console.log("\nCritical item placements:");
+    
+    for (const criticalItem of CRITICAL_ITEMS) {
+      const itemId = criticalItem.id;
+      let foundScene: string | null = null;
+      let foundIndex = -1;
+      
+      // Check chasm_base first
+      if (SCENES["chasm_base"]?.items?.includes(itemId)) {
+        foundScene = "chasm_base";
+        foundIndex = -1; // Before escape path
+      } else {
+        // Check escape path
+        for (let i = 0; i < escapePath.length; i++) {
+          const scene = SCENES[escapePath[i]];
+          if (scene?.items?.includes(itemId)) {
+            foundScene = escapePath[i];
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      
+      const targetIndex = Math.floor(escapePath.length * criticalItem.milestone);
+      const status = foundScene 
+        ? (foundIndex <= targetIndex || foundIndex === -1 ? "OK" : "WARN: late placement")
+        : "NOT FOUND";
+      
+      console.log(`  ${itemId}: ${foundScene || "missing"} (index ${foundIndex}, target ${targetIndex}) - ${status}`);
+    }
+  }
+
+  // ============================================================
+  // GENERATE OUTPUT
+  // ============================================================
   const INTRO_MESSAGES: Array<{ type: "narration"; text: string }> = [
     {
       type: "narration",
@@ -313,7 +794,30 @@ function main() {
     },
   ];
 
-  const HELP_TEXT = `COMMANDS:
+  const HELP_TEXT = ASCENT_MODE 
+    ? `COMMANDS:
+You can use natural language! Try phrases like:
+
+LOOKING AROUND:
+• "look" or "look around" or "examine"
+
+ITEMS:
+• "pick up the lamp" or "take lamp" or "grab cage"
+• "use fuel" or "light the lamp"
+• "inventory" or "what do I have"
+
+MOVEMENT:
+• "go north" or "head east" or just "north"
+• "go up" or "go down" or "go in" or "go out"
+
+GOAL:
+Find the RESCUE GATE KEY to unlock the exit and escape!
+
+OTHER:
+• "help" or "?" - show commands
+
+Your progress is saved automatically.`
+    : `COMMANDS:
 You can use natural language! Try phrases like:
 
 LOOKING AROUND:
