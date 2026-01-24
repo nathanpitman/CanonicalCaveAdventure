@@ -355,6 +355,22 @@ export function useGame() {
         s: "go_south",
         e: "go_east",
         w: "go_west",
+        up: "go_up",
+        down: "go_down",
+        u: "go_up",
+        d: "go_down",
+        in: "go_in",
+        out: "go_out",
+        enter: "go_in",
+        exit: "go_out",
+        ne: "go_ne",
+        nw: "go_nw",
+        se: "go_se",
+        sw: "go_sw",
+        northeast: "go_ne",
+        northwest: "go_nw",
+        southeast: "go_se",
+        southwest: "go_sw",
       };
 
       const actionId = dirMap[direction.toLowerCase()];
@@ -559,8 +575,9 @@ export function useGame() {
 
       // Natural language patterns for MOVEMENT
       const movePatterns = [
-        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(to\s+)?(the\s+)?(north|south|east|west|n|s|e|w)$/i,
-        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(north|south|east|west|n|s|e|w)(ward|wards)?$/i,
+        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(to\s+)?(the\s+)?(north|south|east|west|up|down|in|out|ne|nw|se|sw|northeast|northwest|southeast|southwest|n|s|e|w|u|d)$/i,
+        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(north|south|east|west|up|down|n|s|e|w|u|d)(ward|wards)?$/i,
+        /^(enter|exit)\s*(.*)$/i,
       ];
       for (const pattern of movePatterns) {
         const match = command.match(pattern);
@@ -582,6 +599,22 @@ export function useGame() {
         s: "south",
         e: "east",
         w: "west",
+        up: "up",
+        down: "down",
+        u: "up",
+        d: "down",
+        in: "in",
+        out: "out",
+        enter: "in",
+        exit: "out",
+        ne: "ne",
+        nw: "nw",
+        se: "se",
+        sw: "sw",
+        northeast: "ne",
+        northwest: "nw",
+        southeast: "se",
+        southwest: "sw",
       };
       if (directDirections[words[0]]) {
         handleDirection(directDirections[words[0]]);

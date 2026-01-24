@@ -298,17 +298,17 @@ function main() {
     console.log("\nIgnored direction verbs:", Array.from(ignoredDirections).join(", "));
   }
 
-  const INTRO_MESSAGES = [
+  const INTRO_MESSAGES: Array<{ type: "narration"; text: string }> = [
     {
-      type: "narration" as const,
+      type: "narration",
       text: "You fell.\n\nOne moment, solid ground. The next, darkness and the shriek of breaking timber.",
     },
     {
-      type: "narration" as const,
+      type: "narration",
       text: "You don't know how long you were unconscious. Hours? Days? Your head throbs. Your supplies are gone—scattered somewhere in the collapse above.",
     },
     {
-      type: "narration" as const,
+      type: "narration",
       text: "Only one thing is certain: you must find a way out.",
     },
   ];
@@ -372,7 +372,7 @@ export const ITEMS: Record<string, Item> = ${JSON.stringify(ITEMS, null, 2)};
 
 export const SCENES: Record<string, Scene> = ${JSON.stringify(SCENES, null, 2)};
 
-export const INTRO_MESSAGES = ${JSON.stringify(INTRO_MESSAGES, null, 2)};
+export const INTRO_MESSAGES: Array<{ type: "narration"; text: string }> = ${JSON.stringify(INTRO_MESSAGES, null, 2)};
 
 export const HELP_TEXT = ${JSON.stringify(HELP_TEXT)};
 `;

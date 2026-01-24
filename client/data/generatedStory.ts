@@ -6375,7 +6375,7 @@ export const SCENES: Record<string, Scene> = {
   }
 };
 
-export const INTRO_MESSAGES = [
+export const INTRO_MESSAGES: Array<{ type: "narration"; text: string }> = [
   {
     "type": "narration",
     "text": "You fell.\n\nOne moment, solid ground. The next, darkness and the shriek of breaking timber."
