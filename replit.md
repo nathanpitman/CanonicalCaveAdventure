@@ -82,8 +82,26 @@ server/
 - Backend runs on port 5000 (Express)
 - Test in browser or scan QR code with Expo Go
 
+## Canonical Travel Mechanics
+
+The game implements Open Adventure's full travel system:
+
+- **Verb tokens**: Single-word commands like "enter", "depression", "xyzzy" work as movement verbs
+- **Conditional travel**: Actions with `requiresFlag` only appear when game flags are set (e.g., grateOpen)
+- **Default travel**: Scenes with `go_default` auto-continue for unrecognized commands (e.g., foof1→debris)
+- **Speak actions**: Message-only events for blocked paths (e.g., locked grate message)
+- **Magic words**: xyzzy/plugh only work inside the building (canonical behavior)
+- **Grate puzzle**: Use keys at grate to unlock, then "enter" to pass through
+
 ## Recent Changes
 
+- Implemented canonical Open Adventure travel mechanics
+  - Verb tokens for single-word movement commands
+  - Conditional travel with requiresFlag filtering
+  - Default travel for auto-continuation scenes
+  - Speak actions for blocked paths
+  - Magic words xyzzy/plugh inside building only
+  - Grate puzzle with grateOpen flag
 - Reverted to canonical Open Adventure start
   - Player starts at the brick building on the surface ("start" scene)
   - Removed custom ASCENT mode patches (chasm_base, rescue gate, etc.)
