@@ -1,6 +1,6 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
-// Generated: 2026-01-25T10:22:50.974Z
-// Canonical Open Adventure import - no modifications
+// Generated: 2026-01-25T11:01:01.650Z
+// Canonical Open Adventure import with travel mechanics
 
 export interface Action {
   id: string;
@@ -13,6 +13,8 @@ export interface Action {
   addsItem?: string;
   setsFlag?: string;
   lightCost?: number;
+  requiresFlag?: string;
+  message?: string;
 }
 
 export interface Scene {
@@ -46,14 +48,18 @@ export const INTRO_MESSAGES: string[] = [
   "Type HELP for a list of commands."
 ];
 
-export const HELP_TEXT: string = "COMMANDS:\n- LOOK: Examine your surroundings\n- INVENTORY / INV: Check what you're carrying\n- TAKE <item>: Pick up an item\n- USE <item>: Use an item\n- GO <direction>: Move (north, south, east, west, up, down, in, out, ne, nw, se, sw)\n- GO BACK / BACK: Return to previous room\n- HELP: Show this message\n\nDIRECTIONS: north (n), south (s), east (e), west (w), up (u), down (d), in, out, northeast (ne), northwest (nw), southeast (se), southwest (sw)\n\nSPECIAL WORDS: xyzzy, plugh, plover (try them in the right places!)";
+export const HELP_TEXT: string = "COMMANDS:\n- LOOK: Examine your surroundings\n- INVENTORY / INV: Check what you're carrying\n- TAKE <item>: Pick up an item\n- USE <item>: Use an item (e.g., USE KEYS to unlock the grate)\n- GO <direction>: Move (north, south, east, west, up, down, in, out, ne, nw, se, sw)\n- GO BACK / BACK: Return to previous room\n- HELP: Show this message\n\nDIRECTIONS: north (n), south (s), east (e), west (w), up (u), down (d), in, out, northeast (ne), northwest (nw), southeast (se), southwest (sw)\n\nSPECIAL WORDS: xyzzy, plugh, plover (try them in the right places!)";
 
 export const ITEMS: Record<string, Item> = {
   "keys": {
     "id": "keys",
     "name": "Set of Keys",
     "description": "There are some keys on the ground here.",
-    "usable": false
+    "usable": true,
+    "useEffect": {
+      "message": "You unlock the grate with the keys.",
+      "setsFlag": "grateOpen"
+    }
   },
   "lamp": {
     "id": "lamp",
@@ -215,6 +221,12 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_road",
+        "label": "ROAD",
+        "type": "move",
+        "to": "hill"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
@@ -227,7 +239,7 @@ export const SCENES: Record<string, Scene> = {
         "to": "hill"
       },
       {
-        "id": "go_in",
+        "id": "go_enter",
         "label": "ENTER",
         "type": "move",
         "to": "building"
@@ -239,10 +251,34 @@ export const SCENES: Record<string, Scene> = {
         "to": "building"
       },
       {
+        "id": "go_in",
+        "label": "GO IN",
+        "type": "move",
+        "to": "building"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
         "to": "building"
+      },
+      {
+        "id": "go_downs",
+        "label": "Downs",
+        "type": "move",
+        "to": "valley"
+      },
+      {
+        "id": "go_gully",
+        "label": "GULLY",
+        "type": "move",
+        "to": "valley"
+      },
+      {
+        "id": "go_stream",
+        "label": "STREAM",
+        "type": "move",
+        "to": "valley"
       },
       {
         "id": "go_south",
@@ -257,10 +293,22 @@ export const SCENES: Record<string, Scene> = {
         "to": "valley"
       },
       {
+        "id": "go_forest",
+        "label": "FOREST",
+        "type": "move",
+        "to": "forest1"
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
         "to": "forest1"
+      },
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "type": "move",
+        "to": "grate"
       }
     ]
   },
@@ -305,6 +353,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO SOUTH",
         "type": "move",
         "to": "forest13"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "type": "move",
+        "to": "forest13"
+      },
+      {
+        "id": "say_which_way_down",
+        "label": "Down",
+        "type": "event",
+        "message": "Which way?"
       }
     ]
   },
@@ -343,6 +403,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "PLUGH",
         "type": "move",
         "to": "foof3"
+      },
+      {
+        "id": "go_downs",
+        "label": "Downs",
+        "type": "move",
+        "to": "sewer"
+      },
+      {
+        "id": "go_stream",
+        "label": "STREAM",
+        "type": "move",
+        "to": "sewer"
       },
       {
         "id": "take_keys",
@@ -399,6 +471,12 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "type": "move",
+        "to": "start"
+      },
+      {
         "id": "go_building",
         "label": "GO TO BUILDING",
         "type": "move",
@@ -417,10 +495,22 @@ export const SCENES: Record<string, Scene> = {
         "to": "forest6"
       },
       {
+        "id": "go_forest",
+        "label": "FOREST",
+        "type": "move",
+        "to": "forest6"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
         "to": "forest12"
+      },
+      {
+        "id": "go_downs",
+        "label": "Downs",
+        "type": "move",
+        "to": "slit"
       },
       {
         "id": "go_south",
@@ -433,6 +523,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO DOWN",
         "type": "move",
         "to": "slit"
+      },
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "type": "move",
+        "to": "grate"
+      },
+      {
+        "id": "say_upstream_downstream_strea",
+        "label": "Strea",
+        "type": "event",
+        "message": "Upstream or downstream?"
       }
     ]
   },
@@ -447,6 +549,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_road",
+        "label": "ROAD",
+        "type": "move",
+        "to": "hill"
       },
       {
         "id": "go_east",
@@ -469,6 +577,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_south",
         "label": "GO SOUTH",
+        "type": "move",
+        "to": "forest14"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
         "type": "move",
         "to": "forest14"
       },
@@ -505,6 +619,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "forest17"
       },
       {
+        "id": "go_forest",
+        "label": "FOREST",
+        "type": "move",
+        "to": "forest17"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
@@ -537,6 +657,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "start"
       },
       {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "type": "move",
+        "to": "valley"
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
@@ -549,16 +675,70 @@ export const SCENES: Record<string, Scene> = {
         "to": "forest6"
       },
       {
+        "id": "go_forest",
+        "label": "FOREST",
+        "type": "move",
+        "to": "forest6"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
         "to": "forest10"
       },
       {
+        "id": "go_downs",
+        "label": "Downs",
+        "type": "move",
+        "to": "grate"
+      },
+      {
+        "id": "go_bed",
+        "label": "Bed",
+        "type": "move",
+        "to": "grate"
+      },
+      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
         "to": "grate"
+      },
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "type": "move",
+        "to": "grate"
+      },
+      {
+        "id": "say_dont_fit_slit",
+        "label": "Slit",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_strea",
+        "label": "Strea",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_down",
+        "label": "Down",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_inwar",
+        "label": "Inwar",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_enter",
+        "label": "Enter",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
       }
     ]
   },
@@ -581,6 +761,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "forest7"
       },
       {
+        "id": "go_forest",
+        "label": "FOREST",
+        "type": "move",
+        "to": "forest7"
+      },
+      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
@@ -599,22 +785,49 @@ export const SCENES: Record<string, Scene> = {
         "to": "start"
       },
       {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "type": "move",
+        "to": "slit"
+      },
+      {
+        "id": "go_gully",
+        "label": "GULLY",
+        "type": "move",
+        "to": "slit"
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
         "to": "slit"
       },
       {
-        "id": "go_in",
+        "id": "go_enter",
         "label": "ENTER",
         "type": "move",
-        "to": "belowgrate"
+        "to": "belowgrate",
+        "requiresFlag": "grateOpen"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "type": "move",
+        "to": "belowgrate",
+        "requiresFlag": "grateOpen"
       },
       {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
-        "to": "belowgrate"
+        "to": "belowgrate",
+        "requiresFlag": "grateOpen"
+      },
+      {
+        "id": "say_grate_noway_enter",
+        "label": "Enter",
+        "type": "event",
+        "message": "You can't go through a locked steel grate!"
       }
     ]
   },
@@ -634,17 +847,31 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_out",
         "label": "GO OUT",
         "type": "move",
-        "to": "grate"
+        "to": "grate",
+        "requiresFlag": "grateOpen"
       },
       {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
-        "to": "grate"
+        "to": "grate",
+        "requiresFlag": "grateOpen"
+      },
+      {
+        "id": "say_grate_noway_out",
+        "label": "Out",
+        "type": "event",
+        "message": "You can't go through a locked steel grate!"
       },
       {
         "id": "go_crawl",
         "label": "CRAWL",
+        "type": "move",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
         "type": "move",
         "to": "cobble"
       },
@@ -659,6 +886,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO WEST",
         "type": "move",
         "to": "cobble"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "pittop"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "type": "move",
+        "to": "debris"
       }
     ]
   },
@@ -681,6 +920,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "belowgrate"
       },
       {
+        "id": "go_surface",
+        "label": "SURFACE",
+        "type": "move",
+        "to": "belowgrate"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
@@ -693,10 +938,28 @@ export const SCENES: Record<string, Scene> = {
         "to": "debris"
       },
       {
+        "id": "go_dark",
+        "label": "DARK",
+        "type": "move",
+        "to": "debris"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
         "to": "debris"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "type": "move",
+        "to": "debris"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "pittop"
       },
       {
         "id": "take_cage",
@@ -726,8 +989,39 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "type": "move",
+        "to": "grate",
+        "requiresFlag": "grateOpen"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "type": "move",
+        "to": "belowgrate"
+      },
+      {
         "id": "go_crawl",
         "label": "CRAWL",
+        "type": "move",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
+        "type": "move",
+        "to": "cobble"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "cobble"
+      },
+      {
+        "id": "go_low",
+        "label": "LOW",
         "type": "move",
         "to": "cobble"
       },
@@ -736,6 +1030,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO EAST",
         "type": "move",
         "to": "cobble"
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "type": "move",
+        "to": "awkward"
       },
       {
         "id": "go_in",
@@ -760,6 +1060,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "XYZZY",
         "type": "move",
         "to": "foof2"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "pittop"
       },
       {
         "id": "take_rod",
@@ -789,6 +1095,19 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "type": "move",
+        "to": "grate",
+        "requiresFlag": "grateOpen"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "type": "move",
+        "to": "belowgrate"
+      },
+      {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
@@ -797,6 +1116,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_east",
         "label": "GO EAST",
+        "type": "move",
+        "to": "debris"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
         "type": "move",
         "to": "debris"
       },
@@ -817,6 +1142,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO WEST",
         "type": "move",
         "to": "birdchamber"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "pittop"
       }
     ]
   },
@@ -833,10 +1164,47 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "type": "move",
+        "to": "grate",
+        "requiresFlag": "grateOpen"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "type": "move",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "type": "move",
+        "to": "debris"
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "type": "move",
+        "to": "awkward"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
         "to": "awkward"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "pittop"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "pittop"
       },
       {
         "id": "go_west",
@@ -872,6 +1240,31 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "type": "move",
+        "to": "grate",
+        "requiresFlag": "grateOpen"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "type": "move",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "type": "move",
+        "to": "debris"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "birdchamber"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
@@ -882,6 +1275,24 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO DOWN",
         "type": "move",
         "to": "neckbroke"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "neckbroke"
+      },
+      {
+        "id": "go_steps",
+        "label": "STEPS",
+        "type": "move",
+        "to": "neckbroke"
+      },
+      {
+        "id": "go_crack",
+        "label": "CRACK",
+        "type": "move",
+        "to": "crack"
       },
       {
         "id": "go_west",
@@ -904,16 +1315,40 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_left",
+        "label": "LEFT",
+        "type": "move",
+        "to": "nugget"
+      },
+      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
         "to": "nugget"
       },
       {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "type": "move",
+        "to": "eastbank"
+      },
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "type": "move",
+        "to": "eastbank"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
         "to": "eastbank"
+      },
+      {
+        "id": "go_stairs",
+        "label": "STAIRS",
+        "type": "move",
+        "to": "kinghall"
       },
       {
         "id": "go_down",
@@ -934,10 +1369,40 @@ export const SCENES: Record<string, Scene> = {
         "to": "dome"
       },
       {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "dome"
+      },
+      {
+        "id": "go_steps",
+        "label": "STEPS",
+        "type": "move",
+        "to": "dome"
+      },
+      {
+        "id": "go_dome",
+        "label": "Dome",
+        "type": "move",
+        "to": "dome"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "dome"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
         "to": "dome"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
+        "type": "move",
+        "to": "jumble"
       }
     ]
   },
@@ -952,6 +1417,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "pittop"
       }
     ]
   },
@@ -968,10 +1439,58 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_hall",
+        "label": "HALL",
+        "type": "move",
+        "to": "misthall"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
         "to": "misthall"
+      },
+      {
+        "id": "say_cross_bridge_jump",
+        "label": "Jump",
+        "type": "event",
+        "message": "I respectfully suggest you go across the bridge instead of jumping."
+      },
+      {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "type": "move",
+        "to": "nomake"
+      },
+      {
+        "id": "say_no_cross_over",
+        "label": "Over",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "say_no_cross_acros",
+        "label": "Acros",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "say_no_cross_west",
+        "label": "West",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "say_no_cross_cross",
+        "label": "Cross",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "go_over",
+        "label": "Over",
+        "type": "move",
+        "to": "westbank"
       }
     ]
   },
@@ -986,6 +1505,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "type": "move",
+        "to": "misthall"
       },
       {
         "id": "go_out",
@@ -1027,6 +1552,12 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_stairs",
+        "label": "STAIRS",
+        "type": "move",
+        "to": "misthall"
+      },
+      {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
@@ -1045,8 +1576,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "floorhole"
       },
       {
+        "id": "go_right",
+        "label": "RIGHT",
+        "type": "move",
+        "to": "floorhole"
+      },
+      {
         "id": "go_south",
         "label": "GO SOUTH",
+        "type": "move",
+        "to": "southside"
+      },
+      {
+        "id": "go_left",
+        "label": "LEFT",
         "type": "move",
         "to": "southside"
       },
@@ -1057,8 +1600,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "westside"
       },
       {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "type": "move",
+        "to": "westside"
+      },
+      {
         "id": "go_sw",
         "label": "GO SOUTHWEST",
+        "type": "move",
+        "to": "secret3"
+      },
+      {
+        "id": "go_secre",
+        "label": "Secre",
         "type": "move",
         "to": "secret3"
       }
@@ -1075,6 +1630,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "nowhere"
       }
     ]
   },
@@ -1089,6 +1650,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "nowhere"
       }
     ]
   },
@@ -1103,6 +1670,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "misthall"
       }
     ]
   },
@@ -1125,8 +1698,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "eastend"
       },
       {
+        "id": "go_acros",
+        "label": "Acros",
+        "type": "move",
+        "to": "eastend"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
+        "type": "move",
+        "to": "slab"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
         "type": "move",
         "to": "slab"
       },
@@ -1135,6 +1720,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO DOWN",
         "type": "move",
         "to": "westpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "westpit"
+      },
+      {
+        "id": "say_too_far_hole",
+        "label": "Hole",
+        "type": "event",
+        "message": "It is too far up for you to reach."
       }
     ]
   },
@@ -1187,6 +1784,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO OUT",
         "type": "move",
         "to": "westend"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "building1"
       }
     ]
   },
@@ -1201,6 +1804,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "narrow"
       }
     ]
   },
@@ -1215,6 +1824,48 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "say_cross_bridge_jump",
+        "label": "Jump",
+        "type": "event",
+        "message": "I respectfully suggest you go across the bridge instead of jumping."
+      },
+      {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "type": "move",
+        "to": "nomake"
+      },
+      {
+        "id": "say_no_cross_over",
+        "label": "Over",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "say_no_cross_acros",
+        "label": "Acros",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "say_no_cross_east",
+        "label": "East",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "say_no_cross_cross",
+        "label": "Cross",
+        "type": "event",
+        "message": "There is no way across the fissure."
+      },
+      {
+        "id": "go_over",
+        "label": "Over",
+        "type": "move",
+        "to": "eastbank"
       },
       {
         "id": "go_north",
@@ -1256,6 +1907,12 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_hall",
+        "label": "HALL",
+        "type": "move",
+        "to": "kinghall"
+      },
+      {
         "id": "go_out",
         "label": "GO OUT",
         "type": "move",
@@ -1274,8 +1931,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "y2"
       },
       {
+        "id": "go_y2",
+        "label": "Y2",
+        "type": "move",
+        "to": "y2"
+      },
+      {
         "id": "go_down",
         "label": "GO DOWN",
+        "type": "move",
+        "to": "broken"
+      },
+      {
+        "id": "go_hole",
+        "label": "HOLE",
         "type": "move",
         "to": "broken"
       },
@@ -1305,6 +1974,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "type": "move",
+        "to": "kinghall"
       },
       {
         "id": "go_out",
@@ -1344,6 +2019,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "type": "move",
+        "to": "kinghall"
       },
       {
         "id": "go_out",
@@ -1395,6 +2076,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "kinghall"
       }
     ]
   },
@@ -1425,6 +2112,18 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_east",
         "label": "GO EAST",
+        "type": "move",
+        "to": "jumble"
+      },
+      {
+        "id": "go_wall",
+        "label": "WALL",
+        "type": "move",
+        "to": "jumble"
+      },
+      {
+        "id": "go_broke",
+        "label": "Broke",
         "type": "move",
         "to": "jumble"
       },
@@ -1461,6 +2160,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "y2"
       },
       {
+        "id": "go_y2",
+        "label": "Y2",
+        "type": "move",
+        "to": "y2"
+      },
+      {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
@@ -1483,6 +2188,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_east",
         "label": "GO EAST",
+        "type": "move",
+        "to": "y2"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
         "type": "move",
         "to": "y2"
       },
@@ -1525,10 +2236,22 @@ export const SCENES: Record<string, Scene> = {
         "to": "floorhole"
       },
       {
+        "id": "go_hole",
+        "label": "HOLE",
+        "type": "move",
+        "to": "floorhole"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
         "to": "dusty"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "type": "move",
+        "to": "bedquilt"
       }
     ]
   },
@@ -1561,6 +2284,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO DOWN",
         "type": "move",
         "to": "smallpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "type": "move",
+        "to": "smallpit"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "smallpit"
       }
     ]
   },
@@ -1577,6 +2312,12 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "smallpitbrink"
+      },
+      {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
@@ -1587,6 +2328,48 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO OUT",
         "type": "move",
         "to": "smallpitbrink"
+      },
+      {
+        "id": "say_dont_fit_slit",
+        "label": "Slit",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_strea",
+        "label": "Strea",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_down",
+        "label": "Down",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_upstr",
+        "label": "Upstr",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_downs",
+        "label": "Downs",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_enter",
+        "label": "Enter",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
+      },
+      {
+        "id": "say_dont_fit_inwar",
+        "label": "Inwar",
+        "type": "event",
+        "message": "You don't fit through a two-inch slit!"
       }
     ]
   },
@@ -1609,10 +2392,34 @@ export const SCENES: Record<string, Scene> = {
         "to": "broken"
       },
       {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "broken"
+      },
+      {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
         "to": "complex"
+      },
+      {
+        "id": "go_hole",
+        "label": "HOLE",
+        "type": "move",
+        "to": "complex"
+      },
+      {
+        "id": "go_floor",
+        "label": "FLOOR",
+        "type": "move",
+        "to": "complex"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "type": "move",
+        "to": "bedquilt"
       }
     ]
   },
@@ -1627,6 +2434,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "mistwest"
       }
     ]
   },
@@ -1651,6 +2464,18 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_up",
         "label": "GO UP",
+        "type": "move",
+        "to": "alike1"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "alike1"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
         "type": "move",
         "to": "alike1"
       },
@@ -2215,6 +3040,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "birdchamber"
       },
       {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "birdchamber"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
@@ -2277,6 +3108,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "westbank"
       }
     ]
   },
@@ -2325,6 +3162,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_down",
         "label": "GO DOWN",
+        "type": "move",
+        "to": "crossover"
+      },
+      {
+        "id": "go_hole",
+        "label": "HOLE",
         "type": "move",
         "to": "crossover"
       }
@@ -2445,14 +3288,38 @@ export const SCENES: Record<string, Scene> = {
         "to": "dusty"
       },
       {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "dusty"
+      },
+      {
+        "id": "go_room",
+        "label": "ROOM",
+        "type": "move",
+        "to": "dusty"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
         "to": "bedquilt"
       },
       {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "type": "move",
+        "to": "bedquilt"
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
+        "type": "move",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
         "type": "move",
         "to": "shellroom"
       },
@@ -2489,16 +3356,46 @@ export const SCENES: Record<string, Scene> = {
         "to": "swisscheese"
       },
       {
+        "id": "say_futile_crawl_south",
+        "label": "South",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "type": "move",
+        "to": "slab"
+      },
+      {
+        "id": "say_futile_crawl_upwar",
+        "label": "Upwar",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
         "to": "secret2"
       },
       {
+        "id": "say_futile_crawl_north",
+        "label": "North",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
         "to": "lowroom"
+      },
+      {
+        "id": "say_futile_crawl_down",
+        "label": "Down",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
       },
       {
         "id": "go_down",
@@ -2533,10 +3430,34 @@ export const SCENES: Record<string, Scene> = {
         "to": "eastend"
       },
       {
+        "id": "say_futile_crawl_south",
+        "label": "South",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "type": "move",
+        "to": "tall"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
         "to": "softroom"
+      },
+      {
+        "id": "say_futile_crawl_nw",
+        "label": "Nw",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "go_oriental",
+        "label": "ORIENTAL",
+        "type": "move",
+        "to": "oriental"
       }
     ]
   },
@@ -2565,8 +3486,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "westend"
       },
       {
+        "id": "go_acros",
+        "label": "Acros",
+        "type": "move",
+        "to": "westend"
+      },
+      {
         "id": "go_down",
         "label": "GO DOWN",
+        "type": "move",
+        "to": "eastpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
         "type": "move",
         "to": "eastpit"
       }
@@ -2597,6 +3530,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "secret1"
       },
       {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "secret1"
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
@@ -2623,6 +3562,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "slab"
       },
       {
+        "id": "go_slab",
+        "label": "SLAB",
+        "type": "move",
+        "to": "slab"
+      },
+      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
@@ -2633,6 +3578,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO NORTH",
         "type": "move",
         "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "type": "move",
+        "to": "reservoir"
       }
     ]
   },
@@ -2657,6 +3608,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_down",
         "label": "GO DOWN",
+        "type": "move",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
         "type": "move",
         "to": "bedquilt"
       },
@@ -2713,6 +3670,12 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "type": "move",
+        "to": "bedquilt"
+      },
+      {
         "id": "go_sw",
         "label": "GO SOUTHWEST",
         "type": "move",
@@ -2727,6 +3690,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_se",
         "label": "GO SOUTHEAST",
+        "type": "move",
+        "to": "oriental"
+      },
+      {
+        "id": "go_oriental",
+        "label": "ORIENTAL",
         "type": "move",
         "to": "oriental"
       }
@@ -2911,6 +3880,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "building"
       }
     ]
   },
@@ -3165,6 +4140,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "westpit"
       },
       {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "westpit"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
@@ -3181,6 +4162,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO WEST",
         "type": "move",
         "to": "giantroom"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "type": "move",
+        "to": "giantroom"
       }
     ]
   },
@@ -3195,6 +4182,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "westpit"
       }
     ]
   },
@@ -3209,6 +4202,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "westend"
       }
     ]
   },
@@ -3231,8 +4230,26 @@ export const SCENES: Record<string, Scene> = {
         "to": "waterfall"
       },
       {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "type": "move",
+        "to": "waterfall"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "waterfall"
+      },
+      {
         "id": "go_down",
         "label": "GO DOWN",
+        "type": "move",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
         "type": "move",
         "to": "lowroom"
       }
@@ -3302,6 +4319,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "giantroom"
       },
       {
+        "id": "go_giant",
+        "label": "GIANT",
+        "type": "move",
+        "to": "giantroom"
+      },
+      {
         "id": "go_out",
         "label": "GO OUT",
         "type": "move",
@@ -3328,16 +4351,40 @@ export const SCENES: Record<string, Scene> = {
         "to": "giantroom"
       },
       {
+        "id": "go_giant",
+        "label": "GIANT",
+        "type": "move",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "giantroom"
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
         "to": "waterfall"
       },
       {
-        "id": "go_in",
+        "id": "go_enter",
         "label": "ENTER",
         "type": "move",
         "to": "waterfall"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "type": "move",
+        "to": "waterfall"
+      },
+      {
+        "id": "say_rusty_door_north",
+        "label": "North",
+        "type": "event",
+        "message": "The door is extremely rusty and refuses to open."
       }
     ]
   },
@@ -3364,6 +4411,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO OUT",
         "type": "move",
         "to": "immense"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "type": "move",
+        "to": "giantroom"
       },
       {
         "id": "go_west",
@@ -3468,6 +4521,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "misty"
       },
       {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "type": "move",
+        "to": "misty"
+      },
+      {
         "id": "take_vase",
         "label": "TAKE MING VASE",
         "type": "event",
@@ -3501,6 +4560,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "oriental"
       },
       {
+        "id": "go_oriental",
+        "label": "ORIENTAL",
+        "type": "move",
+        "to": "oriental"
+      },
+      {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
@@ -3523,6 +4588,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_nw",
         "label": "GO NORTHWEST",
+        "type": "move",
+        "to": "misty"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
         "type": "move",
         "to": "misty"
       },
@@ -3561,6 +4632,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_ne",
         "label": "GO NORTHEAST",
+        "type": "move",
+        "to": "darkroom"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
         "type": "move",
         "to": "darkroom"
       },
@@ -3643,6 +4720,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "shellroom"
       },
       {
+        "id": "go_shell",
+        "label": "SHELL",
+        "type": "move",
+        "to": "shellroom"
+      },
+      {
         "id": "go_out",
         "label": "GO OUT",
         "type": "move",
@@ -3669,10 +4752,28 @@ export const SCENES: Record<string, Scene> = {
         "to": "arched"
       },
       {
+        "id": "go_hall",
+        "label": "HALL",
+        "type": "move",
+        "to": "arched"
+      },
+      {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
         "to": "sloping1"
+      },
+      {
+        "id": "say_clam_blocker_south",
+        "label": "South",
+        "type": "event",
+        "message": "You can't fit this five-foot clam through that little passage!"
+      },
+      {
+        "id": "say_oyster_blocker_south",
+        "label": "South",
+        "type": "event",
+        "message": "You can't fit this five-foot oyster through that little passage!"
       },
       {
         "id": "go_south",
@@ -3714,6 +4815,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "shellroom"
       },
       {
+        "id": "go_shell",
+        "label": "SHELL",
+        "type": "move",
+        "to": "shellroom"
+      },
+      {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
@@ -3744,6 +4851,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO OUT",
         "type": "move",
         "to": "sloping1"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "type": "move",
+        "to": "shellroom"
       }
     ]
   },
@@ -3879,10 +4992,70 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "say_futile_crawl_east",
+        "label": "East",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_north",
+        "label": "North",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_south",
+        "label": "South",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_ne",
+        "label": "Ne",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_se",
+        "label": "Se",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_sw",
+        "label": "Sw",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_nw",
+        "label": "Nw",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_upwar",
+        "label": "Upwar",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
+        "id": "say_futile_crawl_down",
+        "label": "Down",
+        "type": "event",
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
         "to": "anteroom"
+      },
+      {
+        "id": "say_way_blocked_west",
+        "label": "West",
+        "type": "event",
+        "message": "You have crawled around in some little holes and found your way\nblocked by a recent cave-in.  You are now back in the main passage."
       }
     ]
   },
@@ -3907,6 +5080,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_north",
         "label": "GO NORTH",
+        "type": "move",
+        "to": "reservoir"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
         "type": "move",
         "to": "reservoir"
       }
@@ -3965,6 +5144,12 @@ export const SCENES: Record<string, Scene> = {
       {
         "id": "go_jump",
         "label": "JUMP",
+        "type": "move",
+        "to": "alike6"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
         "type": "move",
         "to": "alike6"
       }
@@ -4069,6 +5254,24 @@ export const SCENES: Record<string, Scene> = {
         "to": "mirrorcanyon"
       },
       {
+        "id": "say_bad_direction_north",
+        "label": "North",
+        "type": "event",
+        "message": "There is no way to go that direction."
+      },
+      {
+        "id": "say_bad_direction_acros",
+        "label": "Acros",
+        "type": "event",
+        "message": "There is no way to go that direction."
+      },
+      {
+        "id": "say_bad_direction_cross",
+        "label": "Cross",
+        "type": "event",
+        "message": "There is no way to go that direction."
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
@@ -4133,6 +5336,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO NORTHEAST",
         "type": "move",
         "to": "ne"
+      },
+      {
+        "id": "say_grate_noway_down",
+        "label": "Down",
+        "type": "event",
+        "message": "You can't go through a locked steel grate!"
       }
     ]
   },
@@ -4155,10 +5364,46 @@ export const SCENES: Record<string, Scene> = {
         "to": "winding"
       },
       {
+        "id": "say_troll_blocks_over",
+        "label": "Over",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_troll_blocks_acros",
+        "label": "Acros",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_troll_blocks_cross",
+        "label": "Cross",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_troll_blocks_ne",
+        "label": "Ne",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_bridge_gone_over",
+        "label": "Over",
+        "type": "event",
+        "message": "There is no longer any way across the chasm."
+      },
+      {
         "id": "go_jump",
         "label": "JUMP",
         "type": "move",
         "to": "nomake"
+      },
+      {
+        "id": "say_cross_bridge_jump",
+        "label": "Jump",
+        "type": "event",
+        "message": "I respectfully suggest you go across the bridge instead of jumping."
       }
     ]
   },
@@ -4211,6 +5456,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO OUT",
         "type": "move",
         "to": "secret1"
+      },
+      {
+        "id": "say_nasty_dragon_east",
+        "label": "East",
+        "type": "event",
+        "message": "The dragon looks rather nasty.  You'd best not try to get by."
+      },
+      {
+        "id": "say_nasty_dragon_forwa",
+        "label": "Forwa",
+        "type": "event",
+        "message": "The dragon looks rather nasty.  You'd best not try to get by."
       }
     ]
   },
@@ -4263,6 +5520,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO OUT",
         "type": "move",
         "to": "secret3"
+      },
+      {
+        "id": "say_nasty_dragon_north",
+        "label": "North",
+        "type": "event",
+        "message": "The dragon looks rather nasty.  You'd best not try to get by."
+      },
+      {
+        "id": "say_nasty_dragon_forwa",
+        "label": "Forwa",
+        "type": "event",
+        "message": "The dragon looks rather nasty.  You'd best not try to get by."
       }
     ]
   },
@@ -4283,6 +5552,54 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO NORTHEAST",
         "type": "move",
         "to": "corridor"
+      },
+      {
+        "id": "say_troll_blocks_over",
+        "label": "Over",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_troll_blocks_acros",
+        "label": "Acros",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_troll_blocks_cross",
+        "label": "Cross",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_troll_blocks_sw",
+        "label": "Sw",
+        "type": "event",
+        "message": "The troll refuses to let you cross."
+      },
+      {
+        "id": "say_cross_bridge_jump",
+        "label": "Jump",
+        "type": "event",
+        "message": "I respectfully suggest you go across the bridge instead of jumping."
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "type": "move",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "type": "move",
+        "to": "barrenfront"
       }
     ]
   },
@@ -4309,6 +5626,24 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO EAST",
         "type": "move",
         "to": "fork"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "type": "move",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "type": "move",
+        "to": "barrenfront"
       }
     ]
   },
@@ -4337,8 +5672,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "warmwalls"
       },
       {
+        "id": "go_left",
+        "label": "LEFT",
+        "type": "move",
+        "to": "warmwalls"
+      },
+      {
         "id": "go_se",
         "label": "GO SOUTHEAST",
+        "type": "move",
+        "to": "limestone"
+      },
+      {
+        "id": "go_right",
+        "label": "RIGHT",
         "type": "move",
         "to": "limestone"
       },
@@ -4347,6 +5694,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO DOWN",
         "type": "move",
         "to": "limestone"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "type": "move",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "type": "move",
+        "to": "barrenfront"
       }
     ]
   },
@@ -4369,8 +5728,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "fork"
       },
       {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
         "id": "go_north",
         "label": "GO NORTH",
+        "type": "move",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
         "type": "move",
         "to": "breathtaking"
       },
@@ -4407,10 +5778,28 @@ export const SCENES: Record<string, Scene> = {
         "to": "warmwalls"
       },
       {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "type": "move",
+        "to": "warmwalls"
+      },
+      {
         "id": "go_out",
         "label": "GO OUT",
         "type": "move",
         "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
+        "id": "say_ridiculous_attempt_down",
+        "label": "Down",
+        "type": "event",
+        "message": "Don't be ridiculous!"
       },
       {
         "id": "go_jump",
@@ -4449,6 +5838,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "CRAWL",
         "type": "move",
         "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "type": "move",
+        "to": "breathtaking"
       },
       {
         "id": "take_obj_63",
@@ -4490,6 +5891,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "fork"
       },
       {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
@@ -4500,6 +5907,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO DOWN",
         "type": "move",
         "to": "barrenfront"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "type": "move",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "type": "move",
+        "to": "breathtaking"
       }
     ]
   },
@@ -4528,6 +5947,12 @@ export const SCENES: Record<string, Scene> = {
         "to": "limestone"
       },
       {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
@@ -4538,6 +5963,24 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO IN",
         "type": "move",
         "to": "barrenroom"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "type": "move",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_enter",
+        "label": "ENTER",
+        "type": "move",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "type": "move",
+        "to": "breathtaking"
       }
     ]
   },
@@ -4564,6 +6007,18 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO OUT",
         "type": "move",
         "to": "barrenfront"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "type": "move",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "type": "move",
+        "to": "breathtaking"
       }
     ]
   },
@@ -5302,6 +6757,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "deadend13"
       }
     ]
   },
@@ -5322,6 +6783,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO WEST",
         "type": "move",
         "to": "roughhewn"
+      },
+      {
+        "id": "say_ogre_snarl_north",
+        "label": "North",
+        "type": "event",
+        "message": "The ogre snarls and shoves you back."
       },
       {
         "id": "go_north",
@@ -6291,6 +7758,24 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
+        "id": "say_bad_direction_south",
+        "label": "South",
+        "type": "event",
+        "message": "There is no way to go that direction."
+      },
+      {
+        "id": "say_bad_direction_acros",
+        "label": "Acros",
+        "type": "event",
+        "message": "There is no way to go that direction."
+      },
+      {
+        "id": "say_bad_direction_cross",
+        "label": "Cross",
+        "type": "event",
+        "message": "There is no way to go that direction."
+      },
+      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
@@ -6421,6 +7906,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "GO UP",
         "type": "move",
         "to": "clifface"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "clifface"
       }
     ]
   },
@@ -6461,6 +7952,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "nowhere"
       }
     ]
   },
@@ -6475,6 +7972,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "cliffledge"
       }
     ]
   },
@@ -6489,6 +7992,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "type": "move",
+        "to": "clifface"
       },
       {
         "id": "go_down",
@@ -6566,6 +8075,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "nowhere"
       }
     ]
   },
@@ -6580,6 +8095,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "debris"
       }
     ]
   },
@@ -6594,6 +8115,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "building"
       }
     ]
   },
@@ -6608,6 +8135,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "y2"
       }
     ]
   },
@@ -6622,6 +8155,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "building"
       }
     ]
   },
@@ -6636,6 +8175,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "plover"
       }
     ]
   },
@@ -6650,6 +8195,12 @@ export const SCENES: Record<string, Scene> = {
         "label": "LOOK AROUND",
         "type": "command",
         "command": "look"
+      },
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "y2"
       }
     ]
   }

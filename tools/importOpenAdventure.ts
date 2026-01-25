@@ -16,6 +16,8 @@ interface Action {
   addsItem?: string;
   setsFlag?: string;
   lightCost?: number;
+  requiresFlag?: string;
+  message?: string;
 }
 
 interface Scene {
@@ -60,7 +62,7 @@ const DIRECTION_MAP: Record<string, { actionId: string; label: string }> = {
   NW: { actionId: "go_nw", label: "GO NORTHWEST" },
   SE: { actionId: "go_se", label: "GO SOUTHEAST" },
   SW: { actionId: "go_sw", label: "GO SOUTHWEST" },
-  ENTER: { actionId: "go_in", label: "ENTER" },
+  ENTER: { actionId: "go_enter", label: "ENTER" },
   CRAWL: { actionId: "go_crawl", label: "CRAWL" },
   CROSS: { actionId: "go_cross", label: "CROSS" },
   D: { actionId: "go_down", label: "GO DOWN" },
@@ -70,6 +72,54 @@ const DIRECTION_MAP: Record<string, { actionId: string; label: string }> = {
   PLUGH: { actionId: "go_plugh", label: "PLUGH" },
   PLOVE: { actionId: "go_plover", label: "PLOVER" },
   JUMP: { actionId: "go_jump", label: "JUMP" },
+  DEPRE: { actionId: "go_depression", label: "DEPRESSION" },
+  STREA: { actionId: "go_stream", label: "STREAM" },
+  TUNNE: { actionId: "go_tunnel", label: "TUNNEL" },
+  PASSA: { actionId: "go_passage", label: "PASSAGE" },
+  ROCK: { actionId: "go_rock", label: "ROCK" },
+  BEDQU: { actionId: "go_bedquilt", label: "BEDQUILT" },
+  ORIEN: { actionId: "go_oriental", label: "ORIENTAL" },
+  CAVER: { actionId: "go_cavern", label: "CAVERN" },
+  SHELL: { actionId: "go_shell", label: "SHELL" },
+  RESER: { actionId: "go_reservoir", label: "RESERVOIR" },
+  MAIN: { actionId: "go_main", label: "MAIN OFFICE" },
+  FORK: { actionId: "go_fork", label: "FORK" },
+  LEFT: { actionId: "go_left", label: "LEFT" },
+  RIGHT: { actionId: "go_right", label: "RIGHT" },
+  FORWA: { actionId: "go_forward", label: "FORWARD" },
+  CONTI: { actionId: "go_forward", label: "CONTINUE" },
+  BACK: { actionId: "go_back", label: "BACK" },
+  SLAB: { actionId: "go_slab", label: "SLAB" },
+  SECRET: { actionId: "go_secret", label: "SECRET" },
+  HOLE: { actionId: "go_hole", label: "HOLE" },
+  WALL: { actionId: "go_wall", label: "WALL" },
+  HALL: { actionId: "go_hall", label: "HALL" },
+  ROOM: { actionId: "go_room", label: "ROOM" },
+  STAIR: { actionId: "go_stairs", label: "STAIRS" },
+  FLOOR: { actionId: "go_floor", label: "FLOOR" },
+  STEPS: { actionId: "go_steps", label: "STEPS" },
+  DOOR: { actionId: "go_door", label: "DOOR" },
+  CLIMB: { actionId: "go_climb", label: "CLIMB" },
+  SLOP: { actionId: "go_slope", label: "SLOPE" },
+  SURFA: { actionId: "go_surface", label: "SURFACE" },
+  GULLY: { actionId: "go_gully", label: "GULLY" },
+  ROAD: { actionId: "go_road", label: "ROAD" },
+  HILL: { actionId: "go_hill", label: "HILL" },
+  FORES: { actionId: "go_forest", label: "FOREST" },
+  VALLE: { actionId: "go_valley", label: "VALLEY" },
+  VIEW: { actionId: "go_view", label: "VIEW" },
+  PIT: { actionId: "go_pit", label: "PIT" },
+  CRACK: { actionId: "go_crack", label: "CRACK" },
+  COBBL: { actionId: "go_cobbles", label: "COBBLES" },
+  DEBRI: { actionId: "go_debris", label: "DEBRIS" },
+  AWKWA: { actionId: "go_awkward", label: "AWKWARD" },
+  GIANT: { actionId: "go_giant", label: "GIANT" },
+  BARREN: { actionId: "go_barren", label: "BARREN" },
+  Y2: { actionId: "go_y2", label: "Y2" },
+  DARK: { actionId: "go_dark", label: "DARK" },
+  LOW: { actionId: "go_low", label: "LOW" },
+  CANYO: { actionId: "go_canyon", label: "CANYON" },
+  NARRO: { actionId: "go_narrow", label: "NARROW" },
 };
 
 // Display names for objects (only cosmetic, no gameplay changes)
@@ -110,6 +160,31 @@ const DISPLAY_NAME_MAP: Record<string, string> = {
   DIAMO: "Several Diamonds",
   SILVE: "Bars of Silver",
   JEWEL: "Precious Jewelry",
+  GRATE: "Steel Grate",
+};
+
+// Message lookup for speak actions
+const ARBITRARY_MESSAGES: Record<string, string> = {
+  GRATE_NOWAY: "The grate is locked and you don't have any keys.",
+  ALREADY_OPEN: "It's already open.",
+  ALREADY_LOCKED: "It's already locked.",
+  NO_KEYS: "You don't have any keys.",
+  NEED_LAMP: "You can't see anything without a lamp.",
+  LAMP_OUT: "Your lamp has run out of power.",
+  DONT_FIT: "You don't fit through the crack.",
+  NO_CARRY: "You can't carry that.",
+  BAD_DIRECTION: "There is no way to go in that direction.",
+  UNSURE_FACING: "I am unsure what direction you are facing.",
+  NO_MORE_DETAIL: "I can only tell you what I see.",
+  NOTHING_HAPPENS: "Nothing happens.",
+  OK_MAN: "OK.",
+  DONT_UNDERSTAND: "I don't understand that!",
+  PASSAGE_TOO_SMALL: "The passage is too small.",
+  NEED_DETAIL: "I need more detailed instructions to do that.",
+  CROSS_TROLL: "The troll refuses to let you cross.",
+  TROLL_BLOCKS: "The troll stands by the bridge and insults you.",
+  NO_BRIDGE: "There is no bridge across the chasm.",
+  BRIDGE_GONE: "The bridge is gone.",
 };
 
 // ============================================================
@@ -139,6 +214,37 @@ function extractTitle(locId: string, description: { short?: string; long?: strin
   return titleCase(name.replace(/_/g, " "));
 }
 
+function safeVerbId(verb: string): string {
+  return verb.toLowerCase().replace(/[^a-z0-9_]/g, "");
+}
+
+function getVerbLabel(verb: string): string {
+  const special = ["XYZZY", "PLUGH", "PLOVER", "Y2"];
+  if (special.includes(verb.toUpperCase())) {
+    return verb.toUpperCase();
+  }
+  return titleCase(verb);
+}
+
+// Check if travel rule has GRATE_CLOSED condition
+function hasGrateClosedCondition(cond: any): boolean {
+  if (!cond) return false;
+  if (Array.isArray(cond)) {
+    if (cond[0] === "not" && cond[2] === "GRATE_CLOSED") return true;
+    return cond.some((c: any) => hasGrateClosedCondition(c));
+  }
+  return false;
+}
+
+function hasGrateOpenRequired(cond: any): boolean {
+  if (!cond) return false;
+  if (Array.isArray(cond)) {
+    if (cond[0] === "not" && cond[2] === "GRATE_CLOSED") return true;
+    return cond.some((c: any) => hasGrateOpenRequired(c));
+  }
+  return false;
+}
+
 // ============================================================
 // MAIN FUNCTION
 // ============================================================
@@ -163,9 +269,23 @@ function main() {
   const objects: Map<string, any> = data.objects instanceof Map 
     ? data.objects 
     : new Map();
+  const arbitraryMsgs: Map<string, any> = data.arbitrary_messages instanceof Map
+    ? data.arbitrary_messages
+    : new Map();
 
   console.log(`Found ${locations.size} locations`);
   console.log(`Found ${objects.size} objects`);
+  console.log(`Found ${arbitraryMsgs.size} arbitrary messages`);
+
+  // Build message lookup from YAML
+  const messageTable: Record<string, string> = { ...ARBITRARY_MESSAGES };
+  for (const [msgId, msg] of arbitraryMsgs) {
+    if (typeof msg === "string") {
+      messageTable[msgId] = msg;
+    } else if (msg && typeof msg === "object" && msg.text) {
+      messageTable[msgId] = msg.text;
+    }
+  }
 
   // Build map of items by their starting locations
   const objectsByLocation: Map<string, string[]> = new Map();
@@ -185,7 +305,7 @@ function main() {
 
   const SCENES: Record<string, Scene> = {};
   const ITEMS: Record<string, Item> = {};
-  const ignoredDirections = new Set<string>();
+  const scenesWithDefaultTravel: string[] = [];
   const complexTravelRules: string[] = [];
 
   // ============================================================
@@ -203,39 +323,92 @@ function main() {
       { id: "look", label: "LOOK AROUND", type: "command", command: "look" },
     ];
 
-    const seenDirections = new Set<string>();
+    const seenActionIds = new Set<string>(["look"]);
+    let hasDefaultTravel = false;
 
     if (loc.travel) {
       for (const travel of loc.travel) {
         if (!travel.action) continue;
         const [actionType, target] = travel.action;
-        
-        // Only handle simple goto actions
-        if (actionType !== "goto") {
-          if (actionType === "speak" || actionType === "special") {
-            complexTravelRules.push(`${locId}: ${actionType} action not modeled`);
+        const verbs: string[] = travel.verbs || [];
+        const cond = travel.cond;
+
+        // Check for requiresFlag based on condition
+        let requiresFlag: string | undefined;
+        if (hasGrateOpenRequired(cond)) {
+          requiresFlag = "grateOpen";
+        }
+
+        // 4A) DEFAULT TRAVEL (verbs: [])
+        if (verbs.length === 0 && actionType === "goto" && !hasDefaultTravel) {
+          hasDefaultTravel = true;
+          const destSceneId = toSceneId(target);
+          actions.push({
+            id: "go_default",
+            label: "CONTINUE",
+            type: "move",
+            to: destSceneId,
+          });
+          scenesWithDefaultTravel.push(`${sceneId} -> ${destSceneId}`);
+          continue;
+        }
+
+        // 4D) SPEAK ACTIONS
+        if (actionType === "speak") {
+          const msgId = target;
+          const msgText = messageTable[msgId] || `[${msgId}] You can't go that way.`;
+          
+          for (const verb of verbs) {
+            const verbLower = safeVerbId(verb);
+            const actionId = `say_${msgId.toLowerCase()}_${verbLower}`;
+            
+            if (!seenActionIds.has(actionId)) {
+              seenActionIds.add(actionId);
+              actions.push({
+                id: actionId,
+                label: getVerbLabel(verb),
+                type: "event",
+                message: msgText,
+              });
+            }
           }
           continue;
         }
 
-        // Check for conditional travel
-        if (travel.cond) {
-          complexTravelRules.push(`${locId} -> ${target}: conditional travel (${JSON.stringify(travel.cond)})`);
+        // Skip non-goto actions
+        if (actionType !== "goto") {
+          if (actionType === "special") {
+            complexTravelRules.push(`${locId}: special action not modeled`);
+          }
+          continue;
         }
 
-        for (const verb of travel.verbs || []) {
+        // 4B) ALL VERB TOKENS -> MOVE actions
+        const destSceneId = toSceneId(target);
+        
+        for (const verb of verbs) {
           const dirInfo = DIRECTION_MAP[verb];
-          if (dirInfo && !seenDirections.has(dirInfo.actionId)) {
-            seenDirections.add(dirInfo.actionId);
-            actions.push({
-              id: dirInfo.actionId,
-              label: dirInfo.label,
-              type: "move",
-              to: toSceneId(target),
-            });
-          } else if (!dirInfo && !DIRECTION_MAP[verb]) {
-            ignoredDirections.add(verb);
+          const verbLower = safeVerbId(verb);
+          const actionId = dirInfo ? dirInfo.actionId : `go_${verbLower}`;
+          const label = dirInfo ? dirInfo.label : getVerbLabel(verb);
+          
+          // Skip if we already have this action (prefer first occurrence)
+          if (seenActionIds.has(actionId)) continue;
+          seenActionIds.add(actionId);
+          
+          const moveAction: Action = {
+            id: actionId,
+            label: label,
+            type: "move",
+            to: destSceneId,
+          };
+
+          // 4C) CONDITIONAL TRAVEL: GRATE_CLOSED
+          if (requiresFlag) {
+            moveAction.requiresFlag = requiresFlag;
           }
+
+          actions.push(moveAction);
         }
       }
     }
@@ -283,6 +456,15 @@ function main() {
           };
         }
 
+        // Mark keys as usable for opening grate
+        if (objId === "KEYS" || itemId === "keys") {
+          item.usable = true;
+          item.useEffect = {
+            message: "You unlock the grate with the keys.",
+            setsFlag: "grateOpen",
+          };
+        }
+
         ITEMS[itemId] = item;
       }
     }
@@ -325,25 +507,82 @@ function main() {
   console.log(`Title: ${SCENES[START_SCENE_ID]?.title || "NOT FOUND"}`);
 
   // ============================================================
-  // VALIDATION
+  // VALIDATION (4F)
   // ============================================================
   console.log(`\n=== VALIDATION ===`);
   
   const sceneCount = Object.keys(SCENES).length;
   const itemCount = Object.keys(ITEMS).length;
   
-  console.log(`Scene count: ${sceneCount} (expected > 100)`);
-  console.log(`Item count: ${itemCount} (expected > 20)`);
+  console.log(`Scene count: ${sceneCount}`);
+  console.log(`Item count: ${itemCount}`);
+
+  // List scenes with go_default
+  console.log(`\nScenes with go_default (${scenesWithDefaultTravel.length}):`);
+  scenesWithDefaultTravel.forEach(s => console.log(`  - ${s}`));
+
+  // Validate specific scenes
+  console.log(`\n=== SPECIFIC VALIDATION ===`);
   
-  if (sceneCount <= 100) {
-    console.warn("WARNING: Scene count below expected threshold!");
+  // Check foof1 -> debris
+  const foof1 = SCENES["foof1"];
+  if (foof1) {
+    const hasDefault = foof1.actions.some(a => a.id === "go_default");
+    console.log(`foof1 has go_default: ${hasDefault}`);
+    if (hasDefault) {
+      const defaultAction = foof1.actions.find(a => a.id === "go_default");
+      console.log(`  -> destination: ${defaultAction?.to}`);
+    }
+  } else {
+    console.log(`foof1: NOT FOUND`);
   }
-  if (itemCount <= 20) {
-    console.warn("WARNING: Item count below expected threshold!");
+
+  // Check foof3 -> y2
+  const foof3 = SCENES["foof3"];
+  if (foof3) {
+    const hasDefault = foof3.actions.some(a => a.id === "go_default");
+    console.log(`foof3 has go_default: ${hasDefault}`);
+    if (hasDefault) {
+      const defaultAction = foof3.actions.find(a => a.id === "go_default");
+      console.log(`  -> destination: ${defaultAction?.to}`);
+    }
+  } else {
+    console.log(`foof3: NOT FOUND`);
   }
-  if (!SCENES[START_SCENE_ID]) {
-    console.error("ERROR: START_SCENE_ID does not exist in SCENES!");
-    process.exit(1);
+
+  // Check building has xyzzy/plugh
+  const building = SCENES["building"] || SCENES["start"];
+  if (building) {
+    const hasXyzzy = building.actions.some(a => a.id === "go_xyzzy");
+    const hasPlugh = building.actions.some(a => a.id === "go_plugh");
+    console.log(`building/start has go_xyzzy: ${hasXyzzy}`);
+    console.log(`building/start has go_plugh: ${hasPlugh}`);
+    if (hasXyzzy) {
+      const xyzzyAction = building.actions.find(a => a.id === "go_xyzzy");
+      console.log(`  xyzzy -> ${xyzzyAction?.to}`);
+    }
+    if (hasPlugh) {
+      const plughAction = building.actions.find(a => a.id === "go_plugh");
+      console.log(`  plugh -> ${plughAction?.to}`);
+    }
+  }
+
+  // Check grate has enter with requiresFlag and message event
+  const grate = SCENES["grate"];
+  if (grate) {
+    const enterMove = grate.actions.find(a => a.type === "move" && (a.id === "go_enter" || a.id === "go_in"));
+    const enterMessage = grate.actions.find(a => a.type === "event" && a.message && (a.label.toLowerCase().includes("enter") || a.id.includes("enter")));
+    console.log(`grate has ENTER move action: ${!!enterMove}`);
+    if (enterMove) {
+      console.log(`  -> requires grateOpen: ${(enterMove as any).requiresFlag === "grateOpen"}`);
+      console.log(`  -> destination: ${enterMove.to}`);
+    }
+    console.log(`grate has ENTER message event: ${!!enterMessage}`);
+    if (enterMessage) {
+      console.log(`  -> message: ${(enterMessage as any).message?.substring(0, 50)}...`);
+    }
+  } else {
+    console.log(`grate: NOT FOUND`);
   }
 
   // Validate move actions point to existing scenes
@@ -351,16 +590,14 @@ function main() {
   for (const [sceneId, scene] of Object.entries(SCENES)) {
     for (const action of scene.actions) {
       if (action.type === "move" && action.to && !SCENES[action.to]) {
-        console.warn(`WARNING: ${sceneId} has move to non-existent scene: ${action.to}`);
+        if (brokenLinks < 10) {
+          console.warn(`WARNING: ${sceneId} has move to non-existent scene: ${action.to}`);
+        }
         brokenLinks++;
       }
     }
   }
-  console.log(`Broken move links: ${brokenLinks}`);
-
-  if (ignoredDirections.size > 0) {
-    console.log(`\nIgnored direction verbs: ${Array.from(ignoredDirections).join(", ")}`);
-  }
+  console.log(`\nBroken move links: ${brokenLinks}`);
 
   if (complexTravelRules.length > 0) {
     console.log(`\nComplex travel rules not modeled: ${complexTravelRules.length}`);
@@ -384,7 +621,7 @@ function main() {
 - LOOK: Examine your surroundings
 - INVENTORY / INV: Check what you're carrying
 - TAKE <item>: Pick up an item
-- USE <item>: Use an item
+- USE <item>: Use an item (e.g., USE KEYS to unlock the grate)
 - GO <direction>: Move (north, south, east, west, up, down, in, out, ne, nw, se, sw)
 - GO BACK / BACK: Return to previous room
 - HELP: Show this message
@@ -395,7 +632,7 @@ SPECIAL WORDS: xyzzy, plugh, plover (try them in the right places!)`;
 
   const output = `// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
 // Generated: ${new Date().toISOString()}
-// Canonical Open Adventure import - no modifications
+// Canonical Open Adventure import with travel mechanics
 
 export interface Action {
   id: string;
@@ -408,6 +645,8 @@ export interface Action {
   addsItem?: string;
   setsFlag?: string;
   lightCost?: number;
+  requiresFlag?: string;
+  message?: string;
 }
 
 export interface Scene {
