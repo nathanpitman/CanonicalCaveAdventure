@@ -1,8 +1,8 @@
-# Ascent - A Text Adventure Game
+# Descent - A Text Adventure Game
 
 ## Overview
 
-Ascent is a mobile-first text adventure game where the player has fallen into a vertical mining chasm and must explore tunnels, manage their lamp light, and find a way to escape.
+Descent is a mobile-first text adventure game implementing Colossal Cave Adventure (Open Adventure). Players start at the brick building on the surface and explore the cave network, managing their lamp light and collecting treasures.
 
 ## Tech Stack
 
@@ -84,17 +84,14 @@ server/
 
 ## Recent Changes
 
-- Implemented ASCENT mode (escape-the-cave gameplay)
-  - Player starts deep in the cave and must escape to the surface
-  - chasm_base connects to "reachdead" (deepest room, 27 steps from surface)
-  - Surface exit at "Front of Building" with rescue gate requiring key
-  - Critical items placed along 28-room escape path
-  - Auto-detection of deep start room via BFS distance calculation
-  - Dependency viability pass ensures items appear before needed
+- Reverted to canonical Open Adventure start
+  - Player starts at the brick building on the surface ("start" scene)
+  - Removed custom ASCENT mode patches (chasm_base, rescue gate, etc.)
+  - Win condition based on story actions with "escaped" flag only
+  - Renamed from "Ascent" to "Descent" across all UI
 - Imported Open Adventure (Colossal Cave) content
   - 184 scenes and 28 items from adventure.yaml
   - Created import script at tools/importOpenAdventure.ts
-  - Original Ascent story backed up to client/data/backup/
   - Extended movement system for 12+ directions
 - Updated header to show scene title with minimap access
   - Map icon + scene title + chevron on left (clickable)

@@ -26,12 +26,12 @@ export interface SaveData {
   savedAt: number;
 }
 
-const STORAGE_KEY = "ascent_save_v1";
+const STORAGE_KEY = "descent_save_v1";
 
 export const initialGameState: GameState = {
-  sceneId: "chasm_base",
+  sceneId: "start",
   previousSceneId: null,
-  visitHistory: ["chasm_base"],
+  visitHistory: ["start"],
   inventory: [],
   flags: {},
   stats: {

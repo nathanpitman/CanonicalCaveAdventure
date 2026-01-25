@@ -140,7 +140,7 @@ export function GameMenu({
               resizeMode="contain"
             />
             <ThemedText type="h3" style={styles.title}>
-              Ascent
+              Descent
             </ThemedText>
             <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
               A Text Adventure

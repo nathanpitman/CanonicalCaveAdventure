@@ -174,17 +174,6 @@ export function useGame() {
       decreaseLight(1);
       addMessage("narration", getSceneDescription(toSceneId));
       hapticFeedback("light");
-
-      if (toSceneId === "exit_slope") {
-        setTimeout(() => {
-          addMessage(
-            "narration",
-            "You emerge from the chasm into the light of day. The nightmare is over. You are free."
-          );
-          setGameOver("escaped");
-          hapticFeedback("success");
-        }, 2000);
-      }
     },
     [addMessage, decreaseLight, hapticFeedback, getSceneDescription]
   );

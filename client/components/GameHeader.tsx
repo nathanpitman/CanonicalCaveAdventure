@@ -47,7 +47,7 @@ export function GameHeader({
     headerScale.value = withSpring(1, { damping: 15, stiffness: 300 });
   };
 
-  const fullTitle = `Ascent / ${sceneTitle}`;
+  const fullTitle = `Descent / ${sceneTitle}`;
 
   return (
     <View style={styles.wrapper}>

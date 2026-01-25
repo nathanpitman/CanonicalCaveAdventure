@@ -63,7 +63,7 @@ export function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
         </ThemedText>
 
         <ThemedText type="body" style={styles.message}>
-          Ascent encountered an unexpected cave-in. Let's find our way back.
+          Descent encountered an unexpected cave-in. Let's find our way back.
         </ThemedText>
 
         <Pressable
