@@ -395,15 +395,16 @@ export function useGame() {
 
     const newMessages: Message[] = INTRO_MESSAGES.map((msg) => ({
       id: generateMessageId(),
-      type: msg.type,
-      text: msg.text,
+      type: "narration" as const,
+      text: msg,
       timestamp: Date.now(),
     }));
 
+    const startScene = SCENES[initialGameState.sceneId];
     const sceneMessage: Message = {
       id: generateMessageId(),
       type: "narration",
-      text: SCENES.chasm_base.description,
+      text: startScene?.description || "You are in a mysterious place.",
       timestamp: Date.now(),
     };
 
@@ -662,15 +663,16 @@ export function useGame() {
       } else {
         const newMessages: Message[] = INTRO_MESSAGES.map((msg) => ({
           id: generateMessageId(),
-          type: msg.type,
-          text: msg.text,
+          type: "narration" as const,
+          text: msg,
           timestamp: Date.now(),
         }));
 
+        const startScene = SCENES[initialGameState.sceneId];
         const sceneMessage: Message = {
           id: generateMessageId(),
           type: "narration",
-          text: SCENES.chasm_base.description,
+          text: startScene?.description || "You are in a mysterious place.",
           timestamp: Date.now(),
         };
 

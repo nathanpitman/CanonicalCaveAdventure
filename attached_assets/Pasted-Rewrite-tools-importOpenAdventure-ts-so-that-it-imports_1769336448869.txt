@@ -1,0 +1,92 @@
+Rewrite tools/importOpenAdventure.ts so that it imports Open Adventure YAML canon “as is”.
+
+CRITICAL REQUIREMENTS:
+- Do NOT inject synthetic scenes (no chasm_base, no cave mouth gate).
+- Do NOT modify start point, exit point, play direction, or puzzle/item order.
+- Do NOT move items, duplicate items, rename rooms, or add “cache” placements.
+- Do NOT add extra custom items (no safety_key etc).
+- The importer’s job is ONLY to translate YAML -> our TS schema.
+
+OUTPUTS:
+1) Generate client/data/generatedStory.ts that exports:
+   - Action/Scene/Item interfaces (or import them)
+   - export const ITEMS: Record<string, Item>
+   - export const SCENES: Record<string, Scene>
+   - export const INTRO_MESSAGES
+   - export const HELP_TEXT
+   - export const START_SCENE_ID: string  (IMPORTANT)
+2) START_SCENE_ID must reflect the canonical start room from the YAML (the surface/brick building starting area), NOT any custom scene.
+
+CANON MAPPING RULES:
+A) Scene IDs:
+- Use the canonical location keys from YAML, only slugify if absolutely required for TS keys.
+- Keep a reversible mapping if you slugify (log it in console). Prefer not to slugify if keys are already safe.
+
+B) Descriptions:
+- Use the canonical long description text for each location.
+- Do NOT add or remove text to “modernise” or “remix”.
+- Do NOT append extra narrative.
+
+C) Exits / travel:
+- Import exits exactly as defined in YAML.
+- Create a move Action for every exit direction found in YAML for that room.
+- Action format:
+  { id: `go_${dir}`, label: `GO ${DIR_UPPER}`, type: "move", to: targetRoomId }
+- Support all direction tokens from YAML (n,s,e,w,ne,nw,se,sw,u,d,in,out,enter,exit,up,down, etc).
+  Keep the exact dir token in the id: go_ne, go_u, go_in, etc.
+- Do NOT prune “non-NSEW” directions.
+- If a travel rule is conditional/complex and you cannot express it in our simple Action model, still preserve basic connectivity by:
+  - emitting the move action
+  - but add a comment in generatedStory.ts (or console warning) indicating “complex travel rule not modeled”.
+
+D) Items:
+- Import item definitions from YAML as-is: id/name/description if available.
+- For usable:
+  - Only mark items usable if YAML clearly indicates a consumable effect that maps to our existing useEffect model.
+  - Otherwise usable=false.
+  - If you cannot infer canonical usability safely, default usable=false (do not invent effects).
+- Item placements:
+  - Place items in the exact canonical starting locations from YAML.
+  - For each room, set scene.items = [itemIds...] for items that start there.
+  - Generate itemDescriptions for each item present:
+    itemDescriptions[itemId] = "You see <ItemName> here."
+  - Generate TAKE actions for each present item:
+    { id:`take_${itemId}`, label:`TAKE ${ITEMNAME_UPPER}`, type:"event", addsItem:itemId, removesAction:true }
+
+E) descriptionWithoutItems:
+- If YAML provides a base description separate from dynamic item text, use it.
+- If not, set descriptionWithoutItems = description (no clever stripping).
+
+F) Intro / Help:
+- INTRO_MESSAGES should match canon tone (minimal, not chasm-fall remix).
+- HELP_TEXT should list commands and mention directions supported.
+
+START SCENE:
+- Determine START_SCENE_ID from YAML if it exists (e.g. a top-level start field).
+- If YAML does not explicitly mark start:
+  - Choose the canonical “start” location by heuristics strictly matching Open Adventure (e.g. the room whose title/desc mentions “End of Road” or “building” or “road” which is the usual canonical start).
+  - Print the chosen start id + title to console.
+- Export START_SCENE_ID in generatedStory.ts.
+
+IMPLEMENTATION STEPS:
+1) Locate and read adventure.yaml from the workspace.
+2) Parse YAML using the existing YAML library already in the project.
+3) Inspect top-level keys and identify where locations, items, and travel rules live.
+4) Build:
+   - rooms map (id-> title/desc/exits)
+   - items map (id-> name/desc/placements)
+5) Emit generatedStory.ts as valid TypeScript.
+6) Add validation:
+   - SCENES count > 100
+   - ITEMS count > 20
+   - START_SCENE_ID exists in SCENES
+   - For every move action, action.to exists in SCENES (warn if not)
+
+DO NOT TOUCH OTHER FILES in this task, except:
+- package.json scripts/deps if needed for the generator runner.
+
+After rewriting, run the generator once and show console output confirming:
+- YAML path used
+- scene count
+- item count
+- chosen START_SCENE_ID and its title

@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { START_SCENE_ID } from "./story";
 
 export interface Message {
   id: string;
@@ -29,9 +30,9 @@ export interface SaveData {
 const STORAGE_KEY = "descent_save_v1";
 
 export const initialGameState: GameState = {
-  sceneId: "start",
+  sceneId: START_SCENE_ID,
   previousSceneId: null,
-  visitHistory: ["start"],
+  visitHistory: [START_SCENE_ID],
   inventory: [],
   flags: {},
   stats: {
