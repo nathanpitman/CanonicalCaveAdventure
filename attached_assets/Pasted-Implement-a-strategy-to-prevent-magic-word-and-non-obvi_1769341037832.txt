@@ -1,0 +1,37 @@
+Implement a strategy to prevent “magic word” and non-obvious travel verbs (e.g. XYZZY/PLUGH) from appearing as UI shortcut buttons throughout the game, while still allowing typed commands to work.
+
+Goal:
+- Shortcuts should only show navigation options that are visible/obvious from the current scene’s description text.
+- The underlying game logic should still allow all canonical travel verbs via typing.
+
+Plan:
+1) Do NOT change getAvailableActions() (keep canonical action availability as-is).
+2) Create a new helper in useGame.ts:
+   - getShortcutActions(): Action[]
+   This will be used by the UI to render shortcut pills.
+
+Shortcut filtering rules:
+A) Always include compass-like navigation actions as shortcuts if they exist:
+   ids: go_north/go_south/go_east/go_west/go_ne/go_nw/go_se/go_sw/go_up/go_down/go_in/go_out (and n/s/e/w variants if present).
+B) For any other move action (e.g. go_xyzzy, go_plugh, go_build, go_depre, go_crawl, etc):
+   - Only show it as a shortcut if the action’s verb appears in visible scene text.
+   - Visible scene text = scene.description + all scene.itemDescriptions text.
+   - Use case-insensitive matching.
+   Example: show XYZZY shortcut in Debris (text contains “MAGIC WORD XYZZY”), but do NOT show XYZZY in Building (text does not mention it).
+
+Implementation details:
+- The verb token can be derived from action.id by stripping "go_" prefix (e.g. go_xyzzy -> "xyzzy").
+- If action.label is exactly "XYZZY" (or other magic words), still apply the same “mentioned in text” rule.
+- Ensure shortcut filtering runs after getAvailableActions() so it respects requiresItem/requiresFlag/removedActions.
+
+3) Update the UI component that renders shortcut pills (likely CommandInput.tsx or wherever action pills are shown):
+- Replace the use of getAvailableActions() for shortcut rendering with getShortcutActions().
+- Keep the full parser and typed commands unchanged.
+
+4) Add a small “More…” / “Help” affordance if needed (optional):
+- No change required, but if users miss hidden verbs, they can type them.
+
+Acceptance tests:
+- In the Building, shortcut pills should include OUT/WEST etc, but NOT XYZZY or PLUGH.
+- In the Debris room (text includes “MAGIC WORD XYZZY”), XYZZY may appear as a shortcut.
+- Typed “xyzzy” in Building must still work.

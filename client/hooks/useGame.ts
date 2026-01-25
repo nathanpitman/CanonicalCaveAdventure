@@ -124,6 +124,44 @@ export function useGame() {
     });
   }, [gameState, getCurrentScene]);
 
+  const getShortcutActions = useCallback((): Action[] => {
+    const scene = getCurrentScene();
+    if (!scene) return [];
+
+    const availableActions = scene.actions.filter((action) => {
+      const removedIds = gameState.removedActions[gameState.sceneId] || [];
+      if (removedIds.includes(action.id)) return false;
+      if (action.requiresItem && !gameState.inventory.includes(action.requiresItem))
+        return false;
+      if ((action as any).requiresFlag && !gameState.flags[(action as any).requiresFlag])
+        return false;
+      return true;
+    });
+
+    const compassActionIds = new Set([
+      "go_north", "go_south", "go_east", "go_west",
+      "go_ne", "go_nw", "go_se", "go_sw",
+      "go_up", "go_down", "go_in", "go_out",
+      "go_n", "go_s", "go_e", "go_w",
+    ]);
+
+    const takenItems = gameState.inventory;
+    const remainingItems = (scene.items || []).filter(
+      (itemId) => !takenItems.includes(itemId)
+    );
+    const itemDescs = remainingItems
+      .map((itemId) => scene.itemDescriptions?.[itemId] || "")
+      .join(" ");
+    const visibleText = (scene.description + " " + itemDescs).toLowerCase();
+
+    return availableActions.filter((action) => {
+      if (action.type !== "move") return true;
+      if (compassActionIds.has(action.id)) return true;
+      const verb = action.id.replace(/^go_/, "");
+      return visibleText.includes(verb.toLowerCase());
+    });
+  }, [gameState, getCurrentScene]);
+
   const decreaseLight = useCallback((amount: number = 1) => {
     setGameState((prev) => {
       const newLight = Math.max(0, prev.stats.light - amount);
@@ -738,6 +776,7 @@ export function useGame() {
     gameOver,
     getCurrentScene,
     getAvailableActions,
+    getShortcutActions,
     handleAction,
     parseCommand,
     handleNewGame,

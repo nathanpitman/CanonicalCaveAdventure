@@ -34,7 +34,7 @@ export default function GameScreen() {
     messages,
     isLoading,
     gameOver,
-    getAvailableActions,
+    getShortcutActions,
     handleAction,
     parseCommand,
     handleNewGame,
@@ -45,7 +45,7 @@ export default function GameScreen() {
   const flatListRef = useRef<FlatList>(null);
 
   const isLandscape = width > height && width >= 700;
-  const actions = getAvailableActions();
+  const actions = getShortcutActions();
   const currentScene = SCENES[gameState.sceneId];
   const sceneTitle = currentScene?.title || "Unknown";
   const hasLamp = gameState.inventory.includes("lamp");
