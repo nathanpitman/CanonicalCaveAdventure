@@ -34,7 +34,9 @@ export const initialGameState: GameState = {
   previousSceneId: null,
   visitHistory: [START_SCENE_ID],
   inventory: [],
-  flags: {},
+  flags: {
+    grateOpen: false,
+  },
   stats: {
     light: 100,
     turns: 0,
