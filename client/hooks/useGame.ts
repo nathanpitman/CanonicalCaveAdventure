@@ -118,6 +118,8 @@ export function useGame() {
       if (removedIds.includes(action.id)) return false;
       if (action.requiresItem && !gameState.inventory.includes(action.requiresItem))
         return false;
+      if ((action as any).requiresFlag && !gameState.flags[(action as any).requiresFlag])
+        return false;
       return true;
     });
   }, [gameState, getCurrentScene]);
@@ -296,6 +298,13 @@ export function useGame() {
           break;
 
         case "event":
+          const actionAny = action as any;
+          if (actionAny.message && !action.addsItem && !action.setsFlag && !action.removesAction) {
+            addMessage("system", actionAny.message);
+            decreaseLight(1);
+            checkLightWarning();
+            return;
+          }
           if (action.addsItem) {
             handleTakeItem(action.addsItem, action.id);
           }
@@ -628,6 +637,46 @@ export function useGame() {
         }
       }
 
+      // Single-token travel verb support (xyzzy, plugh, enter, depression, etc.)
+      if (words.length === 1) {
+        const token = words[0].toLowerCase();
+        const actions = getAvailableActions();
+        
+        const moveAction = actions.find(
+          (a) => a.type === "move" && (
+            a.id === `go_${token}` ||
+            a.label.toLowerCase() === token ||
+            a.label.toLowerCase() === `go ${token}`
+          )
+        );
+        if (moveAction && moveAction.to) {
+          handleMove(moveAction.to);
+          checkLightWarning();
+          return;
+        }
+        
+        const eventAction = actions.find(
+          (a) => a.type === "event" && (a as any).message && (
+            a.label.toLowerCase() === token ||
+            a.id.includes(token)
+          )
+        );
+        if (eventAction) {
+          handleAction(eventAction);
+          return;
+        }
+      }
+
+      // Default travel fallback - check for go_default action
+      const defaultMove = availableActions.find(
+        (a) => a.type === "move" && a.id === "go_default"
+      );
+      if (defaultMove && defaultMove.to) {
+        handleMove(defaultMove.to);
+        checkLightWarning();
+        return;
+      }
+
       // Unknown command
       addMessage(
         "system",
@@ -641,6 +690,8 @@ export function useGame() {
       getAvailableActions,
       handleTakeItem,
       handleUseItem,
+      handleAction,
+      handleMove,
       addMessage,
       decreaseLight,
       checkLightWarning,
