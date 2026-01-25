@@ -359,8 +359,6 @@ export function useGame() {
         d: "go_down",
         in: "go_in",
         out: "go_out",
-        enter: "go_in",
-        exit: "go_out",
         ne: "go_ne",
         nw: "go_nw",
         se: "go_se",
@@ -576,7 +574,7 @@ export function useGame() {
       const movePatterns = [
         /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(to\s+)?(the\s+)?(north|south|east|west|up|down|in|out|ne|nw|se|sw|northeast|northwest|southeast|southwest|n|s|e|w|u|d)$/i,
         /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(north|south|east|west|up|down|n|s|e|w|u|d)(ward|wards)?$/i,
-        /^(enter|exit)\s*(.*)$/i,
+        /^(enter|exit)\s+(.+)$/i,
       ];
       for (const pattern of movePatterns) {
         const match = command.match(pattern);
@@ -604,8 +602,6 @@ export function useGame() {
         d: "down",
         in: "in",
         out: "out",
-        enter: "in",
-        exit: "out",
         ne: "ne",
         nw: "nw",
         se: "se",
