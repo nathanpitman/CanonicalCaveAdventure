@@ -308,6 +308,10 @@ function main() {
   const ITEMS: Record<string, Item> = {};
   const scenesWithDefaultTravel: string[] = [];
   const complexTravelRules: string[] = [];
+  
+  // Collect canonical vocabulary for lexicon
+  const canonTravelVerbs = new Set<string>();
+  const canonObjects: { id: string; name: string }[] = [];
 
   // ============================================================
   // PARSE ALL LOCATIONS INTO SCENES (canonical, no modifications)
@@ -389,6 +393,9 @@ function main() {
         const destSceneId = toSceneId(target);
         
         for (const verb of verbs) {
+          // Collect canonical verb for lexicon
+          canonTravelVerbs.add(verb.toLowerCase());
+          
           const dirInfo = DIRECTION_MAP[verb];
           const verbLower = safeVerbId(verb);
           const actionId = dirInfo ? dirInfo.actionId : `go_${verbLower}`;
@@ -468,6 +475,9 @@ function main() {
         }
 
         ITEMS[itemId] = item;
+        
+        // Collect for lexicon
+        canonObjects.push({ id: itemId, name: item.name });
       }
     }
 
@@ -679,6 +689,11 @@ export const START_SCENE_ID: string = ${JSON.stringify(START_SCENE_ID)};
 export const INTRO_MESSAGES: string[] = ${JSON.stringify(introMessages, null, 2)};
 
 export const HELP_TEXT: string = ${JSON.stringify(helpText)};
+
+// Canonical vocabulary extracted from YAML for lexicon
+export const CANON_TRAVEL_VERBS: string[] = ${JSON.stringify([...canonTravelVerbs].sort(), null, 2)};
+
+export const CANON_OBJECTS: { id: string; name: string }[] = ${JSON.stringify(canonObjects, null, 2)};
 
 export const ITEMS: Record<string, Item> = ${JSON.stringify(ITEMS, null, 2)};
 

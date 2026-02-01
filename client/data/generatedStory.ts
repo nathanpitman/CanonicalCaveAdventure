@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
-// Generated: 2026-02-01T18:16:39.970Z
+// Generated: 2026-02-01T21:15:24.397Z
 // Canonical Open Adventure import with travel mechanics
 
 export interface Action {
@@ -50,6 +50,178 @@ export const INTRO_MESSAGES: string[] = [
 ];
 
 export const HELP_TEXT: string = "COMMANDS:\n- LOOK: Examine your surroundings\n- INVENTORY / INV: Check what you're carrying\n- TAKE <item>: Pick up an item\n- USE <item>: Use an item (e.g., USE KEYS to unlock the grate)\n- GO <direction>: Move (north, south, east, west, up, down, in, out, ne, nw, se, sw)\n- GO BACK / BACK: Return to previous room\n- HELP: Show this message\n\nDIRECTIONS: north (n), south (s), east (e), west (w), up (u), down (d), in, out, northeast (ne), northwest (nw), southeast (se), southwest (sw)\n\nSPECIAL WORDS: xyzzy, plugh, plover (try them in the right places!)";
+
+// Canonical vocabulary extracted from YAML for lexicon
+export const CANON_TRAVEL_VERBS: string[] = [
+  "acros",
+  "barre",
+  "bed",
+  "bedqu",
+  "broke",
+  "build",
+  "canyo",
+  "caver",
+  "climb",
+  "cobbl",
+  "crack",
+  "crawl",
+  "dark",
+  "debri",
+  "depre",
+  "dome",
+  "down",
+  "downs",
+  "east",
+  "enter",
+  "entra",
+  "floor",
+  "fores",
+  "fork",
+  "forwa",
+  "giant",
+  "gully",
+  "hall",
+  "hole",
+  "inwar",
+  "jump",
+  "left",
+  "low",
+  "ne",
+  "north",
+  "nw",
+  "orien",
+  "out",
+  "outdo",
+  "over",
+  "passa",
+  "pit",
+  "plove",
+  "plugh",
+  "reser",
+  "right",
+  "road",
+  "room",
+  "se",
+  "secre",
+  "shell",
+  "slab",
+  "south",
+  "stair",
+  "steps",
+  "strea",
+  "surfa",
+  "sw",
+  "upstr",
+  "upwar",
+  "view",
+  "wall",
+  "west",
+  "xyzzy",
+  "y2"
+];
+
+export const CANON_OBJECTS: { id: string; name: string }[] = [
+  {
+    "id": "keys",
+    "name": "Set of Keys"
+  },
+  {
+    "id": "lamp",
+    "name": "Brass Lantern"
+  },
+  {
+    "id": "food",
+    "name": "Tasty Rations"
+  },
+  {
+    "id": "bottle",
+    "name": "Water Bottle"
+  },
+  {
+    "id": "cage",
+    "name": "Wicker Cage"
+  },
+  {
+    "id": "rod",
+    "name": "Black Rod"
+  },
+  {
+    "id": "bird",
+    "name": "Little Bird"
+  },
+  {
+    "id": "nugget",
+    "name": "Large gold nugget"
+  },
+  {
+    "id": "obj_51",
+    "name": "Several diamonds"
+  },
+  {
+    "id": "obj_52",
+    "name": "Bars of silver"
+  },
+  {
+    "id": "obj_53",
+    "name": "Precious jewelry"
+  },
+  {
+    "id": "coins",
+    "name": "Rare Coins"
+  },
+  {
+    "id": "eggs",
+    "name": "Golden Eggs"
+  },
+  {
+    "id": "trident",
+    "name": "Jeweled Trident"
+  },
+  {
+    "id": "pillow",
+    "name": "Velvet Pillow"
+  },
+  {
+    "id": "vase",
+    "name": "Ming Vase"
+  },
+  {
+    "id": "emerald",
+    "name": "Egg-sized Emerald"
+  },
+  {
+    "id": "pyramid",
+    "name": "Platinum Pyramid"
+  },
+  {
+    "id": "clam",
+    "name": "Giant Clam"
+  },
+  {
+    "id": "magazine",
+    "name": "Magazine"
+  },
+  {
+    "id": "obj_63",
+    "name": "Rare spices"
+  },
+  {
+    "id": "ruby",
+    "name": "Fist-sized Ruby"
+  },
+  {
+    "id": "rabbitfoot",
+    "name": "Leporine appendage"
+  },
+  {
+    "id": "sapph",
+    "name": "Star Sapphire"
+  },
+  {
+    "id": "obj_69",
+    "name": "Ebony statuette"
+  }
+];
 
 export const ITEMS: Record<string, Item> = {
   "keys": {
