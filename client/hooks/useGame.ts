@@ -84,27 +84,24 @@ export function useGame() {
         (itemId) => !takenItems.includes(itemId)
       );
 
-      // If all items have been taken, use the base description without items
-      if (remainingItems.length === 0) {
-        return scene.descriptionWithoutItems || scene.description;
-      }
+      // Always use descriptionWithoutItems as base when available
+      const baseDesc = scene.descriptionWithoutItems || scene.description;
 
-      // If some items remain, build description with remaining item descriptions
-      if (remainingItems.length < scene.items.length) {
-        // Some items taken - build custom description
-        const baseDesc = scene.descriptionWithoutItems || scene.description.split("\n\n")[0];
-        const itemDescs = remainingItems
-          .map((itemId) => scene.itemDescriptions?.[itemId])
-          .filter(Boolean);
-        
-        if (itemDescs.length > 0) {
-          return baseDesc + "\n\n" + itemDescs.join(" ");
-        }
+      // If all items have been taken, return just the base description
+      if (remainingItems.length === 0) {
         return baseDesc;
       }
 
-      // All items still present - return full original description
-      return scene.description;
+      // Build description with remaining item descriptions
+      const itemDescs = remainingItems
+        .map((itemId) => scene.itemDescriptions?.[itemId])
+        .filter(Boolean);
+
+      if (itemDescs.length > 0) {
+        return baseDesc + "\n\n" + itemDescs.join("\n");
+      }
+
+      return baseDesc;
     },
     [gameState.inventory]
   );
