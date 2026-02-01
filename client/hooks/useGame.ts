@@ -18,6 +18,7 @@ import {
   HELP_TEXT,
   Action,
 } from "@/data/story";
+import { normalizeCommand } from "@/data/lexicon";
 
 export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -485,6 +486,29 @@ export function useGame() {
 
       addMessage("action", `> ${rawInput}`);
 
+      // === LEXICON NORMALIZATION (additive layer) ===
+      // Try normalizing command first, but preserve canon commands
+      const availableActions = getAvailableActions();
+      const normalized = normalizeCommand(rawInput, availableActions);
+      
+      // If lexicon resolved to a specific action, execute it
+      if (normalized.intent === "move" && normalized.resolvedActionId) {
+        const action = availableActions.find(a => a.id === normalized.resolvedActionId);
+        if (action && action.to) {
+          handleMove(action.to);
+          checkLightWarning();
+          return;
+        }
+      }
+      
+      if (normalized.intent === "back") {
+        handleGoBack();
+        return;
+      }
+      
+      // For take/use/look/inventory intents with targets, let existing patterns handle them
+      // (they have more sophisticated matching)
+
       // Natural language patterns for LOOK
       if (
         command === "look" ||
@@ -671,7 +695,6 @@ export function useGame() {
       }
 
       // Fallback: try to match any item name for implicit take
-      const availableActions = getAvailableActions();
       const implicitTake = availableActions.find(
         (a) =>
           a.addsItem &&
