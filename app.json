@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "Ascent",
-    "slug": "ascent",
+    "name": "Canonical Cave Adventure",
+    "slug": "canonicalcaveadventure",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "ascent",
+    "scheme": "canonicalcaveadventure",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ascent.textadventure"
+      "bundleIdentifier": "com.canonicalcaveadventure.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +19,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.ascent.textadventure"
+      "package": "com.canonicalcaveadventure.app"
     },
     "web": {
       "output": "single",
