@@ -22,8 +22,8 @@ export default function InventoryModal() {
     switch (itemId) {
       case "lamp":
         return "sun";
-      case "fuel":
-        return "droplet";
+      case "batteries":
+        return "battery-charging";
       case "chalk":
         return "edit-3";
       case "rope":

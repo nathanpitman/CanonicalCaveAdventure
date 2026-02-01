@@ -9,13 +9,14 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-import { LampIndicator } from "@/components/LampIndicator";
+import { BatteryIndicator } from "@/components/BatteryIndicator";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing } from "@/constants/theme";
 
 interface GameHeaderProps {
-  light: number;
+  lampLimit: number;
+  lampLit: boolean;
   sceneTitle: string;
   hasLamp: boolean;
   onMinimapPress?: () => void;
@@ -25,7 +26,8 @@ interface GameHeaderProps {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function GameHeader({
-  light,
+  lampLimit,
+  lampLit,
   sceneTitle,
   hasLamp,
   onMinimapPress,
@@ -47,7 +49,7 @@ export function GameHeader({
     headerScale.value = withSpring(1, { damping: 15, stiffness: 300 });
   };
 
-  const fullTitle = `Canonical / ${sceneTitle}`;
+  const fullTitle = `Descent / ${sceneTitle}`;
 
   return (
     <View style={styles.wrapper}>
@@ -62,7 +64,7 @@ export function GameHeader({
       >
         <View style={styles.headerRow}>
           <View style={styles.spacer}>
-            {hasLamp ? <LampIndicator light={light} /> : null}
+            {hasLamp ? <BatteryIndicator lampLimit={lampLimit} lampLit={lampLit} /> : null}
           </View>
           
           {showMinimapButton && onMinimapPress ? (

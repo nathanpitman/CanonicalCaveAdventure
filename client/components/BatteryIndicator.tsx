@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import Animated, {
@@ -12,19 +12,21 @@ import Animated, {
   FadeIn,
   FadeOut,
 } from "react-native-reanimated";
-import { useEffect } from "react";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { BorderRadius, Spacing } from "@/constants/theme";
+import { INITIAL_LAMP_LIMIT, WARN_TIME } from "@/data/canonConstants";
 
-interface LampIndicatorProps {
-  light: number;
+interface BatteryIndicatorProps {
+  lampLimit: number;
+  lampLit: boolean;
 }
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-export function LampIndicator({ light }: LampIndicatorProps) {
+export function BatteryIndicator({ lampLimit, lampLit }: BatteryIndicatorProps) {
   const { theme } = useTheme();
   const [showTooltip, setShowTooltip] = useState(false);
   const size = 44;
@@ -35,8 +37,12 @@ export function LampIndicator({ light }: LampIndicatorProps) {
   const pulseScale = useSharedValue(1);
   const tooltipScale = useSharedValue(0);
 
+  const isDead = lampLimit < 0;
+  const isLow = !isDead && lampLimit <= WARN_TIME && lampLit;
+  const percent = isDead ? 0 : Math.min(1, Math.max(0, lampLimit / INITIAL_LAMP_LIMIT));
+
   useEffect(() => {
-    if (light <= 20 && light > 0) {
+    if (isLow) {
       pulseScale.value = withRepeat(
         withSequence(
           withTiming(1.1, { duration: 500 }),
@@ -48,7 +54,7 @@ export function LampIndicator({ light }: LampIndicatorProps) {
     } else {
       pulseScale.value = withTiming(1, { duration: 300 });
     }
-  }, [light, pulseScale]);
+  }, [isLow, pulseScale]);
 
   useEffect(() => {
     tooltipScale.value = withSpring(showTooltip ? 1 : 0, {
@@ -58,13 +64,14 @@ export function LampIndicator({ light }: LampIndicatorProps) {
   }, [showTooltip, tooltipScale]);
 
   const getColor = () => {
-    if (light <= 20) return theme.danger;
-    if (light <= 40) return theme.primaryDark;
+    if (isDead) return theme.textSecondary;
+    if (isLow) return theme.danger;
+    if (percent <= 0.3) return theme.primaryDark;
     return theme.primary;
   };
 
   const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: circumference * (1 - light / 100),
+    strokeDashoffset: circumference * (1 - percent),
   }));
 
   const pulseStyle = useAnimatedStyle(() => ({
@@ -89,6 +96,13 @@ export function LampIndicator({ light }: LampIndicatorProps) {
     }
   }, [showTooltip]);
 
+  const getStatusText = () => {
+    if (isDead) return "OUT";
+    if (!lampLit) return "OFF";
+    if (isLow) return lampLimit.toString();
+    return Math.round(percent * 100).toString();
+  };
+
   return (
     <View style={styles.wrapper}>
       {showTooltip ? (
@@ -103,10 +117,12 @@ export function LampIndicator({ light }: LampIndicatorProps) {
           testID="lamp-tooltip"
         >
           <ThemedText style={[styles.tooltipTitle, { color: theme.primary }]}>
-            Lamp Fuel
+            Brass Lantern
           </ThemedText>
           <ThemedText style={[styles.tooltipText, { color: theme.textSecondary }]}>
-            Actions consume fuel. Find canisters to refuel.
+            {isDead
+              ? "Your lamp has burned out permanently."
+              : `Lamp life: ${lampLimit} turns remaining. Find batteries to extend.`}
           </ThemedText>
           <View
             style={[styles.tooltipArrow, { borderBottomColor: theme.backgroundSecondary }]}
@@ -114,10 +130,7 @@ export function LampIndicator({ light }: LampIndicatorProps) {
         </Animated.View>
       ) : null}
 
-      <Pressable
-        onPress={handlePress}
-        testID="lamp-indicator"
-      >
+      <Pressable onPress={handlePress} testID="battery-indicator">
         <Animated.View style={[styles.container, pulseStyle]}>
           <Svg width={size} height={size} style={styles.svg}>
             <Circle
@@ -142,9 +155,15 @@ export function LampIndicator({ light }: LampIndicatorProps) {
             />
           </Svg>
           <View style={styles.textContainer}>
-            <ThemedText style={[styles.text, { color: getColor() }]}>
-              {light}
-            </ThemedText>
+            {isDead ? (
+              <Feather name="x" size={16} color={theme.textSecondary} />
+            ) : !lampLit ? (
+              <Feather name="moon" size={14} color={theme.textSecondary} />
+            ) : (
+              <ThemedText style={[styles.text, { color: getColor() }]}>
+                {getStatusText()}
+              </ThemedText>
+            )}
           </View>
         </Animated.View>
       </Pressable>
@@ -180,7 +199,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     top: 54,
-    width: 160,
+    width: 180,
     borderRadius: BorderRadius.md,
     padding: Spacing.sm,
     zIndex: 100,

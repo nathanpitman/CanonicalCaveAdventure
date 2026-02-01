@@ -19,6 +19,7 @@ import {
   Action,
 } from "@/data/story";
 import { normalizeCommand } from "@/data/lexicon";
+import { WARN_TIME } from "@/data/canonConstants";
 
 export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -178,39 +179,58 @@ export function useGame() {
     });
   }, [gameState, getCurrentScene]);
 
-  const decreaseLight = useCallback((amount: number = 1) => {
+  const decreaseLampLife = useCallback(() => {
     setGameState((prev) => {
-      const newLight = Math.max(0, prev.stats.light - amount);
+      if (!prev.lamp.lit || prev.lamp.limit < 0) {
+        return {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            turns: prev.stats.turns + 1,
+          },
+        };
+      }
+      const newLimit = prev.lamp.limit - 1;
       return {
         ...prev,
         stats: {
           ...prev.stats,
-          light: newLight,
           turns: prev.stats.turns + 1,
+        },
+        lamp: {
+          ...prev.lamp,
+          limit: newLimit < 0 ? -1 : newLimit,
         },
       };
     });
   }, []);
 
-  const checkLightWarning = useCallback(() => {
-    if (gameState.stats.light <= 20 && gameState.stats.light > 0) {
-      addMessage("warning", "Your lamp flickers weakly. The oil is running low...");
+  const checkLampWarning = useCallback(() => {
+    const { lamp } = gameState;
+    if (!lamp.lit) return;
+    
+    if (lamp.limit <= WARN_TIME && lamp.limit > 0 && !lamp.warned) {
+      addMessage("warning", "Your lamp is getting dim. I would suggest you replace the batteries.");
       hapticFeedback("warning");
-    } else if (gameState.stats.light === 0 && !gameOver) {
+      setGameState((prev) => ({
+        ...prev,
+        lamp: { ...prev.lamp, warned: true },
+      }));
+    } else if (lamp.limit <= 0 && !gameOver) {
       addMessage(
         "warning",
-        "Darkness closes in. Your lamp has gone out. You stumble blindly..."
+        "Your lamp has run out of power."
       );
       setTimeout(() => {
         addMessage(
           "narration",
-          "The lamp sputters and dies. In the absolute darkness of the deep earth, you are lost forever."
+          "The brass lantern flickers and dies. In the absolute darkness of the deep earth, you are lost forever."
         );
         setGameOver("died");
       }, 1500);
       hapticFeedback("error");
     }
-  }, [gameState.stats.light, addMessage, hapticFeedback, gameOver]);
+  }, [gameState.lamp, addMessage, hapticFeedback, gameOver]);
 
   const handleMove = useCallback(
     (toSceneId: string) => {
@@ -227,11 +247,11 @@ export function useGame() {
         visitHistory: [...(prev.visitHistory || [prev.sceneId]), toSceneId],
       }));
 
-      decreaseLight(1);
+      decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
       hapticFeedback("light");
     },
-    [addMessage, decreaseLight, hapticFeedback, getSceneDescription]
+    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription]
   );
 
   const handleGoBack = useCallback(() => {
@@ -257,31 +277,46 @@ export function useGame() {
       visitHistory: [...(prev.visitHistory || [prev.sceneId]), targetSceneId!],
     }));
 
-    decreaseLight(1);
+    decreaseLampLife();
     addMessage("narration", getSceneDescription(targetSceneId));
     hapticFeedback("light");
-    checkLightWarning();
-  }, [gameState.previousSceneId, addMessage, decreaseLight, getSceneDescription, hapticFeedback, checkLightWarning]);
+    checkLampWarning();
+  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning]);
 
   const handleTakeItem = useCallback(
     (itemId: string, actionId: string) => {
       const item = ITEMS[itemId];
       if (!item) return;
 
-      setGameState((prev) => ({
-        ...prev,
-        inventory: [...prev.inventory, itemId],
-        removedActions: {
-          ...prev.removedActions,
-          [prev.sceneId]: [...(prev.removedActions[prev.sceneId] || []), actionId],
-        },
-      }));
+      setGameState((prev) => {
+        const newState = {
+          ...prev,
+          inventory: [...prev.inventory, itemId],
+          removedActions: {
+            ...prev.removedActions,
+            [prev.sceneId]: [...(prev.removedActions[prev.sceneId] || []), actionId],
+          },
+        };
+        
+        if (itemId === "lamp") {
+          newState.lamp = {
+            ...prev.lamp,
+            lit: true,
+          };
+        }
+        
+        return newState;
+      });
 
-      decreaseLight(1);
-      addMessage("system", `You pick up the ${item.name}.`);
+      decreaseLampLife();
+      if (itemId === "lamp") {
+        addMessage("system", `You pick up the ${item.name}. It glows brightly.`);
+      } else {
+        addMessage("system", `You pick up the ${item.name}.`);
+      }
       hapticFeedback("medium");
     },
-    [addMessage, decreaseLight, hapticFeedback]
+    [addMessage, decreaseLampLife, hapticFeedback]
   );
 
   const handleUseItem = useCallback(
@@ -305,12 +340,13 @@ export function useGame() {
       if (item.useEffect) {
         addMessage("system", item.useEffect.message);
 
-        if (item.useEffect.lightBonus) {
+        if (item.useEffect.lampBonus) {
           setGameState((prev) => ({
             ...prev,
-            stats: {
-              ...prev.stats,
-              light: Math.min(100, prev.stats.light + item.useEffect!.lightBonus!),
+            lamp: {
+              ...prev.lamp,
+              limit: prev.lamp.limit + item.useEffect!.lampBonus!,
+              warned: false,
             },
             inventory: prev.inventory.filter((id) => id !== itemId),
           }));
@@ -328,9 +364,9 @@ export function useGame() {
         }
       }
 
-      decreaseLight(1);
+      decreaseLampLife();
     },
-    [gameState.inventory, addMessage, decreaseLight, hapticFeedback]
+    [gameState.inventory, addMessage, decreaseLampLife, hapticFeedback]
   );
 
   const handleAction = useCallback(
@@ -342,7 +378,7 @@ export function useGame() {
           if (action.command === "look") {
             addMessage("narration", getSceneDescription(gameState.sceneId));
           }
-          decreaseLight(1);
+          decreaseLampLife();
           break;
 
         case "move":
@@ -355,8 +391,8 @@ export function useGame() {
           const actionAny = action as any;
           if (actionAny.message && !action.addsItem && !action.setsFlag && !action.removesAction) {
             addMessage("system", actionAny.message);
-            decreaseLight(1);
-            checkLightWarning();
+            decreaseLampLife();
+            checkLampWarning();
             return;
           }
           if (action.addsItem) {
@@ -387,12 +423,12 @@ export function useGame() {
                 ],
               },
             }));
-            decreaseLight(1);
+            decreaseLampLife();
           }
           break;
       }
     },
-    [getCurrentScene, handleMove, handleTakeItem, addMessage, decreaseLight, hapticFeedback]
+    [getCurrentScene, handleMove, handleTakeItem, addMessage, decreaseLampLife, hapticFeedback]
   );
 
   // Move these BEFORE parseCommand to avoid hoisting issues
@@ -496,7 +532,7 @@ export function useGame() {
         const action = availableActions.find(a => a.id === normalized.resolvedActionId);
         if (action && action.to) {
           handleMove(action.to);
-          checkLightWarning();
+          checkLampWarning();
           return;
         }
       }
@@ -524,8 +560,8 @@ export function useGame() {
         command === "describe"
       ) {
         addMessage("narration", getSceneDescription(gameState.sceneId));
-        decreaseLight(1);
-        checkLightWarning();
+        decreaseLampLife();
+        checkLampWarning();
         return;
       }
 
@@ -584,7 +620,7 @@ export function useGame() {
           const target = stripArticles(match[2]);
           if (!target) {
             addMessage("system", "Take what?");
-            checkLightWarning();
+            checkLampWarning();
             return;
           }
           const availableActions = getAvailableActions();
@@ -599,7 +635,7 @@ export function useGame() {
           } else {
             addMessage("system", "You don't see that here.");
           }
-          checkLightWarning();
+          checkLampWarning();
           return;
         }
       }
@@ -614,7 +650,7 @@ export function useGame() {
           const target = stripArticles(match[2]);
           if (!target) {
             addMessage("system", "Use what?");
-            checkLightWarning();
+            checkLampWarning();
             return;
           }
           const itemToUse = gameState.inventory.find(
@@ -627,7 +663,7 @@ export function useGame() {
           } else {
             addMessage("system", "You don't have that.");
           }
-          checkLightWarning();
+          checkLampWarning();
           return;
         }
       }
@@ -658,7 +694,7 @@ export function useGame() {
         if (match) {
           const dirWord = match[match.length - 1].replace(/ward(s)?$/i, "");
           handleDirection(dirWord);
-          checkLightWarning();
+          checkLampWarning();
           return;
         }
       }
@@ -690,7 +726,7 @@ export function useGame() {
       };
       if (directDirections[words[0]]) {
         handleDirection(directDirections[words[0]]);
-        checkLightWarning();
+        checkLampWarning();
         return;
       }
 
@@ -704,7 +740,7 @@ export function useGame() {
       if (implicitTake && implicitTake.addsItem) {
         if (command.includes("pick") || command.includes("grab") || command.includes("take") || command.includes("get")) {
           handleTakeItem(implicitTake.addsItem, implicitTake.id);
-          checkLightWarning();
+          checkLampWarning();
           return;
         }
       }
@@ -726,7 +762,7 @@ export function useGame() {
           );
           if (magicAction && magicAction.to) {
             handleMove(magicAction.to);
-            checkLightWarning();
+            checkLampWarning();
             return;
           }
         }
@@ -746,7 +782,7 @@ export function useGame() {
         );
         if (moveAction && moveAction.to) {
           handleMove(moveAction.to);
-          checkLightWarning();
+          checkLampWarning();
           return;
         }
         
@@ -768,7 +804,7 @@ export function useGame() {
       );
       if (defaultMove && defaultMove.to) {
         handleMove(defaultMove.to);
-        checkLightWarning();
+        checkLampWarning();
         return;
       }
 
@@ -777,7 +813,7 @@ export function useGame() {
         "system",
         `I don't understand "${rawInput}". Try commands like "look", "take lamp", "go east", "go back", or type "help".`
       );
-      checkLightWarning();
+      checkLampWarning();
     },
     [
       gameState,
@@ -788,8 +824,8 @@ export function useGame() {
       handleAction,
       handleMove,
       addMessage,
-      decreaseLight,
-      checkLightWarning,
+      decreaseLampLife,
+      checkLampWarning,
       handleNewGame,
       handleDirection,
       handleGoBack,

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { START_SCENE_ID } from "./story";
+import { INITIAL_LAMP_LIMIT } from "./canonConstants";
 
 export interface Message {
   id: string;
@@ -15,9 +16,14 @@ export interface GameState {
   inventory: string[];
   flags: Record<string, boolean>;
   stats: {
-    light: number;
     turns: number;
   };
+  lamp: {
+    lit: boolean;
+    limit: number;
+    warned: boolean;
+  };
+  batteryState: "fresh" | "used" | "dead" | "absent";
   removedActions: Record<string, string[]>;
 }
 
@@ -38,9 +44,14 @@ export const initialGameState: GameState = {
     grateOpen: false,
   },
   stats: {
-    light: 100,
     turns: 0,
   },
+  lamp: {
+    lit: false,
+    limit: INITIAL_LAMP_LIMIT,
+    warned: false,
+  },
+  batteryState: "fresh",
   removedActions: {},
 };
 

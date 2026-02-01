@@ -64,7 +64,7 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
               <View style={styles.tip}>
                 <Feather name="zap" size={16} color={theme.primary} />
                 <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
-                  Watch your lamp fuel - when it runs out, you're in trouble.
+                  Watch your lamp life - when it runs out, you're in trouble.
                 </ThemedText>
               </View>
               <View style={styles.tip}>

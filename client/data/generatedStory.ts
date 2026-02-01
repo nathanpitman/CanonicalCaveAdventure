@@ -34,7 +34,7 @@ export interface Item {
   description: string;
   usable: boolean;
   useEffect?: {
-    lightBonus?: number;
+    lampBonus?: number;
     message: string;
     setsFlag?: string;
   };

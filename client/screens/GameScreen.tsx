@@ -79,7 +79,8 @@ export default function GameScreen() {
   const gameContent = (
     <View style={styles.gameArea}>
       <GameHeader
-        light={gameState.stats.light}
+        lampLimit={gameState.lamp.limit}
+        lampLit={gameState.lamp.lit}
         sceneTitle={sceneTitle}
         hasLamp={hasLamp}
         onMinimapPress={() => setMinimapVisible(true)}
