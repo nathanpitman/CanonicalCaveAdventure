@@ -27,7 +27,7 @@ export interface SaveData {
   savedAt: number;
 }
 
-const STORAGE_KEY = "descent_save_v1";
+const STORAGE_KEY = "canonical_save_v1";
 
 export const initialGameState: GameState = {
   sceneId: START_SCENE_ID,
