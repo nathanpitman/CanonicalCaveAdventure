@@ -839,7 +839,20 @@ export function useGame() {
     const initGame = async () => {
       const saveData = await loadGame();
       if (saveData) {
-        setGameState(saveData.gameState);
+        const migratedState: GameState = {
+          ...initialGameState,
+          ...saveData.gameState,
+          stats: {
+            ...initialGameState.stats,
+            ...saveData.gameState.stats,
+          },
+          lamp: saveData.gameState.lamp || {
+            ...initialGameState.lamp,
+            lit: saveData.gameState.inventory?.includes("lamp") || false,
+          },
+          batteryState: saveData.gameState.batteryState || initialGameState.batteryState,
+        };
+        setGameState(migratedState);
         setMessages(saveData.messages);
         addMessage("system", "Continuing your journey...");
       } else {
