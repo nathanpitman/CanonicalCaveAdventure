@@ -73,12 +73,6 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
                   Explore thoroughly. Some items are essential for escape.
                 </ThemedText>
               </View>
-              <View style={styles.tip}>
-                <Feather name="briefcase" size={16} color={theme.primary} />
-                <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
-                  Type "inventory" or "inv" to see what you're carrying.
-                </ThemedText>
-              </View>
             </View>
           </ScrollView>
         </View>
