@@ -93,8 +93,26 @@ The game implements Open Adventure's full travel system:
 - **Magic words**: xyzzy/plugh only work inside the building (canonical behavior)
 - **Grate puzzle**: Use keys at grate to unlock, then "enter" to pass through
 
+## UI Layer Separation
+
+The game separates canon action availability from UI suggestions:
+
+- **getAvailableActions()**: All canonical actions for typed commands
+- **getShortcutActions()**: Filtered actions for UI pills only
+  - Compass directions always shown
+  - Magic words only shown if mentioned in scene text
+  - TAKE pills only shown for items present and not taken
+  - Speak/message actions hidden from pills (uiHint: "hidden")
+
 ## Recent Changes
 
+- Added canon compatibility documentation (CANON_COMPATIBILITY.md)
+- Enhanced natural language parser with magic word phrases
+  - "say xyzzy", "cast plugh", "speak xyzzy" patterns supported
+- Added uiHint field to Action schema for shortcut control
+- Improved getShortcutActions filtering
+  - Hides speak/message-only actions from pills
+  - Filters TAKE pills for present items only
 - Implemented canonical Open Adventure travel mechanics
   - Verb tokens for single-word movement commands
   - Conditional travel with requiresFlag filtering
