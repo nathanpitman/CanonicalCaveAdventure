@@ -21,14 +21,16 @@ client/
 │   ├── GameHeader.tsx        # Header with lamp indicator + minimap button
 │   ├── GameOverModal.tsx     # Win/lose screen
 │   ├── HelpModal.tsx         # Help/commands reference
-│   ├── LampIndicator.tsx     # Circular fuel gauge
+│   ├── BatteryIndicator.tsx  # Circular lamp life gauge (canon turn-based)
 │   ├── MessageBubble.tsx     # Narrative text bubbles
 │   ├── Minimap.tsx           # Chronological journey display
 │   ├── MinimapDropdown.tsx   # Slide-down minimap from top (portrait)
 │   └── ...
 ├── data/
 │   ├── story.ts              # All scenes, items, and game content
-│   └── gameState.ts          # Game state types and AsyncStorage
+│   ├── gameState.ts          # Game state types and AsyncStorage
+│   ├── canonConstants.ts     # INITIAL_LAMP_LIMIT, WARN_TIME, BATTERY_LIFE_BONUS
+│   └── lexicon.ts            # Additive natural language synonym mappings
 ├── hooks/
 │   └── useGame.ts            # Main game logic hook
 ├── screens/
@@ -50,7 +52,7 @@ server/
 - **Chat-like narrative feed**: Story unfolds through styled message bubbles
 - **Quick action buttons**: Contextual actions for each scene
 - **Natural language commands**: Type phrases like "pick up the lamp", "head east", "what do i have"
-- **Lamp fuel system**: Light decreases each turn; find fuel to survive
+- **Canon lamp system**: Turn-based lamp life (330 turns); find batteries to extend
 - **Autosave**: Game automatically saves after every state change
 - **Dynamic descriptions**: Room descriptions update when items are taken
 - **Go back command**: Return to previous room with "go back" or "back"
