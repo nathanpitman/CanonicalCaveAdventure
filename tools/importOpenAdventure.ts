@@ -18,6 +18,7 @@ interface Action {
   lightCost?: number;
   requiresFlag?: string;
   message?: string;
+  uiHint?: "auto" | "nav" | "hidden";
 }
 
 interface Scene {
@@ -353,7 +354,7 @@ function main() {
           continue;
         }
 
-        // 4D) SPEAK ACTIONS
+        // 4D) SPEAK ACTIONS (message-only, hidden from UI pills)
         if (actionType === "speak") {
           const msgId = target;
           const msgText = messageTable[msgId] || `[${msgId}] You can't go that way.`;
@@ -369,6 +370,7 @@ function main() {
                 label: getVerbLabel(verb),
                 type: "event",
                 message: msgText,
+                uiHint: "hidden",
               });
             }
           }
@@ -647,6 +649,7 @@ export interface Action {
   lightCost?: number;
   requiresFlag?: string;
   message?: string;
+  uiHint?: "auto" | "nav" | "hidden";
 }
 
 export interface Scene {

@@ -155,10 +155,28 @@ export function useGame() {
     const visibleText = (scene.description + " " + itemDescs).toLowerCase();
 
     return availableActions.filter((action) => {
-      if (action.type !== "move") return true;
-      if (compassActionIds.has(action.id)) return true;
-      const verb = action.id.replace(/^go_/, "");
-      return visibleText.includes(verb.toLowerCase());
+      const actionAny = action as any;
+      
+      // Hide speak/message-only actions (uiHint: "hidden" or has message but no addsItem)
+      if (actionAny.uiHint === "hidden") return false;
+      if (actionAny.message && !action.addsItem && !action.setsFlag) return false;
+      
+      // TAKE pills: only show if item is present in scene AND not yet taken
+      if (action.type === "event" && action.addsItem) {
+        const itemId = action.addsItem;
+        const isInScene = (scene.items || []).includes(itemId);
+        const isAlreadyTaken = takenItems.includes(itemId);
+        if (!isInScene || isAlreadyTaken) return false;
+      }
+      
+      // Move actions: filter based on visibility rules
+      if (action.type === "move") {
+        if (compassActionIds.has(action.id)) return true;
+        const verb = action.id.replace(/^go_/, "");
+        return visibleText.includes(verb.toLowerCase());
+      }
+      
+      return true;
     });
   }, [gameState, getCurrentScene]);
 

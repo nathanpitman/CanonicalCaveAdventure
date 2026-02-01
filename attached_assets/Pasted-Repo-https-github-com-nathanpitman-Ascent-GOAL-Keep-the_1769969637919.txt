@@ -1,0 +1,122 @@
+Repo: https://github.com/nathanpitman/Ascent
+
+GOAL
+Keep the modern UX:
+- UI shortcut pills for movement and obvious actions
+- Forgiving natural-language parser
+
+BUT ensure Open Adventure YAML canon is fully playable:
+- all locations, travel rules, conditions, messages, and key mechanics retained
+- generatedStory.ts must reflect YAML precisely
+- engine must be able to execute all imported constructs
+
+IMPORTANT PRINCIPLE
+Separate:
+(A) Canon action availability (engine)
+(B) UI shortcut suggestions (UX layer)
+
+===========================================================
+PHASE 1 — CANON COMPLETENESS (Importer + Engine)
+===========================================================
+
+1) Importer: tools/importOpenAdventure.ts
+Audit adventure.yaml and ensure importer captures all meaningful fields:
+- location.description.long/short
+- location.conditions (ABOVE/DEEP/LIT/etc.) preserved
+- location.travel rules:
+  - verbs tokens (including empty list = default travel)
+  - cond blocks (not/and/or)
+  - actions:
+    - goto
+    - speak (message IDs resolved to text if possible)
+- object definitions:
+  - starting location (item placement derived from object table, not inferred from room)
+- message string table if present
+
+Generate client/data/generatedStory.ts including:
+- SCENES, ITEMS
+- START_SCENE_ID
+- Any additional metadata required for engine correctness (e.g. per-scene defaultTravel target, conditions, etc.)
+
+2) Extend Action schema minimally to support canon travel:
+- Add optional requiresFlag?: string
+- Add optional message?: string      (for speak actions)
+- Add optional uiHint?: "auto" | "nav" | "hidden" (for shortcut pills only)
+
+3) Engine: client/hooks/useGame.ts
+Implement canon execution support:
+A) requiresFlag filtering in getAvailableActions()
+B) message-only event actions (type event with message prints system message)
+C) default travel support:
+   - importer emits go_default for verbs:[]
+   - in parseCommand unknown-command fallback, if go_default exists, follow it
+D) verb-based travel:
+   - if input is single token or contains a token matching a move action (go_xyzzy etc), execute it
+   - keep natural language: “enter”, “go in”, “head down”, etc.
+E) conditional travel:
+   - map key YAML conditions to flags (start with GRATE_CLOSED / grateOpen as the first fully supported one)
+   - do NOT invent puzzle solutions, but ensure blocking+messages work
+   - if a condition can’t be supported yet, log as UNSUPPORTED with safe fallback (don’t silently drop)
+
+After changes, regenerate generatedStory.ts and confirm:
+- foof rooms have go_default destinations matching YAML (foof1 -> debris; foof3 -> y2)
+- LOC_GRATE enter/down is blocked unless grateOpen flag true; otherwise speak message (GRATE_NOWAY) shows
+- LOC_DEBRIS DEPRE move requires grateOpen (based on YAML not GRATE_CLOSED)
+- no room becomes a dead end due to dropped default travel
+
+===========================================================
+PHASE 2 — KEEP SHORTCUT PILLS BUT DO NOT SPOIL CANON
+===========================================================
+
+Add a new helper in useGame.ts:
+- getShortcutActions(): Action[]
+This must be used ONLY by the UI pills. Typed parser still uses full getAvailableActions().
+
+Shortcut rules:
+
+1) Movement pills:
+- Always show compass/up/down/in/out style exits when available:
+  go_north, go_south, go_east, go_west, go_ne, go_nw, go_se, go_sw, go_up, go_down, go_in, go_out
+- For any other move action (magic words / special verbs like xyzzy/plugh/depre/crawl/etc):
+  Only show it if the verb appears in visible scene text:
+    visibleText = scene.description + itemDescriptions text (lowercased)
+    show if visibleText contains the verb token (e.g. “xyzzy”)
+  This hides XYZZY in Building but shows it in Debris (“MAGIC WORD XYZZY”).
+
+2) Take pills:
+- Show TAKE pills only for items that are actually present in the scene AND not yet taken:
+   action.type==="event" && action.addsItem exists
+   and scene.items includes action.addsItem
+   and inventory does NOT include it
+
+3) Hide “speak” / message-only actions from pills (they are responses, not suggested actions).
+
+Then update the UI component that renders pills (CommandInput or equivalent):
+- Replace its data source from getAvailableActions() to getShortcutActions()
+
+===========================================================
+PHASE 3 — FORGIVING NATURAL LANGUAGE PARSER (WITHOUT BREAKING CANON)
+===========================================================
+
+Maintain your natural language parsing approach but extend it safely:
+
+- When a user types “enter the passage”, “go into the building”, “head down”, etc:
+  normalize to canonical verb tokens where possible:
+  enter/in/down/out/up/north/south/east/west, etc.
+
+- Also support:
+  - if the user types a special token exactly (xyzzy/plugh), it should work (if available by canon)
+  - if the user types “say xyzzy” or “cast xyzzy”, treat xyzzy as the token
+
+- Do NOT auto-suggest hidden verbs as pills unless mentioned in scene text.
+
+===========================================================
+DELIVERABLES
+===========================================================
+- Updated importer (tools/importOpenAdventure.ts)
+- Updated engine (useGame.ts) with canon travel support + getShortcutActions()
+- Updated UI to use getShortcutActions() for pills
+- Regenerated generatedStory.ts
+- A short CANON_COMPATIBILITY.md describing:
+  - supported YAML features
+  - partial/unsupported features (if any) with logs and why gameplay still works
