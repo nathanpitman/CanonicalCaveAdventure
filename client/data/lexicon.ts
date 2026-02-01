@@ -30,19 +30,23 @@ const STOPWORDS = new Set([
 ]);
 
 // Direction synonyms -> canonical direction tokens
+// Includes canonical YAML stems (inwar, upwar, outsi, etc.)
 const DIRECTION_SYNONYMS: Record<string, string> = {
   "north": "north", "n": "north", "northward": "north", "northwards": "north",
   "south": "south", "s": "south", "southward": "south", "southwards": "south",
   "east": "east", "e": "east", "eastward": "east", "eastwards": "east",
   "west": "west", "w": "west", "westward": "west", "westwards": "west",
   "up": "up", "u": "up", "upward": "up", "upwards": "up", "ascend": "up", "climb up": "up",
+  "upwar": "up",
   "down": "down", "d": "down", "downward": "down", "downwards": "down", "descend": "down", "climb down": "down",
   "northeast": "ne", "ne": "ne",
   "northwest": "nw", "nw": "nw",
   "southeast": "se", "se": "se",
   "southwest": "sw", "sw": "sw",
   "in": "in", "inside": "in", "inward": "in", "inwards": "in",
+  "inwar": "in", "insid": "in",
   "out": "out", "outside": "out", "outward": "out", "outwards": "out", "exit": "out", "leave": "out",
+  "outsi": "out", "outdo": "out",
   "enter": "enter",
 };
 
@@ -116,14 +120,16 @@ export function normalizeCommand(
 ): NormalizedCommand {
   const raw = input.trim().toLowerCase();
   
-  // Strip stopwords and punctuation
-  const cleaned = raw
-    .replace(/[.,!?;:'"]/g, "")
+  // Strip punctuation only for pattern matching (keep stopwords for patterns that need them)
+  const withPunctuation = raw.replace(/[.,!?;:'"]/g, "");
+  
+  // Also create a version without stopwords for fallback matching
+  const cleaned = withPunctuation
     .split(/\s+/)
     .filter(word => !STOPWORDS.has(word))
     .join(" ");
   
-  const rawTokens = cleaned.split(/\s+/).filter(Boolean);
+  const rawTokens = withPunctuation.split(/\s+/).filter(Boolean);
   
   // Build set of available action tokens for context
   const availableActionIds = new Set(availableActions.map(a => a.id.toLowerCase()));
@@ -138,7 +144,7 @@ export function normalizeCommand(
   
   // === Pattern 1: "go to X" / "head to X" / "return to X" ===
   const goToPattern = /^(go|move|walk|head|travel|return|proceed)\s+(to|toward|towards|into)\s+(.+)$/;
-  const goToMatch = cleaned.match(goToPattern);
+  const goToMatch = withPunctuation.match(goToPattern);
   if (goToMatch) {
     const nounPhrase = goToMatch[3];
     const resolved = resolveNounToAction(nounPhrase, availableActions);
@@ -155,7 +161,7 @@ export function normalizeCommand(
   
   // === Pattern 2: "enter X" / "go in X" / "go into X" / "go inside X" ===
   const enterPattern = /^(enter|go\s+in|go\s+into|go\s+inside)\s+(.+)$/;
-  const enterMatch = cleaned.match(enterPattern);
+  const enterMatch = withPunctuation.match(enterPattern);
   if (enterMatch) {
     const nounPhrase = enterMatch[2];
     const resolved = resolveNounToAction(nounPhrase, availableActions);
@@ -189,7 +195,7 @@ export function normalizeCommand(
   
   // === Pattern 3: Direct direction with prefix ===
   const dirPattern = /^(go|move|walk|head|travel|proceed|run)\s+(.+)$/;
-  const dirMatch = cleaned.match(dirPattern);
+  const dirMatch = withPunctuation.match(dirPattern);
   if (dirMatch) {
     const dirWord = dirMatch[2];
     if (DIRECTION_SYNONYMS[dirWord]) {
@@ -266,16 +272,22 @@ function resolveNounToAction(
   nounPhrase: string,
   availableActions: Action[]
 ): { token: string; actionId: string } | null {
-  const phrase = nounPhrase.toLowerCase().trim();
+  // Strip articles from the noun phrase
+  const phrase = nounPhrase.toLowerCase().trim()
+    .replace(/^(the|a|an)\s+/, "")
+    .trim();
   
   // Get available move actions
   const moveActions = availableActions.filter(a => a.type === "move");
   
-  // Try direct match on action label
+  // Try direct match on action label or if label contains the phrase
   for (const action of moveActions) {
-    if (action.label.toLowerCase() === phrase ||
-        action.label.toLowerCase() === `go ${phrase}` ||
-        action.label.toLowerCase() === `go to ${phrase}`) {
+    const label = action.label.toLowerCase();
+    if (label === phrase ||
+        label === `go ${phrase}` ||
+        label === `go to ${phrase}` ||
+        label.includes(phrase) ||
+        action.id.replace(/^go_/, "") === phrase) {
       return { token: action.id.replace(/^go_/, ""), actionId: action.id };
     }
   }
