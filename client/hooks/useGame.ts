@@ -689,6 +689,29 @@ export function useGame() {
         }
       }
 
+      // Magic word patterns: "say xyzzy", "cast xyzzy", "speak plugh", etc.
+      const magicWordPatterns = [
+        /^(?:say|speak|cast|chant|utter|invoke)\s+(.+)$/i,
+      ];
+      for (const pattern of magicWordPatterns) {
+        const magicMatch = cleanCommand.match(pattern);
+        if (magicMatch) {
+          const magicWord = magicMatch[1].toLowerCase().trim();
+          const actions = getAvailableActions();
+          const magicAction = actions.find(
+            (a) => a.type === "move" && (
+              a.id === `go_${magicWord}` ||
+              a.label.toLowerCase() === magicWord
+            )
+          );
+          if (magicAction && magicAction.to) {
+            handleMove(magicAction.to);
+            checkLightWarning();
+            return;
+          }
+        }
+      }
+
       // Single-token travel verb support (xyzzy, plugh, enter, depression, etc.)
       if (words.length === 1) {
         const token = words[0].toLowerCase();

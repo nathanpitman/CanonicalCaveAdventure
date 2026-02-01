@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
-// Generated: 2026-01-25T11:01:01.650Z
+// Generated: 2026-02-01T18:16:39.970Z
 // Canonical Open Adventure import with travel mechanics
 
 export interface Action {
@@ -15,6 +15,7 @@ export interface Action {
   lightCost?: number;
   requiresFlag?: string;
   message?: string;
+  uiHint?: "auto" | "nav" | "hidden";
 }
 
 export interface Scene {
@@ -364,7 +365,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_which_way_down",
         "label": "Down",
         "type": "event",
-        "message": "Which way?"
+        "message": "Which way?",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -534,7 +536,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_upstream_downstream_strea",
         "label": "Strea",
         "type": "event",
-        "message": "Upstream or downstream?"
+        "message": "Upstream or downstream?",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -714,31 +717,36 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_dont_fit_slit",
         "label": "Slit",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_strea",
         "label": "Strea",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_down",
         "label": "Down",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_inwar",
         "label": "Inwar",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_enter",
         "label": "Enter",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -827,7 +835,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_grate_noway_enter",
         "label": "Enter",
         "type": "event",
-        "message": "You can't go through a locked steel grate!"
+        "message": "You can't go through a locked steel grate!",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -861,7 +870,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_grate_noway_out",
         "label": "Out",
         "type": "event",
-        "message": "You can't go through a locked steel grate!"
+        "message": "You can't go through a locked steel grate!",
+        "uiHint": "hidden"
       },
       {
         "id": "go_crawl",
@@ -1454,7 +1464,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_cross_bridge_jump",
         "label": "Jump",
         "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping."
+        "message": "I respectfully suggest you go across the bridge instead of jumping.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_forward",
@@ -1466,25 +1477,29 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_no_cross_over",
         "label": "Over",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_no_cross_acros",
         "label": "Acros",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_no_cross_west",
         "label": "West",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_no_cross_cross",
         "label": "Cross",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_over",
@@ -1731,7 +1746,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_too_far_hole",
         "label": "Hole",
         "type": "event",
-        "message": "It is too far up for you to reach."
+        "message": "It is too far up for you to reach.",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -1829,7 +1845,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_cross_bridge_jump",
         "label": "Jump",
         "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping."
+        "message": "I respectfully suggest you go across the bridge instead of jumping.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_forward",
@@ -1841,25 +1858,29 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_no_cross_over",
         "label": "Over",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_no_cross_acros",
         "label": "Acros",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_no_cross_east",
         "label": "East",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_no_cross_cross",
         "label": "Cross",
         "type": "event",
-        "message": "There is no way across the fissure."
+        "message": "There is no way across the fissure.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_over",
@@ -2333,43 +2354,50 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_dont_fit_slit",
         "label": "Slit",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_strea",
         "label": "Strea",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_down",
         "label": "Down",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_upstr",
         "label": "Upstr",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_downs",
         "label": "Downs",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_enter",
         "label": "Enter",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_dont_fit_inwar",
         "label": "Inwar",
         "type": "event",
-        "message": "You don't fit through a two-inch slit!"
+        "message": "You don't fit through a two-inch slit!",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -3359,7 +3387,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_south",
         "label": "South",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_slab",
@@ -3371,7 +3400,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_upwar",
         "label": "Upwar",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_up",
@@ -3383,7 +3413,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_north",
         "label": "North",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_north",
@@ -3395,7 +3426,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_down",
         "label": "Down",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_down",
@@ -3433,7 +3465,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_south",
         "label": "South",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_canyon",
@@ -3451,7 +3484,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_nw",
         "label": "Nw",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_oriental",
@@ -4384,7 +4418,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_rusty_door_north",
         "label": "North",
         "type": "event",
-        "message": "The door is extremely rusty and refuses to open."
+        "message": "The door is extremely rusty and refuses to open.",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -4767,13 +4802,15 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_clam_blocker_south",
         "label": "South",
         "type": "event",
-        "message": "You can't fit this five-foot clam through that little passage!"
+        "message": "You can't fit this five-foot clam through that little passage!",
+        "uiHint": "hidden"
       },
       {
         "id": "say_oyster_blocker_south",
         "label": "South",
         "type": "event",
-        "message": "You can't fit this five-foot oyster through that little passage!"
+        "message": "You can't fit this five-foot oyster through that little passage!",
+        "uiHint": "hidden"
       },
       {
         "id": "go_south",
@@ -4995,55 +5032,64 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_east",
         "label": "East",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_north",
         "label": "North",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_south",
         "label": "South",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_ne",
         "label": "Ne",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_se",
         "label": "Se",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_sw",
         "label": "Sw",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_nw",
         "label": "Nw",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_upwar",
         "label": "Upwar",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_down",
         "label": "Down",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage."
+        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_east",
@@ -5055,7 +5101,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_way_blocked_west",
         "label": "West",
         "type": "event",
-        "message": "You have crawled around in some little holes and found your way\nblocked by a recent cave-in.  You are now back in the main passage."
+        "message": "You have crawled around in some little holes and found your way\nblocked by a recent cave-in.  You are now back in the main passage.",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -5257,19 +5304,22 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_bad_direction_north",
         "label": "North",
         "type": "event",
-        "message": "There is no way to go that direction."
+        "message": "There is no way to go that direction.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_bad_direction_acros",
         "label": "Acros",
         "type": "event",
-        "message": "There is no way to go that direction."
+        "message": "There is no way to go that direction.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_bad_direction_cross",
         "label": "Cross",
         "type": "event",
-        "message": "There is no way to go that direction."
+        "message": "There is no way to go that direction.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_north",
@@ -5341,7 +5391,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_grate_noway_down",
         "label": "Down",
         "type": "event",
-        "message": "You can't go through a locked steel grate!"
+        "message": "You can't go through a locked steel grate!",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -5367,31 +5418,36 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_troll_blocks_over",
         "label": "Over",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_troll_blocks_acros",
         "label": "Acros",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_troll_blocks_cross",
         "label": "Cross",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_troll_blocks_ne",
         "label": "Ne",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_bridge_gone_over",
         "label": "Over",
         "type": "event",
-        "message": "There is no longer any way across the chasm."
+        "message": "There is no longer any way across the chasm.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_jump",
@@ -5403,7 +5459,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_cross_bridge_jump",
         "label": "Jump",
         "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping."
+        "message": "I respectfully suggest you go across the bridge instead of jumping.",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -5461,13 +5518,15 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_nasty_dragon_east",
         "label": "East",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by."
+        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_nasty_dragon_forwa",
         "label": "Forwa",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by."
+        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -5525,13 +5584,15 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_nasty_dragon_north",
         "label": "North",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by."
+        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_nasty_dragon_forwa",
         "label": "Forwa",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by."
+        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "uiHint": "hidden"
       }
     ]
   },
@@ -5557,31 +5618,36 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_troll_blocks_over",
         "label": "Over",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_troll_blocks_acros",
         "label": "Acros",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_troll_blocks_cross",
         "label": "Cross",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_troll_blocks_sw",
         "label": "Sw",
         "type": "event",
-        "message": "The troll refuses to let you cross."
+        "message": "The troll refuses to let you cross.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_cross_bridge_jump",
         "label": "Jump",
         "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping."
+        "message": "I respectfully suggest you go across the bridge instead of jumping.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_fork",
@@ -5799,7 +5865,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_ridiculous_attempt_down",
         "label": "Down",
         "type": "event",
-        "message": "Don't be ridiculous!"
+        "message": "Don't be ridiculous!",
+        "uiHint": "hidden"
       },
       {
         "id": "go_jump",
@@ -6788,7 +6855,8 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_ogre_snarl_north",
         "label": "North",
         "type": "event",
-        "message": "The ogre snarls and shoves you back."
+        "message": "The ogre snarls and shoves you back.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_north",
@@ -7761,19 +7829,22 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_bad_direction_south",
         "label": "South",
         "type": "event",
-        "message": "There is no way to go that direction."
+        "message": "There is no way to go that direction.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_bad_direction_acros",
         "label": "Acros",
         "type": "event",
-        "message": "There is no way to go that direction."
+        "message": "There is no way to go that direction.",
+        "uiHint": "hidden"
       },
       {
         "id": "say_bad_direction_cross",
         "label": "Cross",
         "type": "event",
-        "message": "There is no way to go that direction."
+        "message": "There is no way to go that direction.",
+        "uiHint": "hidden"
       },
       {
         "id": "go_south",
