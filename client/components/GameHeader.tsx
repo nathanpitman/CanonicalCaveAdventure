@@ -49,7 +49,7 @@ export function GameHeader({
     headerScale.value = withSpring(1, { damping: 15, stiffness: 300 });
   };
 
-  const fullTitle = `Descent / ${sceneTitle}`;
+  const fullTitle = `Canonical / ${sceneTitle}`;
 
   return (
     <View style={styles.wrapper}>

@@ -1,8 +1,8 @@
-# Descent - A Text Adventure Game
+# Canonical Cave Adventure
 
 ## Overview
 
-Descent is a mobile-first text adventure game implementing Colossal Cave Adventure (Open Adventure). Players start at the brick building on the surface and explore the cave network, managing their lamp light and collecting treasures.
+Canonical is a mobile-first text adventure game implementing Colossal Cave Adventure (Open Adventure). Players start at the brick building on the surface and explore the cave network, managing their lamp light and collecting treasures.
 
 ## Tech Stack
 
@@ -126,7 +126,7 @@ The game separates canon action availability from UI suggestions:
   - Player starts at the brick building on the surface ("start" scene)
   - Removed custom ASCENT mode patches (chasm_base, rescue gate, etc.)
   - Win condition based on story actions with "escaped" flag only
-  - Renamed from "Ascent" to "Descent" across all UI
+  - Renamed from "Ascent" to "Descent" to "Canonical" across all UI
 - Imported Open Adventure (Colossal Cave) content
   - 184 scenes and 28 items from adventure.yaml
   - Created import script at tools/importOpenAdventure.ts
