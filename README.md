@@ -1,16 +1,14 @@
-# Ascent Game
+# Canonical Cave Adventure Game
 
-Ascent is a contemporary remix of the classic text adventure *Adventure 2.5* / **Open Adventure** ideated and created by Nathan Pitman as an opportunity to explore what's possible with modern AI led development and a healthy dose of childhood nostalgia.
+CCA is a reimaging of the classic text adventure *Adventure 2.5* / **Open Adventure** but with a modern touch interface and an improved text parser. This was created by Nathan Pitman as an opportunity to explore what's possible with modern AI led development and a healthy dose of childhood nostalgia.
 
-Ascent  flips the core gameplay: instead of descending and exploring a cave from the surface downward, Ascent focuses on escaping from a complex cave network to the surface.
-
-This is an original game in terms of code and game design, but it draws inspiration from the cave structure, objects, and descriptions found in the historical *Adventure* text-adventure — *Open Adventure*’s port of *Adventure 2.5*.
+This is an original game in terms of code, but it uses the cave structure, objects, and descriptions found in the historical *Adventure* text-adventure — *Open Adventure*’s port of *Adventure 2.5*.
 
 ---
 
 ## Development
 
-Ascent has been prompted using ChatGPT and Replit on an Apple iPad Air.
+CCA has been prompted using ChatGPT and Replit on an Apple iOS.
 
 ---
 
@@ -20,7 +18,7 @@ This project takes inspiration from:
 
 - **Open Adventure** — a modern C forward-port of the *Adventure 2.5* codebase originally developed by Will Crowther and Don Woods, updated and maintained by Eric S. Raymond and contributors. [oai_citation:1‡LibreGameWiki](https://libregamewiki.org/Open_Adventure?utm_source=chatgpt.com)
 
-While this project does **not reuse code** from the Open Adventure repository, it references and reimagines the cave structure and object descriptions that have been historically part of the *Adventure* lineage.
+While this project does **not reuse code** from the Open Adventure repository, it references the cave structure and object descriptions that have been historically part of the *Adventure* lineage.
 
 ---
 
