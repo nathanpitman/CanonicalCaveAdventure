@@ -8,7 +8,7 @@ This is an original game in terms of code, but it uses the cave structure, objec
 
 ## Development
 
-CCA has been prompted using ChatGPT and Replit on an Apple iOS.
+CCA has been prompted using ChatGPT and Replit on Apple iOS (iPhone & iPad).
 
 ---
 
