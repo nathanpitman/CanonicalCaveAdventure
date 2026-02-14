@@ -80,9 +80,18 @@ server/
 
 ## Running the App
 
-- Frontend runs on port 8081 (Expo)
-- Backend runs on port 5000 (Express)
+- Frontend runs on port 8081 (Expo dev server)
+- Backend runs on port 5000 (Express, development only)
 - Test in browser or scan QR code with Expo Go
+
+## Static Web Deployment (GitHub Pages)
+
+The game runs entirely client-side and can be hosted as a static site:
+- Build: `npx expo export --platform web` (outputs to `dist/`)
+- Base path: `/CanonicalCaveAdventure` (set in `experiments.baseUrl`)
+- Deployed via GitHub Actions workflow (`.github/workflows/deploy.yml`)
+- SPA fallback: 404.html copies index.html for client-side routing
+- No server dependency at runtime — all game content is bundled in the client
 
 ## Canonical Travel Mechanics
 
