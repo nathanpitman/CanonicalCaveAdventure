@@ -115,8 +115,21 @@ The game separates canon action availability from UI suggestions:
   - TAKE pills only shown for items present and not taken
   - Speak/message actions hidden from pills (uiHint: "hidden")
 
+## PWA / Home Screen Support
+
+- Icons generated at 192x192, 512x512 (manifest), 180x180 (apple-touch-icon), 32x32 (favicon) in `public/`
+- `public/manifest.json` defines PWA metadata with GitHub Pages base path
+- `tools/injectPwaMeta.js` post-export script injects Apple meta tags into dist/index.html
+- Deploy workflow runs inject script before SPA fallback copy
+- All icon/manifest paths use `/CanonicalCaveAdventure/` base path for GitHub Pages
+
 ## Recent Changes
 
+- Added PWA support for iOS Add to Home Screen
+  - manifest.json with proper icons, start_url, standalone display
+  - Apple-touch-icon and iOS web app meta tags
+  - Post-export injection script for HTML head tags
+  - Updated GitHub Actions workflow to run injection
 - Added canon compatibility documentation (CANON_COMPATIBILITY.md)
 - Enhanced natural language parser with magic word phrases
   - "say xyzzy", "cast plugh", "speak xyzzy" patterns supported
