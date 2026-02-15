@@ -18,11 +18,12 @@ client/
 ├── components/       # Reusable UI components
 │   ├── ActionButton.tsx      # Quick action buttons
 │   ├── CommandInput.tsx      # Slide-up command panel with Help/Restart
-│   ├── GameHeader.tsx        # Header with progress bar + lamp indicator + location title
+│   ├── GameHeader.tsx        # Header: left-aligned title + right-aligned torch indicator
 │   ├── ProgressChaptersBar.tsx # YouTube-chapters-style segmented progress bar
 │   ├── GameOverModal.tsx     # Win/lose screen
 │   ├── HelpModal.tsx         # Help/commands reference
-│   ├── BatteryIndicator.tsx  # Circular lamp life gauge (canon turn-based)
+│   ├── TorchIndicator.tsx   # Torch icon + absolute remaining turns display
+│   ├── TorchIcon.tsx        # Inline SVG torch silhouette (lit/unlit states)
 │   ├── MessageBubble.tsx     # Narrative text bubbles
 │   └── ...
 ├── data/
@@ -225,5 +226,6 @@ The game separates canon action availability from UI suggestions:
   - All 8 lamp messages extracted verbatim from adventure.yaml
   - Auto battery replacement when lamp dims with batteries in inventory
   - Battery drains only when lamp is ON (per turn-consuming actions)
-  - BatteryIndicator shows ON/OFF state with contextual tooltip
+  - TorchIndicator shows lit/unlit torch icon + absolute remaining turns
+  - Persistent tooltip (no bounce), dismiss on click-outside/Escape
   - isCurrentlyDark() exported from useGame hook for UI consumers
