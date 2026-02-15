@@ -31,9 +31,12 @@ client/
 │   ├── gameState.ts          # Game state types and AsyncStorage
 │   ├── canonConstants.ts     # INITIAL_LAMP_LIMIT, WARN_TIME, BATTERY_LIFE_BONUS
 │   ├── progressMilestones.ts # 14 milestone definitions + trigger mappings
-│   └── lexicon.ts            # Additive natural language synonym mappings
+│   └── lexicon.ts            # Vocabulary maps only (synonyms, directions, prepositions)
+├── nlp/
+│   ├── commandParser.ts      # parseInput(): raw string -> ParsedCommand struct
+│   └── actionResolver.ts     # resolve(): ParsedCommand + context -> Resolution
 ├── hooks/
-│   └── useGame.ts            # Main game logic hook
+│   └── useGame.ts            # Main game logic hook (uses NLP layer)
 ├── screens/
 │   ├── GameScreen.tsx        # Main game screen
 │   └── InventoryModal.tsx    # Inventory view
@@ -124,6 +127,14 @@ The game separates canon action availability from UI suggestions:
 
 ## Recent Changes
 
+- Refactored command parsing into dedicated NLP layer
+  - client/data/lexicon.ts simplified to vocabulary maps only (no parsing logic)
+  - client/nlp/commandParser.ts: parseInput() tokenizes and classifies raw input into ParsedCommand
+  - client/nlp/actionResolver.ts: resolve() maps ParsedCommand + game context to Resolution
+  - useGame.ts updated to use parseInput() + resolve() pipeline
+  - Supports: "use keys to unlock grate", "unlock grate with keys", "enter building", "go to building"
+  - Fallback to old single-token and default-travel logic for unresolved commands
+  - All existing commands preserved (additive only, no regressions)
 - Implemented canonical hint system with 10 gating rules
   - Per-location hint eligibility via scene.hints[] (55 locations mapped)
   - Turn-counting per hint number; two-stage prompt (question -> answer)
