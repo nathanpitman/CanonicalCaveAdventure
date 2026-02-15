@@ -20,10 +20,11 @@ import {
   HINTS,
   OBITUARIES,
   TURN_THRESHOLDS,
+  LAMP_MESSAGES,
   Action,
 } from "@/data/story";
 import { normalizeCommand } from "@/data/lexicon";
-import { WARN_TIME } from "@/data/canonConstants";
+import { WARN_TIME, BATTERY_LIFE_BONUS } from "@/data/canonConstants";
 import {
   PROGRESS_MILESTONES,
   MILESTONE_SCENE_TRIGGERS,
@@ -157,17 +158,31 @@ export function useGame() {
     return SCENES[gameState.sceneId];
   }, [gameState.sceneId]);
 
+  const isLocationDark = useCallback((sceneId: string): boolean => {
+    const scene = SCENES[sceneId];
+    if (!scene) return false;
+    if (scene.conditions?.LIT) return false;
+    if (scene.conditions?.DEEP) return true;
+    return false;
+  }, []);
+
+  const isCurrentlyDark = useCallback((): boolean => {
+    return isLocationDark(gameState.sceneId) && !gameState.lamp.lit;
+  }, [gameState.sceneId, gameState.lamp.lit, isLocationDark]);
+
   const getSceneDescription = useCallback(
     (sceneId: string) => {
       const scene = SCENES[sceneId];
       if (!scene) return "";
 
-      // If the scene has no item descriptions, return the static description
+      if (isLocationDark(sceneId) && !gameState.lamp.lit) {
+        return LAMP_MESSAGES.PITCH_DARK;
+      }
+
       if (!scene.itemDescriptions || !scene.items) {
         return scene.description.long;
       }
 
-      // Check which items are still in this scene (not yet taken)
       const takenItems = gameState.inventory;
       const remainingItems = scene.items.filter(
         (itemId) => !takenItems.includes(itemId)
@@ -175,12 +190,10 @@ export function useGame() {
 
       const baseDesc = scene.description.long;
 
-      // If all items have been taken, return just the base description
       if (remainingItems.length === 0) {
         return baseDesc;
       }
 
-      // Build description with remaining item descriptions
       const itemDescs = remainingItems
         .map((itemId) => scene.itemDescriptions?.[itemId])
         .filter(Boolean);
@@ -191,7 +204,7 @@ export function useGame() {
 
       return baseDesc;
     },
-    [gameState.inventory]
+    [gameState.inventory, gameState.lamp.lit, isLocationDark]
   );
 
   const getAvailableActions = useCallback((): Action[] => {
@@ -487,24 +500,54 @@ export function useGame() {
   }, [gameState.stats.turns, gameState.thresholdsTriggered, addMessage]);
 
   const checkLampWarning = useCallback(() => {
-    const { lamp } = gameState;
+    const { lamp, batteryState } = gameState;
     if (!lamp.lit) return;
     
-    if (lamp.limit <= WARN_TIME && lamp.limit > 0 && !lamp.warned) {
-      addMessage("warning", "Your lamp is getting dim. I would suggest you replace the batteries.");
+    if (lamp.limit <= 0 && !gameOver) {
+      addMessage("warning", LAMP_MESSAGES.LAMP_OUT);
+      setGameState((prev) => ({
+        ...prev,
+        lamp: { ...prev.lamp, lit: false, warned: true },
+      }));
+      if (isCurrentlyDark()) {
+        addMessage("narration", LAMP_MESSAGES.PITCH_DARK);
+      }
+      hapticFeedback("error");
+      return;
+    }
+
+    if (lamp.limit <= WARN_TIME && !lamp.warned) {
+      let warningMsg = LAMP_MESSAGES.LAMP_DIM;
+
+      if (batteryState === "used" || batteryState === "dead") {
+        warningMsg = LAMP_MESSAGES.MISSING_BATTERIES;
+      } else if (gameState.inventory.includes("battery")) {
+        warningMsg = LAMP_MESSAGES.REPLACE_BATTERIES;
+        setGameState((prev) => ({
+          ...prev,
+          lamp: {
+            ...prev.lamp,
+            limit: prev.lamp.limit + BATTERY_LIFE_BONUS,
+            warned: false,
+          },
+          batteryState: "used",
+          inventory: prev.inventory.filter(id => id !== "battery"),
+        }));
+        addMessage("system", warningMsg);
+        hapticFeedback("success");
+        return;
+      } else if (batteryState === "available") {
+        warningMsg = LAMP_MESSAGES.GET_BATTERIES;
+      }
+
+      addMessage("warning", warningMsg);
       hapticFeedback("warning");
       setGameState((prev) => ({
         ...prev,
         lamp: { ...prev.lamp, warned: true },
       }));
-    } else if (lamp.limit <= 0 && !gameOver) {
-      addMessage(
-        "warning",
-        "Your lamp has run out of power."
-      );
-      triggerDeath("The brass lantern flickers and dies. In the absolute darkness of the deep earth, you stumble and fall...");
     }
-  }, [gameState.lamp, addMessage, hapticFeedback, gameOver, triggerDeath]);
+  }, [gameState.lamp, gameState.batteryState, gameState.inventory, addMessage, hapticFeedback, gameOver, isCurrentlyDark]);
 
   const handleMove = useCallback(
     (toSceneId: string) => {
@@ -512,6 +555,16 @@ export function useGame() {
       if (!newScene) {
         addMessage("system", "You can't go that way.");
         return;
+      }
+
+      if (isCurrentlyDark() && !gameOver) {
+        const pitChance = Math.random();
+        if (pitChance < 0.35) {
+          decreaseLampLife();
+          triggerDeath("You fell into a pit and broke every bone in your body!");
+          hapticFeedback("error");
+          return;
+        }
       }
 
       setGameState((prev) => ({
@@ -525,7 +578,7 @@ export function useGame() {
       addMessage("narration", getSceneDescription(toSceneId));
       hapticFeedback("light");
     },
-    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription]
+    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath]
   );
 
   const handleGoBack = useCallback(() => {
@@ -542,6 +595,16 @@ export function useGame() {
 
     addMessage("action", "> GO BACK");
     
+    if (isCurrentlyDark() && !gameOver) {
+      const pitChance = Math.random();
+      if (pitChance < 0.35) {
+        decreaseLampLife();
+        triggerDeath("You fell into a pit and broke every bone in your body!");
+        hapticFeedback("error");
+        return;
+      }
+    }
+
     const targetSceneId = gameState.previousSceneId;
     
     setGameState((prev) => ({
@@ -555,7 +618,7 @@ export function useGame() {
     addMessage("narration", getSceneDescription(targetSceneId));
     hapticFeedback("light");
     checkLampWarning();
-  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning]);
+  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath]);
 
   const handleTakeItem = useCallback(
     (itemId: string, actionId: string) => {
@@ -902,6 +965,59 @@ export function useGame() {
         return;
       }
 
+      // Lamp on/off toggle commands
+      const lampOnPatterns = [
+        "lamp on", "light lamp", "turn on lamp", "turn lamp on",
+        "lantern on", "light lantern", "turn on lantern", "turn lantern on",
+        "torch on", "light torch", "turn on torch", "turn torch on",
+        "on lamp", "on lantern", "on torch",
+      ];
+      const lampOffPatterns = [
+        "lamp off", "extinguish lamp", "turn off lamp", "turn lamp off",
+        "lantern off", "extinguish lantern", "turn off lantern", "turn lantern off",
+        "torch off", "extinguish torch", "turn off torch", "turn torch off",
+        "off lamp", "off lantern", "off torch",
+        "douse lamp", "douse lantern", "douse torch",
+      ];
+      if (lampOnPatterns.includes(command)) {
+        if (!gameState.inventory.includes("lamp")) {
+          addMessage("system", "You don't have the lamp.");
+        } else if (gameState.lamp.lit) {
+          addMessage("system", "Your lamp is already on.");
+        } else if (gameState.lamp.limit <= 0) {
+          addMessage("system", LAMP_MESSAGES.LAMP_OUT);
+        } else {
+          setGameState((prev) => ({
+            ...prev,
+            lamp: { ...prev.lamp, lit: true },
+          }));
+          addMessage("system", LAMP_MESSAGES.LAMP_ON);
+          hapticFeedback("medium");
+        }
+        decreaseLampLife();
+        checkLampWarning();
+        return;
+      }
+      if (lampOffPatterns.includes(command)) {
+        if (!gameState.inventory.includes("lamp")) {
+          addMessage("system", "You don't have the lamp.");
+        } else if (!gameState.lamp.lit) {
+          addMessage("system", "Your lamp is already off.");
+        } else {
+          setGameState((prev) => ({
+            ...prev,
+            lamp: { ...prev.lamp, lit: false },
+          }));
+          addMessage("system", LAMP_MESSAGES.LAMP_OFF);
+          if (isLocationDark(gameState.sceneId)) {
+            addMessage("narration", LAMP_MESSAGES.PITCH_DARK);
+          }
+          hapticFeedback("medium");
+        }
+        decreaseLampLife();
+        return;
+      }
+
       // Natural language patterns for INVENTORY
       if (
         command === "inventory" ||
@@ -1153,6 +1269,9 @@ export function useGame() {
       handleNewGame,
       handleDirection,
       handleGoBack,
+      isLocationDark,
+      hapticFeedback,
+      getSceneDescription,
     ]
   );
 
@@ -1220,6 +1339,7 @@ export function useGame() {
     isLoading,
     gameOver,
     milestonesCompletedCount,
+    isCurrentlyDark,
     getCurrentScene,
     getAvailableActions,
     getShortcutActions,

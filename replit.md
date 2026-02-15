@@ -216,3 +216,14 @@ The game separates canon action availability from UI suggestions:
 - Initial MVP implementation with all 6 scenes
 - Lamp fuel indicator with pulse animation when low
 - Game over screen for escape success
+- Implemented canonical lamp/darkness system with full Open Adventure parity
+  - 144 DEEP locations suppress descriptions when lamp is off (PITCH_DARK message)
+  - 37 LIT locations always visible regardless of lamp state
+  - Lamp on/off toggle with 15+ command variations (lamp/lantern/torch on/off, light/extinguish, etc.)
+  - Movement-in-darkness death: 35% pit chance in dark locations (handleMove and handleGoBack)
+  - Multi-stage canonical battery warnings (LAMP_DIM, GET_BATTERIES, REPLACE_BATTERIES, MISSING_BATTERIES, LAMP_OUT)
+  - All 8 lamp messages extracted verbatim from adventure.yaml
+  - Auto battery replacement when lamp dims with batteries in inventory
+  - Battery drains only when lamp is ON (per turn-consuming actions)
+  - BatteryIndicator shows ON/OFF state with contextual tooltip
+  - isCurrentlyDark() exported from useGame hook for UI consumers

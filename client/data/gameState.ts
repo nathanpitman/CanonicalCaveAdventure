@@ -31,7 +31,7 @@ export interface GameState {
     limit: number;
     warned: boolean;
   };
-  batteryState: "fresh" | "used" | "dead" | "absent";
+  batteryState: "fresh" | "available" | "carried" | "used" | "dead" | "absent";
   removedActions: Record<string, string[]>;
   milestonesCompleted: string[];
   hintState: {

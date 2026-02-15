@@ -303,6 +303,22 @@ function main() {
   console.log(`Found ${obituariesRaw.length} obituaries`);
   console.log(`Found ${turnThresholdsRaw.length} turn thresholds`);
 
+  // Extract canonical lamp messages
+  const LAMP_MESSAGES: Record<string, string> = {};
+  const lampMsgKeys = ['PITCH_DARK', 'LAMP_DIM', 'LAMP_OUT', 'GET_BATTERIES', 'REPLACE_BATTERIES', 'MISSING_BATTERIES'];
+  for (const key of lampMsgKeys) {
+    const msg = arbitraryMsgs.get(key);
+    if (msg) {
+      LAMP_MESSAGES[key] = normaliseText(msg);
+    }
+  }
+  // Add lamp state change messages from lamp object
+  const lampObj = objects.get('LAMP');
+  if (lampObj && lampObj.changes) {
+    LAMP_MESSAGES['LAMP_OFF'] = normaliseText(lampObj.changes[0]);
+    LAMP_MESSAGES['LAMP_ON'] = normaliseText(lampObj.changes[1]);
+  }
+
   // Build hints table
   interface HintEntry {
     number: number;
@@ -828,6 +844,8 @@ export interface TurnThresholdEntry {
   message: string;
 }
 
+export type LampMessages = Record<string, string>;
+
 export const START_SCENE_ID: string = ${JSON.stringify(START_SCENE_ID)};
 
 export const INTRO_MESSAGES: string[] = ${JSON.stringify(introMessages, null, 2)};
@@ -844,6 +862,8 @@ export const HINTS: HintEntry[] = ${JSON.stringify(HINTS, null, 2)};
 export const OBITUARIES: ObituaryEntry[] = ${JSON.stringify(OBITUARIES, null, 2)};
 
 export const TURN_THRESHOLDS: TurnThresholdEntry[] = ${JSON.stringify(TURN_THRESHOLDS, null, 2)};
+
+export const LAMP_MESSAGES: Record<string, string> = ${JSON.stringify(LAMP_MESSAGES, null, 2)};
 
 export const ITEMS: Record<string, Item> = ${JSON.stringify(ITEMS, null, 2)};
 

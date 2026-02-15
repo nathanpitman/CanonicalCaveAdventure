@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
-// Generated: 2026-02-15T18:39:59.100Z
+// Generated: 2026-02-15T19:19:01.103Z
 // Canonical Open Adventure import with travel mechanics
 
 export interface Action {
@@ -67,6 +67,8 @@ export interface TurnThresholdEntry {
   pointLoss: number;
   message: string;
 }
+
+export type LampMessages = Record<string, string>;
 
 export const START_SCENE_ID: string = "start";
 
@@ -371,6 +373,17 @@ export const TURN_THRESHOLDS: TurnThresholdEntry[] = [
     "message": "Good grief, don't you *EVER* give up? Do you realize you've spent over 2500 turns at this? That's another ten points off, a total of twenty points lost for taking so long."
   }
 ];
+
+export const LAMP_MESSAGES: Record<string, string> = {
+  "PITCH_DARK": "It is now pitch dark. If you proceed you will likely fall into a pit.",
+  "LAMP_DIM": "Your lamp is getting dim. You'd best start wrapping this up, unless you can find some fresh batteries. I seem to recall there's a vending machine in the maze. Bring some coins with you.",
+  "LAMP_OUT": "Your lamp has run out of power.",
+  "GET_BATTERIES": "Your lamp is getting dim. You'd best go back for those batteries.",
+  "REPLACE_BATTERIES": "Your lamp is getting dim. I'm taking the liberty of replacing the batteries.",
+  "MISSING_BATTERIES": "Your lamp is getting dim, and you're out of spare batteries. You'd best start wrapping this up.",
+  "LAMP_OFF": "Your lamp is now off.",
+  "LAMP_ON": "Your lamp is now on."
+};
 
 export const ITEMS: Record<string, Item> = {
   "keys": {

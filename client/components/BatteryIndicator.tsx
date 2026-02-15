@@ -122,7 +122,9 @@ export function BatteryIndicator({ lampLimit, lampLit }: BatteryIndicatorProps) 
           <ThemedText style={[styles.tooltipText, { color: theme.textSecondary }]}>
             {isDead
               ? "Your lamp has burned out permanently."
-              : `Lamp life: ${lampLimit} turns remaining. Find batteries to extend.`}
+              : !lampLit
+              ? `Lamp is OFF. ${lampLimit} turns of fuel remain. Type "lamp on" to light it.`
+              : `Lamp is ON. ${lampLimit} turns remaining. Find batteries to extend.`}
           </ThemedText>
           <View
             style={[styles.tooltipArrow, { borderBottomColor: theme.backgroundSecondary }]}
