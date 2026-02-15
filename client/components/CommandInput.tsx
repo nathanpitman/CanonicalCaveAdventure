@@ -6,7 +6,6 @@ import {
   Pressable,
   Platform,
   Modal,
-  ScrollView,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import Animated, {
@@ -20,19 +19,15 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius } from "@/constants/theme";
-import { Action } from "@/data/story";
 
 interface CommandInputProps {
   onSubmit: (command: string) => void;
   onHelp: () => void;
   onRestart: () => void;
-  actions: Action[];
-  onAction: (action: Action) => void;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -53,34 +48,10 @@ const PLACEHOLDER_EXAMPLES = [
   "head east",
 ];
 
-function getActionIcon(action: Action): keyof typeof Feather.glyphMap {
-  const label = action.label.toLowerCase();
-  
-  if (label.includes("look") || label.includes("examine")) return "eye";
-  if (label.includes("take") || label.includes("pick") || label.includes("grab")) return "download";
-  if (label.includes("use")) return "tool";
-  if (action.type === "move" || label.includes("go") || label.includes("climb") || label.includes("enter")) {
-    if (label.includes("north") || label.includes("up")) return "arrow-up";
-    if (label.includes("south") || label.includes("down")) return "arrow-down";
-    if (label.includes("east") || label.includes("right")) return "arrow-right";
-    if (label.includes("west") || label.includes("left")) return "arrow-left";
-    return "navigation";
-  }
-  if (label.includes("light")) return "sun";
-  if (label.includes("drink") || label.includes("water")) return "droplet";
-  if (label.includes("read")) return "book-open";
-  if (label.includes("open")) return "unlock";
-  if (label.includes("close")) return "lock";
-  
-  return "chevron-right";
-}
-
 export function CommandInput({ 
   onSubmit, 
   onHelp, 
   onRestart,
-  actions,
-  onAction,
 }: CommandInputProps) {
   const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
@@ -223,16 +194,6 @@ export function CommandInput({
     return { opacity };
   });
 
-  const actionsOpacity = useAnimatedStyle(() => {
-    const opacity = interpolate(
-      translateY.value,
-      [-(totalExpandedHeight - totalCollapsedHeight) * 0.3, 0],
-      [1, 0],
-      Extrapolation.CLAMP
-    );
-    return { opacity };
-  });
-
   const handleIndicatorStyle = useAnimatedStyle(() => {
     const rotation = interpolate(
       translateY.value,
@@ -323,52 +284,6 @@ export function CommandInput({
               />
             </AnimatedPressable>
           </View>
-
-          {actions.length > 0 ? (
-            <Animated.View style={[styles.actionsWrapper, actionsOpacity]}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.actionsContainer}
-                style={styles.actionsScroll}
-              >
-                {actions.map((action) => (
-                  <Pressable
-                    key={action.id}
-                    onPress={() => onAction(action)}
-                    style={({ pressed }) => [
-                      styles.actionPill,
-                      { 
-                        backgroundColor: pressed ? theme.primary : theme.backgroundSecondary,
-                        borderColor: pressed ? theme.primary : theme.primary + "40",
-                      },
-                    ]}
-                    testID={`action-${action.id}`}
-                  >
-                    {({ pressed }) => (
-                      <>
-                        <Feather 
-                          name={getActionIcon(action)} 
-                          size={14} 
-                          color={pressed ? theme.backgroundDefault : theme.primary} 
-                        />
-                        <ThemedText style={[styles.actionLabel, { color: pressed ? theme.backgroundDefault : theme.primary }]}>
-                          {action.label}
-                        </ThemedText>
-                      </>
-                    )}
-                  </Pressable>
-                ))}
-              </ScrollView>
-              <LinearGradient
-                colors={["transparent", theme.backgroundDefault]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.actionsFade}
-                pointerEvents="none"
-              />
-            </Animated.View>
-          ) : null}
 
           <Animated.View style={[styles.menuContainer, menuOpacity]}>
             <Pressable
@@ -476,38 +391,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     alignItems: "center",
     justifyContent: "center",
-  },
-  actionsWrapper: {
-    position: "relative",
-    marginTop: Spacing.sm,
-  },
-  actionsScroll: {
-    maxHeight: 36,
-  },
-  actionsContainer: {
-    gap: Spacing.sm,
-    paddingRight: 40,
-  },
-  actionsFade: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-    bottom: 0,
-    width: 40,
-  },
-  actionPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-    gap: 6,
-  },
-  actionLabel: {
-    fontSize: 13,
-    fontWeight: "600",
-    lineHeight: 14,
   },
   menuContainer: {
     flexDirection: "row",

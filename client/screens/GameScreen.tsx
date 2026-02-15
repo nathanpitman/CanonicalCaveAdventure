@@ -31,8 +31,6 @@ export default function GameScreen() {
     isLoading,
     gameOver,
     milestonesCompletedCount,
-    getShortcutActions,
-    handleAction,
     parseCommand,
     handleNewGame,
     handlePromptResponse,
@@ -41,7 +39,6 @@ export default function GameScreen() {
   const [helpVisible, setHelpVisible] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
-  const actions = getShortcutActions();
   const currentScene = SCENES[gameState.sceneId];
   const sceneTitle = currentScene?.title || "Unknown";
   const hasLamp = gameState.inventory.includes("lamp");
@@ -123,8 +120,6 @@ export default function GameScreen() {
             onSubmit={parseCommand}
             onHelp={() => setHelpVisible(true)}
             onRestart={handleNewGame}
-            actions={actions}
-            onAction={handleAction}
           />
         )}
       </KeyboardAvoidingView>
