@@ -160,7 +160,7 @@ export function useGame() {
 
       // If the scene has no item descriptions, return the static description
       if (!scene.itemDescriptions || !scene.items) {
-        return scene.description;
+        return scene.description.long;
       }
 
       // Check which items are still in this scene (not yet taken)
@@ -169,8 +169,7 @@ export function useGame() {
         (itemId) => !takenItems.includes(itemId)
       );
 
-      // Always use descriptionWithoutItems as base when available
-      const baseDesc = scene.descriptionWithoutItems || scene.description;
+      const baseDesc = scene.description.long;
 
       // If all items have been taken, return just the base description
       if (remainingItems.length === 0) {
@@ -234,7 +233,7 @@ export function useGame() {
     const itemDescs = remainingItems
       .map((itemId) => scene.itemDescriptions?.[itemId] || "")
       .join(" ");
-    const visibleText = (scene.description + " " + itemDescs).toLowerCase();
+    const visibleText = (scene.description.long + " " + itemDescs).toLowerCase();
 
     return availableActions.filter((action) => {
       const actionAny = action as any;
@@ -584,7 +583,7 @@ export function useGame() {
     const sceneMessage: Message = {
       id: generateMessageId(),
       type: "narration",
-      text: startScene?.description || "You are in a mysterious place.",
+      text: startScene?.description.long || "You are in a mysterious place.",
       timestamp: Date.now(),
     };
 
@@ -1001,7 +1000,7 @@ export function useGame() {
         const sceneMessage: Message = {
           id: generateMessageId(),
           type: "narration",
-          text: startScene?.description || "You are in a mysterious place.",
+          text: startScene?.description.long || "You are in a mysterious place.",
           timestamp: Date.now(),
         };
 

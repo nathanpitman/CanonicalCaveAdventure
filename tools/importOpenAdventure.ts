@@ -21,14 +21,22 @@ interface Action {
   uiHint?: "auto" | "nav" | "hidden";
 }
 
+interface SceneDescription {
+  long: string;
+  short: string;
+  maptag?: string;
+}
+
 interface Scene {
   id: string;
   title: string;
-  description: string;
-  descriptionWithoutItems?: string;
+  description: SceneDescription;
   itemDescriptions?: Record<string, string>;
   actions: Action[];
   items?: string[];
+  sound?: string;
+  conditions?: Record<string, boolean>;
+  hints?: string[];
 }
 
 interface Item {
@@ -193,10 +201,11 @@ const ARBITRARY_MESSAGES: Record<string, string> = {
 // ============================================================
 function normaliseText(text: string): string {
   return text
-    .replace(/\n\n/g, "\x00PARA\x00")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{2,}/g, "\x00PARA\x00")
     .replace(/\n/g, " ")
     .replace(/\x00PARA\x00/g, "\n\n")
-    .replace(/  +/g, " ")
+    .replace(/ {2,}/g, " ")
     .trim();
 }
 
@@ -283,9 +292,34 @@ function main() {
     ? data.arbitrary_messages
     : new Map();
 
+  const hints: any[] = Array.isArray(data.hints) ? data.hints : [];
+
   console.log(`Found ${locations.size} locations`);
   console.log(`Found ${objects.size} objects`);
   console.log(`Found ${arbitraryMsgs.size} arbitrary messages`);
+  console.log(`Found ${hints.length} hints`);
+
+  // Build hints table
+  interface HintEntry {
+    name: string;
+    turns: number;
+    penalty: number;
+    question: string;
+    hint: string;
+  }
+  const HINTS: HintEntry[] = [];
+  for (const h of hints) {
+    const hintData = h.hint || h;
+    if (hintData && hintData.name) {
+      HINTS.push({
+        name: hintData.name,
+        turns: hintData.turns || 0,
+        penalty: hintData.penalty || 0,
+        question: normaliseText(hintData.question || ""),
+        hint: normaliseText(hintData.hint || ""),
+      });
+    }
+  }
 
   // Build message lookup from YAML
   const messageTable: Record<string, string> = { ...ARBITRARY_MESSAGES };
@@ -331,7 +365,9 @@ function main() {
 
     const sceneId = toSceneId(locId);
     const title = extractTitle(locId, loc.description);
-    const description = normaliseText(loc.description.long || loc.description.short || "A mysterious place.");
+    const longText = normaliseText(loc.description.long || loc.description.short || "A mysterious place.");
+    const shortText = normaliseText(loc.description.short || loc.description.long || "A mysterious place.");
+    const maptag = loc.description.maptag && loc.description.maptag !== "!!null" ? loc.description.maptag : undefined;
 
     const actions: Action[] = [
       { id: "look", label: "LOOK AROUND", type: "command", command: "look" },
@@ -490,17 +526,32 @@ function main() {
       }
     }
 
+    const sceneDescription: SceneDescription = {
+      long: longText,
+      short: shortText,
+    };
+    if (maptag) {
+      sceneDescription.maptag = maptag;
+    }
+
     const scene: Scene = {
       id: sceneId,
       title,
-      description,
-      descriptionWithoutItems: description,
+      description: sceneDescription,
       actions,
     };
 
     if (sceneItems.length > 0) {
       scene.items = sceneItems;
       scene.itemDescriptions = itemDescriptions;
+    }
+
+    if (loc.sound) {
+      scene.sound = loc.sound;
+    }
+
+    if (loc.conditions && Object.keys(loc.conditions).length > 0) {
+      scene.conditions = loc.conditions;
     }
 
     SCENES[sceneId] = scene;
@@ -515,7 +566,7 @@ function main() {
   if (!SCENES[START_SCENE_ID]) {
     // Fallback: find a scene with "end of road" or "brick building"
     for (const [sceneId, scene] of Object.entries(SCENES)) {
-      const text = `${scene.title} ${scene.description}`.toLowerCase();
+      const text = `${scene.title} ${scene.description.long}`.toLowerCase();
       if (text.includes("end of a road") || text.includes("brick building")) {
         START_SCENE_ID = sceneId;
         break;
@@ -671,14 +722,22 @@ export interface Action {
   uiHint?: "auto" | "nav" | "hidden";
 }
 
+export interface SceneDescription {
+  long: string;
+  short: string;
+  maptag?: string;
+}
+
 export interface Scene {
   id: string;
   title: string;
-  description: string;
-  descriptionWithoutItems?: string;
+  description: SceneDescription;
   itemDescriptions?: Record<string, string>;
   actions: Action[];
   items?: string[];
+  sound?: string;
+  conditions?: Record<string, boolean>;
+  hints?: string[];
 }
 
 export interface Item {
@@ -693,6 +752,14 @@ export interface Item {
   };
 }
 
+export interface HintEntry {
+  name: string;
+  turns: number;
+  penalty: number;
+  question: string;
+  hint: string;
+}
+
 export const START_SCENE_ID: string = ${JSON.stringify(START_SCENE_ID)};
 
 export const INTRO_MESSAGES: string[] = ${JSON.stringify(introMessages, null, 2)};
@@ -703,6 +770,8 @@ export const HELP_TEXT: string = ${JSON.stringify(helpText)};
 export const CANON_TRAVEL_VERBS: string[] = ${JSON.stringify([...canonTravelVerbs].sort(), null, 2)};
 
 export const CANON_OBJECTS: { id: string; name: string }[] = ${JSON.stringify(canonObjects, null, 2)};
+
+export const HINTS: HintEntry[] = ${JSON.stringify(HINTS, null, 2)};
 
 export const ITEMS: Record<string, Item> = ${JSON.stringify(ITEMS, null, 2)};
 
