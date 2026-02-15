@@ -130,6 +130,11 @@ The game separates canon action availability from UI suggestions:
   - Apple-touch-icon and iOS web app meta tags
   - Post-export injection script for HTML head tags
   - Updated GitHub Actions workflow to run injection
+- Upgraded command parser for forgiving natural language item interactions
+  - Structured item/target/verb parsing in lexicon.ts (tryStructuredParse)
+  - Supports "use X to Y Z", "Y Z with X", "use X on Z" patterns
+  - Generalized routing in useGame.ts: inventory check -> useEffect -> action match
+  - Works for ALL items generically, not hardcoded to specific items
 - Added canon compatibility documentation (CANON_COMPATIBILITY.md)
 - Enhanced natural language parser with magic word phrases
   - "say xyzzy", "cast plugh", "speak xyzzy" patterns supported
