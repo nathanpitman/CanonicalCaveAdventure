@@ -9,6 +9,13 @@ export interface Message {
   timestamp: number;
 }
 
+export interface PendingPrompt {
+  type: "hint_question" | "hint_answer" | "obituary";
+  text: string;
+  hintNumber?: number;
+  obituaryIndex?: number;
+}
+
 export interface GameState {
   sceneId: string;
   previousSceneId: string | null;
@@ -17,6 +24,7 @@ export interface GameState {
   flags: Record<string, boolean>;
   stats: {
     turns: number;
+    score: number;
   };
   lamp: {
     lit: boolean;
@@ -26,6 +34,16 @@ export interface GameState {
   batteryState: "fresh" | "used" | "dead" | "absent";
   removedActions: Record<string, string[]>;
   milestonesCompleted: string[];
+  hintState: {
+    turnsInLocation: Record<number, number>;
+    hintsGiven: number[];
+  };
+  deathState: {
+    numdie: number;
+    maxDeaths: number;
+  };
+  thresholdsTriggered: number[];
+  pendingPrompt: PendingPrompt | null;
 }
 
 export interface SaveData {
@@ -46,6 +64,7 @@ export const initialGameState: GameState = {
   },
   stats: {
     turns: 0,
+    score: 0,
   },
   lamp: {
     lit: false,
@@ -55,6 +74,16 @@ export const initialGameState: GameState = {
   batteryState: "fresh",
   removedActions: {},
   milestonesCompleted: [],
+  hintState: {
+    turnsInLocation: {},
+    hintsGiven: [],
+  },
+  deathState: {
+    numdie: 0,
+    maxDeaths: 3,
+  },
+  thresholdsTriggered: [],
+  pendingPrompt: null,
 };
 
 export async function saveGame(

@@ -422,12 +422,12 @@ export function useGame() {
       if (item.useEffect) {
         addMessage("system", item.useEffect.message);
 
-        if (item.useEffect.lampBonus) {
+        if (item.useEffect.lightBonus) {
           setGameState((prev) => ({
             ...prev,
             lamp: {
               ...prev.lamp,
-              limit: prev.lamp.limit + item.useEffect!.lampBonus!,
+              limit: prev.lamp.limit + item.useEffect!.lightBonus!,
               warned: false,
             },
             inventory: prev.inventory.filter((id) => id !== itemId),
@@ -984,6 +984,10 @@ export function useGame() {
           },
           batteryState: saveData.gameState.batteryState || initialGameState.batteryState,
           milestonesCompleted: saveData.gameState.milestonesCompleted || [],
+          hintState: saveData.gameState.hintState || initialGameState.hintState,
+          deathState: saveData.gameState.deathState || initialGameState.deathState,
+          thresholdsTriggered: saveData.gameState.thresholdsTriggered || [],
+          pendingPrompt: saveData.gameState.pendingPrompt || null,
         };
         setGameState(migratedState);
         setMessages(saveData.messages);
