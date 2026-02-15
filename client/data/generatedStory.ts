@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
-// Generated: 2026-02-01T21:15:24.397Z
+// Generated: 2026-02-15T16:03:12.435Z
 // Canonical Open Adventure import with travel mechanics
 
 export interface Action {
@@ -34,7 +34,7 @@ export interface Item {
   description: string;
   usable: boolean;
   useEffect?: {
-    lampBonus?: number;
+    lightBonus?: number;
     message: string;
     setsFlag?: string;
   };
@@ -384,8 +384,8 @@ export const SCENES: Record<string, Scene> = {
   "start": {
     "id": "start",
     "title": "Front Of Building",
-    "description": "You are standing at the end of a road before a small brick building.\nAround you is a forest.  A small stream flows out of the building and\ndown a gully.",
-    "descriptionWithoutItems": "You are standing at the end of a road before a small brick building.\nAround you is a forest.  A small stream flows out of the building and\ndown a gully.",
+    "description": "You are standing at the end of a road before a small brick building. Around you is a forest. A small stream flows out of the building and down a gully.",
+    "descriptionWithoutItems": "You are standing at the end of a road before a small brick building. Around you is a forest. A small stream flows out of the building and down a gully.",
     "actions": [
       {
         "id": "look",
@@ -488,8 +488,8 @@ export const SCENES: Record<string, Scene> = {
   "hill": {
     "id": "hill",
     "title": "Hill In Road",
-    "description": "You have walked up a hill, still in the forest.  The road slopes back\ndown the other side of the hill.  There is a building in the distance.",
-    "descriptionWithoutItems": "You have walked up a hill, still in the forest.  The road slopes back\ndown the other side of the hill.  There is a building in the distance.",
+    "description": "You have walked up a hill, still in the forest. The road slopes back down the other side of the hill. There is a building in the distance.",
+    "descriptionWithoutItems": "You have walked up a hill, still in the forest. The road slopes back down the other side of the hill. There is a building in the distance.",
     "actions": [
       {
         "id": "look",
@@ -635,8 +635,8 @@ export const SCENES: Record<string, Scene> = {
   "valley": {
     "id": "valley",
     "title": "Valley",
-    "description": "You are in a valley in the forest beside a stream tumbling along a\nrocky bed.",
-    "descriptionWithoutItems": "You are in a valley in the forest beside a stream tumbling along a\nrocky bed.",
+    "description": "You are in a valley in the forest beside a stream tumbling along a rocky bed.",
+    "descriptionWithoutItems": "You are in a valley in the forest beside a stream tumbling along a rocky bed.",
     "actions": [
       {
         "id": "look",
@@ -778,8 +778,8 @@ export const SCENES: Record<string, Scene> = {
   "cliff": {
     "id": "cliff",
     "title": "Cliff",
-    "description": "The forest thins out here to reveal a steep cliff.  There is no way\ndown, but a small ledge can be seen to the west across the chasm.",
-    "descriptionWithoutItems": "The forest thins out here to reveal a steep cliff.  There is no way\ndown, but a small ledge can be seen to the west across the chasm.",
+    "description": "The forest thins out here to reveal a steep cliff. There is no way down, but a small ledge can be seen to the west across the chasm.",
+    "descriptionWithoutItems": "The forest thins out here to reveal a steep cliff. There is no way down, but a small ledge can be seen to the west across the chasm.",
     "actions": [
       {
         "id": "look",
@@ -816,8 +816,8 @@ export const SCENES: Record<string, Scene> = {
   "slit": {
     "id": "slit",
     "title": "Slit In Streambed",
-    "description": "At your feet all the water of the stream splashes into a 2-inch slit\nin the rock.  Downstream the streambed is bare rock.",
-    "descriptionWithoutItems": "At your feet all the water of the stream splashes into a 2-inch slit\nin the rock.  Downstream the streambed is bare rock.",
+    "description": "At your feet all the water of the stream splashes into a 2-inch slit in the rock. Downstream the streambed is bare rock.",
+    "descriptionWithoutItems": "At your feet all the water of the stream splashes into a 2-inch slit in the rock. Downstream the streambed is bare rock.",
     "actions": [
       {
         "id": "look",
@@ -925,8 +925,8 @@ export const SCENES: Record<string, Scene> = {
   "grate": {
     "id": "grate",
     "title": "Grate",
-    "description": "You are in a 20-foot depression floored with bare dirt.  Set into the\ndirt is a strong steel grate mounted in concrete.  A dry streambed\nleads into the depression.",
-    "descriptionWithoutItems": "You are in a 20-foot depression floored with bare dirt.  Set into the\ndirt is a strong steel grate mounted in concrete.  A dry streambed\nleads into the depression.",
+    "description": "You are in a 20-foot depression floored with bare dirt. Set into the dirt is a strong steel grate mounted in concrete. A dry streambed leads into the depression.",
+    "descriptionWithoutItems": "You are in a 20-foot depression floored with bare dirt. Set into the dirt is a strong steel grate mounted in concrete. A dry streambed leads into the depression.",
     "actions": [
       {
         "id": "look",
@@ -1015,8 +1015,8 @@ export const SCENES: Record<string, Scene> = {
   "belowgrate": {
     "id": "belowgrate",
     "title": "Below The Grate",
-    "description": "You are in a small chamber beneath a 3x3 steel grate to the surface.\nA low crawl over cobbles leads inward to the west.",
-    "descriptionWithoutItems": "You are in a small chamber beneath a 3x3 steel grate to the surface.\nA low crawl over cobbles leads inward to the west.",
+    "description": "You are in a small chamber beneath a 3x3 steel grate to the surface. A low crawl over cobbles leads inward to the west.",
+    "descriptionWithoutItems": "You are in a small chamber beneath a 3x3 steel grate to the surface. A low crawl over cobbles leads inward to the west.",
     "actions": [
       {
         "id": "look",
@@ -1086,8 +1086,8 @@ export const SCENES: Record<string, Scene> = {
   "cobble": {
     "id": "cobble",
     "title": "Cobble Crawl",
-    "description": "You are crawling over cobbles in a low passage.  There is a dim light\nat the east end of the passage.",
-    "descriptionWithoutItems": "You are crawling over cobbles in a low passage.  There is a dim light\nat the east end of the passage.",
+    "description": "You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage.",
+    "descriptionWithoutItems": "You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage.",
     "actions": [
       {
         "id": "look",
@@ -1161,8 +1161,8 @@ export const SCENES: Record<string, Scene> = {
   "debris": {
     "id": "debris",
     "title": "Debris Room",
-    "description": "You are in a debris room filled with stuff washed in from the surface.\nA low wide passage with cobbles becomes plugged with mud and debris\nhere, but an awkward canyon leads upward and west.  In the mud someone\nhas scrawled, \"MAGIC WORD XYZZY\".",
-    "descriptionWithoutItems": "You are in a debris room filled with stuff washed in from the surface.\nA low wide passage with cobbles becomes plugged with mud and debris\nhere, but an awkward canyon leads upward and west.  In the mud someone\nhas scrawled, \"MAGIC WORD XYZZY\".",
+    "description": "You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. In the mud someone has scrawled, \"MAGIC WORD XYZZY\".",
+    "descriptionWithoutItems": "You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. In the mud someone has scrawled, \"MAGIC WORD XYZZY\".",
     "actions": [
       {
         "id": "look",
@@ -1336,8 +1336,8 @@ export const SCENES: Record<string, Scene> = {
   "birdchamber": {
     "id": "birdchamber",
     "title": "Bird Chamber",
-    "description": "You are in a splendid chamber thirty feet high.  The walls are frozen\nrivers of orange stone.  An awkward canyon and a good passage exit\nfrom east and west sides of the chamber.",
-    "descriptionWithoutItems": "You are in a splendid chamber thirty feet high.  The walls are frozen\nrivers of orange stone.  An awkward canyon and a good passage exit\nfrom east and west sides of the chamber.",
+    "description": "You are in a splendid chamber thirty feet high. The walls are frozen rivers of orange stone. An awkward canyon and a good passage exit from east and west sides of the chamber.",
+    "descriptionWithoutItems": "You are in a splendid chamber thirty feet high. The walls are frozen rivers of orange stone. An awkward canyon and a good passage exit from east and west sides of the chamber.",
     "actions": [
       {
         "id": "look",
@@ -1412,8 +1412,8 @@ export const SCENES: Record<string, Scene> = {
   "pittop": {
     "id": "pittop",
     "title": "Top Of Small Pit",
-    "description": "At your feet is a small pit breathing traces of white mist.  An east\npassage ends here except for a small crack leading on.",
-    "descriptionWithoutItems": "At your feet is a small pit breathing traces of white mist.  An east\npassage ends here except for a small crack leading on.",
+    "description": "At your feet is a small pit breathing traces of white mist. An east passage ends here except for a small crack leading on.",
+    "descriptionWithoutItems": "At your feet is a small pit breathing traces of white mist. An east passage ends here except for a small crack leading on.",
     "actions": [
       {
         "id": "look",
@@ -1487,8 +1487,8 @@ export const SCENES: Record<string, Scene> = {
   "misthall": {
     "id": "misthall",
     "title": "Hall Of Mists",
-    "description": "You are at one end of a vast hall stretching forward out of sight to\nthe west.  There are openings to either side.  Nearby, a wide stone\nstaircase leads downward.  The hall is filled with wisps of white mist\nswaying to and fro almost as if alive.  A cold wind blows up the\nstaircase.  There is a passage at the top of a dome behind you.",
-    "descriptionWithoutItems": "You are at one end of a vast hall stretching forward out of sight to\nthe west.  There are openings to either side.  Nearby, a wide stone\nstaircase leads downward.  The hall is filled with wisps of white mist\nswaying to and fro almost as if alive.  A cold wind blows up the\nstaircase.  There is a passage at the top of a dome behind you.",
+    "description": "You are at one end of a vast hall stretching forward out of sight to the west. There are openings to either side. Nearby, a wide stone staircase leads downward. The hall is filled with wisps of white mist swaying to and fro almost as if alive. A cold wind blows up the staircase. There is a passage at the top of a dome behind you.",
+    "descriptionWithoutItems": "You are at one end of a vast hall stretching forward out of sight to the west. There are openings to either side. Nearby, a wide stone staircase leads downward. The hall is filled with wisps of white mist swaying to and fro almost as if alive. A cold wind blows up the staircase. There is a passage at the top of a dome behind you.",
     "actions": [
       {
         "id": "look",
@@ -1591,8 +1591,8 @@ export const SCENES: Record<string, Scene> = {
   "crack": {
     "id": "crack",
     "title": "Crack",
-    "description": "The crack is far too small for you to follow.  At its widest it is\nbarely wide enough to admit your foot.",
-    "descriptionWithoutItems": "The crack is far too small for you to follow.  At its widest it is\nbarely wide enough to admit your foot.",
+    "description": "The crack is far too small for you to follow. At its widest it is barely wide enough to admit your foot.",
+    "descriptionWithoutItems": "The crack is far too small for you to follow. At its widest it is barely wide enough to admit your foot.",
     "actions": [
       {
         "id": "look",
@@ -1611,8 +1611,8 @@ export const SCENES: Record<string, Scene> = {
   "eastbank": {
     "id": "eastbank",
     "title": "East Bank Of Fissure",
-    "description": "You are on the east bank of a fissure slicing clear across the hall.\nThe mist is quite thick here, and the fissure is too wide to jump.",
-    "descriptionWithoutItems": "You are on the east bank of a fissure slicing clear across the hall.\nThe mist is quite thick here, and the fissure is too wide to jump.",
+    "description": "You are on the east bank of a fissure slicing clear across the hall. The mist is quite thick here, and the fissure is too wide to jump.",
+    "descriptionWithoutItems": "You are on the east bank of a fissure slicing clear across the hall. The mist is quite thick here, and the fissure is too wide to jump.",
     "actions": [
       {
         "id": "look",
@@ -1684,8 +1684,8 @@ export const SCENES: Record<string, Scene> = {
   "nugget": {
     "id": "nugget",
     "title": "Nugget-of-gold Room",
-    "description": "This is a low room with a crude note on the wall.  The note says,\n\"You won't get it up the steps\".",
-    "descriptionWithoutItems": "This is a low room with a crude note on the wall.  The note says,\n\"You won't get it up the steps\".",
+    "description": "This is a low room with a crude note on the wall. The note says, \"You won't get it up the steps\".",
+    "descriptionWithoutItems": "This is a low room with a crude note on the wall. The note says, \"You won't get it up the steps\".",
     "actions": [
       {
         "id": "look",
@@ -1729,8 +1729,8 @@ export const SCENES: Record<string, Scene> = {
   "kinghall": {
     "id": "kinghall",
     "title": "Hall Of Mt King",
-    "description": "You are in the Hall of the Mountain King, with passages off in all\ndirections.",
-    "descriptionWithoutItems": "You are in the Hall of the Mountain King, with passages off in all\ndirections.",
+    "description": "You are in the Hall of the Mountain King, with passages off in all directions.",
+    "descriptionWithoutItems": "You are in the Hall of the Mountain King, with passages off in all directions.",
     "actions": [
       {
         "id": "look",
@@ -1869,8 +1869,8 @@ export const SCENES: Record<string, Scene> = {
   "westend": {
     "id": "westend",
     "title": "West End Of Twopit Room",
-    "description": "You are at the west end of the Twopit Room.  There is a large hole in\nthe wall above the pit at this end of the room.",
-    "descriptionWithoutItems": "You are at the west end of the Twopit Room.  There is a large hole in\nthe wall above the pit at this end of the room.",
+    "description": "You are at the west end of the Twopit Room. There is a large hole in the wall above the pit at this end of the room.",
+    "descriptionWithoutItems": "You are at the west end of the Twopit Room. There is a large hole in the wall above the pit at this end of the room.",
     "actions": [
       {
         "id": "look",
@@ -1926,8 +1926,8 @@ export const SCENES: Record<string, Scene> = {
   "eastpit": {
     "id": "eastpit",
     "title": "East Pit",
-    "description": "You are at the bottom of the eastern pit in the Twopit Room.  There is\na small pool of oil in one corner of the pit.",
-    "descriptionWithoutItems": "You are at the bottom of the eastern pit in the Twopit Room.  There is\na small pool of oil in one corner of the pit.",
+    "description": "You are at the bottom of the eastern pit in the Twopit Room. There is a small pool of oil in one corner of the pit.",
+    "descriptionWithoutItems": "You are at the bottom of the eastern pit in the Twopit Room. There is a small pool of oil in one corner of the pit.",
     "actions": [
       {
         "id": "look",
@@ -1952,8 +1952,8 @@ export const SCENES: Record<string, Scene> = {
   "westpit": {
     "id": "westpit",
     "title": "West Pit",
-    "description": "You are at the bottom of the western pit in the Twopit Room.  There is\na large hole in the wall about 25 feet above you.",
-    "descriptionWithoutItems": "You are at the bottom of the western pit in the Twopit Room.  There is\na large hole in the wall about 25 feet above you.",
+    "description": "You are at the bottom of the western pit in the Twopit Room. There is a large hole in the wall about 25 feet above you.",
+    "descriptionWithoutItems": "You are at the bottom of the western pit in the Twopit Room. There is a large hole in the wall about 25 feet above you.",
     "actions": [
       {
         "id": "look",
@@ -2090,8 +2090,8 @@ export const SCENES: Record<string, Scene> = {
   "floorhole": {
     "id": "floorhole",
     "title": "N/s Passage Above E/w Passage",
-    "description": "You are in a low n/s passage at a hole in the floor.  The hole goes\ndown to an e/w passage.",
-    "descriptionWithoutItems": "You are in a low n/s passage at a hole in the floor.  The hole goes\ndown to an e/w passage.",
+    "description": "You are in a low n/s passage at a hole in the floor. The hole goes down to an e/w passage.",
+    "descriptionWithoutItems": "You are in a low n/s passage at a hole in the floor. The hole goes down to an e/w passage.",
     "actions": [
       {
         "id": "look",
@@ -2204,8 +2204,8 @@ export const SCENES: Record<string, Scene> = {
   "westside": {
     "id": "westside",
     "title": "The West Side Chamber",
-    "description": "You are in the west side chamber of the Hall of the Mountain King.\nA passage continues west and up here.",
-    "descriptionWithoutItems": "You are in the west side chamber of the Hall of the Mountain King.\nA passage continues west and up here.",
+    "description": "You are in the west side chamber of the Hall of the Mountain King. A passage continues west and up here.",
+    "descriptionWithoutItems": "You are in the west side chamber of the Hall of the Mountain King. A passage continues west and up here.",
     "actions": [
       {
         "id": "look",
@@ -2281,8 +2281,8 @@ export const SCENES: Record<string, Scene> = {
   "y2": {
     "id": "y2",
     "title": "\"y2\"",
-    "description": "You are in a large room, with a passage to the south, a passage to the\nwest, and a wall of broken rock to the east.  There is a large \"Y2\" on\na rock in the room's center.",
-    "descriptionWithoutItems": "You are in a large room, with a passage to the south, a passage to the\nwest, and a wall of broken rock to the east.  There is a large \"Y2\" on\na rock in the room's center.",
+    "description": "You are in a large room, with a passage to the south, a passage to the west, and a wall of broken rock to the east. There is a large \"Y2\" on a rock in the room's center.",
+    "descriptionWithoutItems": "You are in a large room, with a passage to the south, a passage to the west, and a wall of broken rock to the east. There is a large \"Y2\" on a rock in the room's center.",
     "actions": [
       {
         "id": "look",
@@ -2369,8 +2369,8 @@ export const SCENES: Record<string, Scene> = {
   "window1": {
     "id": "window1",
     "title": "Window On Pit",
-    "description": "You're at a low window overlooking a huge pit, which extends up out of\nsight.  A floor is indistinctly visible over 50 feet below.  Traces of\nwhite mist cover the floor of the pit, becoming thicker to the right.\nMarks in the dust around the window would seem to indicate that\nsomeone has been here recently.  Directly across the pit from you and\n25 feet away there is a similar window looking into a lighted room.  A\nshadowy figure can be seen there peering back at you.",
-    "descriptionWithoutItems": "You're at a low window overlooking a huge pit, which extends up out of\nsight.  A floor is indistinctly visible over 50 feet below.  Traces of\nwhite mist cover the floor of the pit, becoming thicker to the right.\nMarks in the dust around the window would seem to indicate that\nsomeone has been here recently.  Directly across the pit from you and\n25 feet away there is a similar window looking into a lighted room.  A\nshadowy figure can be seen there peering back at you.",
+    "description": "You're at a low window overlooking a huge pit, which extends up out of sight. A floor is indistinctly visible over 50 feet below. Traces of white mist cover the floor of the pit, becoming thicker to the right. Marks in the dust around the window would seem to indicate that someone has been here recently. Directly across the pit from you and 25 feet away there is a similar window looking into a lighted room. A shadowy figure can be seen there peering back at you.",
+    "descriptionWithoutItems": "You're at a low window overlooking a huge pit, which extends up out of sight. A floor is indistinctly visible over 50 feet below. Traces of white mist cover the floor of the pit, becoming thicker to the right. Marks in the dust around the window would seem to indicate that someone has been here recently. Directly across the pit from you and 25 feet away there is a similar window looking into a lighted room. A shadowy figure can be seen there peering back at you.",
     "actions": [
       {
         "id": "look",
@@ -2401,8 +2401,8 @@ export const SCENES: Record<string, Scene> = {
   "broken": {
     "id": "broken",
     "title": "Dirty Passage",
-    "description": "You are in a dirty broken passage.  To the east is a crawl.  To the\nwest is a large passage.  Above you is a hole to another passage.",
-    "descriptionWithoutItems": "You are in a dirty broken passage.  To the east is a crawl.  To the\nwest is a large passage.  Above you is a hole to another passage.",
+    "description": "You are in a dirty broken passage. To the east is a crawl. To the west is a large passage. Above you is a hole to another passage.",
+    "descriptionWithoutItems": "You are in a dirty broken passage. To the east is a crawl. To the west is a large passage. Above you is a hole to another passage.",
     "actions": [
       {
         "id": "look",
@@ -2451,8 +2451,8 @@ export const SCENES: Record<string, Scene> = {
   "smallpitbrink": {
     "id": "smallpitbrink",
     "title": "Brink Of Small Pit",
-    "description": "You are on the brink of a small clean climbable pit.  A crawl leads\nwest.",
-    "descriptionWithoutItems": "You are on the brink of a small clean climbable pit.  A crawl leads\nwest.",
+    "description": "You are on the brink of a small clean climbable pit. A crawl leads west.",
+    "descriptionWithoutItems": "You are on the brink of a small clean climbable pit. A crawl leads west.",
     "actions": [
       {
         "id": "look",
@@ -2495,8 +2495,8 @@ export const SCENES: Record<string, Scene> = {
   "smallpit": {
     "id": "smallpit",
     "title": "Bottom Of Pit With Stream",
-    "description": "You are in the bottom of a small pit with a little stream, which\nenters and exits through tiny slits.",
-    "descriptionWithoutItems": "You are in the bottom of a small pit with a little stream, which\nenters and exits through tiny slits.",
+    "description": "You are in the bottom of a small pit with a little stream, which enters and exits through tiny slits.",
+    "descriptionWithoutItems": "You are in the bottom of a small pit with a little stream, which enters and exits through tiny slits.",
     "actions": [
       {
         "id": "look",
@@ -2576,8 +2576,8 @@ export const SCENES: Record<string, Scene> = {
   "dusty": {
     "id": "dusty",
     "title": "Dusty Rock Room",
-    "description": "You are in a large room full of dusty rocks.  There is a big hole in\nthe floor.  There are cracks everywhere, and a passage leading east.",
-    "descriptionWithoutItems": "You are in a large room full of dusty rocks.  There is a big hole in\nthe floor.  There are cracks everywhere, and a passage leading east.",
+    "description": "You are in a large room full of dusty rocks. There is a big hole in the floor. There are cracks everywhere, and a passage leading east.",
+    "descriptionWithoutItems": "You are in a large room full of dusty rocks. There is a big hole in the floor. There are cracks everywhere, and a passage leading east.",
     "actions": [
       {
         "id": "look",
@@ -2626,8 +2626,8 @@ export const SCENES: Record<string, Scene> = {
   "parallel1": {
     "id": "parallel1",
     "title": "Parallel1",
-    "description": "You have crawled through a very low wide passage parallel to and north\nof the Hall of Mists.",
-    "descriptionWithoutItems": "You have crawled through a very low wide passage parallel to and north\nof the Hall of Mists.",
+    "description": "You have crawled through a very low wide passage parallel to and north of the Hall of Mists.",
+    "descriptionWithoutItems": "You have crawled through a very low wide passage parallel to and north of the Hall of Mists.",
     "actions": [
       {
         "id": "look",
@@ -2646,8 +2646,8 @@ export const SCENES: Record<string, Scene> = {
   "mistwest": {
     "id": "mistwest",
     "title": "West End Of Hall Of Mists",
-    "description": "You are at the west end of the Hall of Mists.  A low wide crawl\ncontinues west and another goes north.  To the south is a little\npassage 6 feet off the floor.",
-    "descriptionWithoutItems": "You are at the west end of the Hall of Mists.  A low wide crawl\ncontinues west and another goes north.  To the south is a little\npassage 6 feet off the floor.",
+    "description": "You are at the west end of the Hall of Mists. A low wide crawl continues west and another goes north. To the south is a little passage 6 feet off the floor.",
+    "descriptionWithoutItems": "You are at the west end of the Hall of Mists. A low wide crawl continues west and another goes north. To the south is a little passage 6 feet off the floor.",
     "actions": [
       {
         "id": "look",
@@ -3224,8 +3224,8 @@ export const SCENES: Record<string, Scene> = {
   "pitbrink": {
     "id": "pitbrink",
     "title": "Brink Of Pit",
-    "description": "You are on the brink of a thirty foot pit with a massive orange column\ndown one wall.  You could climb down here but you could not get back\nup.  The maze continues at this level.",
-    "descriptionWithoutItems": "You are on the brink of a thirty foot pit with a massive orange column\ndown one wall.  You could climb down here but you could not get back\nup.  The maze continues at this level.",
+    "description": "You are on the brink of a thirty foot pit with a massive orange column down one wall. You could climb down here but you could not get back up. The maze continues at this level.",
+    "descriptionWithoutItems": "You are on the brink of a thirty foot pit with a massive orange column down one wall. You could climb down here but you could not get back up. The maze continues at this level.",
     "actions": [
       {
         "id": "look",
@@ -3300,8 +3300,8 @@ export const SCENES: Record<string, Scene> = {
   "parallel2": {
     "id": "parallel2",
     "title": "Parallel2",
-    "description": "You have crawled through a very low wide passage parallel to and north\nof the Hall of Mists.",
-    "descriptionWithoutItems": "You have crawled through a very low wide passage parallel to and north\nof the Hall of Mists.",
+    "description": "You have crawled through a very low wide passage parallel to and north of the Hall of Mists.",
+    "descriptionWithoutItems": "You have crawled through a very low wide passage parallel to and north of the Hall of Mists.",
     "actions": [
       {
         "id": "look",
@@ -3320,8 +3320,8 @@ export const SCENES: Record<string, Scene> = {
   "longeast": {
     "id": "longeast",
     "title": "East End Of Long Hall",
-    "description": "You are at the east end of a very long hall apparently without side\nchambers.  To the east a low wide crawl slants up.  To the north a\nround two foot hole slants down.",
-    "descriptionWithoutItems": "You are at the east end of a very long hall apparently without side\nchambers.  To the east a low wide crawl slants up.  To the north a\nround two foot hole slants down.",
+    "description": "You are at the east end of a very long hall apparently without side chambers. To the east a low wide crawl slants up. To the north a round two foot hole slants down.",
+    "descriptionWithoutItems": "You are at the east end of a very long hall apparently without side chambers. To the east a low wide crawl slants up. To the north a round two foot hole slants down.",
     "actions": [
       {
         "id": "look",
@@ -3376,8 +3376,8 @@ export const SCENES: Record<string, Scene> = {
   "longwest": {
     "id": "longwest",
     "title": "West End Of Long Hall",
-    "description": "You are at the west end of a very long featureless hall.  The hall\njoins up with a narrow north/south passage.",
-    "descriptionWithoutItems": "You are at the west end of a very long featureless hall.  The hall\njoins up with a narrow north/south passage.",
+    "description": "You are at the west end of a very long featureless hall. The hall joins up with a narrow north/south passage.",
+    "descriptionWithoutItems": "You are at the west end of a very long featureless hall. The hall joins up with a narrow north/south passage.",
     "actions": [
       {
         "id": "look",
@@ -3472,8 +3472,8 @@ export const SCENES: Record<string, Scene> = {
   "complex": {
     "id": "complex",
     "title": "Complex Junction",
-    "description": "You are at a complex junction.  A low hands and knees passage from the\nnorth joins a higher crawl from the east to make a walking passage\ngoing west.  There is also a large room above.  The air is damp here.",
-    "descriptionWithoutItems": "You are at a complex junction.  A low hands and knees passage from the\nnorth joins a higher crawl from the east to make a walking passage\ngoing west.  There is also a large room above.  The air is damp here.",
+    "description": "You are at a complex junction. A low hands and knees passage from the north joins a higher crawl from the east to make a walking passage going west. There is also a large room above. The air is damp here.",
+    "descriptionWithoutItems": "You are at a complex junction. A low hands and knees passage from the north joins a higher crawl from the east to make a walking passage going west. There is also a large room above. The air is damp here.",
     "actions": [
       {
         "id": "look",
@@ -3534,8 +3534,8 @@ export const SCENES: Record<string, Scene> = {
   "bedquilt": {
     "id": "bedquilt",
     "title": "Bedquilt",
-    "description": "You are in Bedquilt, a long east/west passage with holes everywhere.\nTo explore at random select north, south, up, or down.",
-    "descriptionWithoutItems": "You are in Bedquilt, a long east/west passage with holes everywhere.\nTo explore at random select north, south, up, or down.",
+    "description": "You are in Bedquilt, a long east/west passage with holes everywhere. To explore at random select north, south, up, or down.",
+    "descriptionWithoutItems": "You are in Bedquilt, a long east/west passage with holes everywhere. To explore at random select north, south, up, or down.",
     "actions": [
       {
         "id": "look",
@@ -3559,7 +3559,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_south",
         "label": "South",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
@@ -3572,7 +3572,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_upwar",
         "label": "Upwar",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
@@ -3585,7 +3585,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_north",
         "label": "North",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
@@ -3598,7 +3598,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_down",
         "label": "Down",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
@@ -3612,8 +3612,8 @@ export const SCENES: Record<string, Scene> = {
   "swisscheese": {
     "id": "swisscheese",
     "title": "Swiss Cheese Room",
-    "description": "You are in a room whose walls resemble Swiss cheese.  Obvious passages\ngo west, east, ne, and nw.  Part of the room is occupied by a large\nbedrock block.",
-    "descriptionWithoutItems": "You are in a room whose walls resemble Swiss cheese.  Obvious passages\ngo west, east, ne, and nw.  Part of the room is occupied by a large\nbedrock block.",
+    "description": "You are in a room whose walls resemble Swiss cheese. Obvious passages go west, east, ne, and nw. Part of the room is occupied by a large bedrock block.",
+    "descriptionWithoutItems": "You are in a room whose walls resemble Swiss cheese. Obvious passages go west, east, ne, and nw. Part of the room is occupied by a large bedrock block.",
     "actions": [
       {
         "id": "look",
@@ -3637,7 +3637,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_south",
         "label": "South",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
@@ -3656,7 +3656,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_nw",
         "label": "Nw",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
@@ -3670,8 +3670,8 @@ export const SCENES: Record<string, Scene> = {
   "eastend": {
     "id": "eastend",
     "title": "East End Of Twopit Room",
-    "description": "You are at the east end of the Twopit Room.  The floor here is\nlittered with thin rock slabs, which make it easy to descend the pits.\nThere is a path here bypassing the pits to connect passages from east\nand west.  There are holes all over, but the only big one is on the\nwall directly over the west pit where you can't get to it.",
-    "descriptionWithoutItems": "You are at the east end of the Twopit Room.  The floor here is\nlittered with thin rock slabs, which make it easy to descend the pits.\nThere is a path here bypassing the pits to connect passages from east\nand west.  There are holes all over, but the only big one is on the\nwall directly over the west pit where you can't get to it.",
+    "description": "You are at the east end of the Twopit Room. The floor here is littered with thin rock slabs, which make it easy to descend the pits. There is a path here bypassing the pits to connect passages from east and west. There are holes all over, but the only big one is on the wall directly over the west pit where you can't get to it.",
+    "descriptionWithoutItems": "You are at the east end of the Twopit Room. The floor here is littered with thin rock slabs, which make it easy to descend the pits. There is a path here bypassing the pits to connect passages from east and west. There are holes all over, but the only big one is on the wall directly over the west pit where you can't get to it.",
     "actions": [
       {
         "id": "look",
@@ -3714,8 +3714,8 @@ export const SCENES: Record<string, Scene> = {
   "slab": {
     "id": "slab",
     "title": "Slab Room",
-    "description": "You are in a large low circular chamber whose floor is an immense slab\nfallen from the ceiling (Slab Room).  East and west there once were\nlarge passages, but they are now filled with boulders.  Low small\npassages go north and south, and the south one quickly bends west\naround the boulders.",
-    "descriptionWithoutItems": "You are in a large low circular chamber whose floor is an immense slab\nfallen from the ceiling (Slab Room).  East and west there once were\nlarge passages, but they are now filled with boulders.  Low small\npassages go north and south, and the south one quickly bends west\naround the boulders.",
+    "description": "You are in a large low circular chamber whose floor is an immense slab fallen from the ceiling (Slab Room). East and west there once were large passages, but they are now filled with boulders. Low small passages go north and south, and the south one quickly bends west around the boulders.",
+    "descriptionWithoutItems": "You are in a large low circular chamber whose floor is an immense slab fallen from the ceiling (Slab Room). East and west there once were large passages, but they are now filled with boulders. Low small passages go north and south, and the south one quickly bends west around the boulders.",
     "actions": [
       {
         "id": "look",
@@ -3834,8 +3834,8 @@ export const SCENES: Record<string, Scene> = {
   "threejunction": {
     "id": "threejunction",
     "title": "Junction Of Three Secret Canyons",
-    "description": "You are in a secret canyon at a junction of three canyons, bearing\nnorth, south, and se.  The north one is as tall as the other two\ncombined.",
-    "descriptionWithoutItems": "You are in a secret canyon at a junction of three canyons, bearing\nnorth, south, and se.  The north one is as tall as the other two\ncombined.",
+    "description": "You are in a secret canyon at a junction of three canyons, bearing north, south, and se. The north one is as tall as the other two combined.",
+    "descriptionWithoutItems": "You are in a secret canyon at a junction of three canyons, bearing north, south, and se. The north one is as tall as the other two combined.",
     "actions": [
       {
         "id": "look",
@@ -3866,8 +3866,8 @@ export const SCENES: Record<string, Scene> = {
   "lowroom": {
     "id": "lowroom",
     "title": "Large Low Room",
-    "description": "You are in a large low room.  Crawls lead north, se, and sw.",
-    "descriptionWithoutItems": "You are in a large low room.  Crawls lead north, se, and sw.",
+    "description": "You are in a large low room. Crawls lead north, se, and sw.",
+    "descriptionWithoutItems": "You are in a large low room. Crawls lead north, se, and sw.",
     "actions": [
       {
         "id": "look",
@@ -3942,8 +3942,8 @@ export const SCENES: Record<string, Scene> = {
   "secret3": {
     "id": "secret3",
     "title": "Secret E/w Canyon Above Tight Canyon",
-    "description": "You are in a secret canyon which here runs e/w.  It crosses over a\nvery tight canyon 15 feet below.  If you go down you may not be able\nto get back up.",
-    "descriptionWithoutItems": "You are in a secret canyon which here runs e/w.  It crosses over a\nvery tight canyon 15 feet below.  If you go down you may not be able\nto get back up.",
+    "description": "You are in a secret canyon which here runs e/w. It crosses over a very tight canyon 15 feet below. If you go down you may not be able to get back up.",
+    "descriptionWithoutItems": "You are in a secret canyon which here runs e/w. It crosses over a very tight canyon 15 feet below. If you go down you may not be able to get back up.",
     "actions": [
       {
         "id": "look",
@@ -4020,8 +4020,8 @@ export const SCENES: Record<string, Scene> = {
   "tall": {
     "id": "tall",
     "title": "Tall",
-    "description": "You are in a tall e/w canyon.  A low tight crawl goes 3 feet north and\nseems to open up.",
-    "descriptionWithoutItems": "You are in a tall e/w canyon.  A low tight crawl goes 3 feet north and\nseems to open up.",
+    "description": "You are in a tall e/w canyon. A low tight crawl goes 3 feet north and seems to open up.",
+    "descriptionWithoutItems": "You are in a tall e/w canyon. A low tight crawl goes 3 feet north and seems to open up.",
     "actions": [
       {
         "id": "look",
@@ -4078,8 +4078,8 @@ export const SCENES: Record<string, Scene> = {
   "sewer": {
     "id": "sewer",
     "title": "Sewer",
-    "description": "The stream flows out through a pair of 1 foot diameter sewer pipes.\nIt would be advisable to use the exit.",
-    "descriptionWithoutItems": "The stream flows out through a pair of 1 foot diameter sewer pipes.\nIt would be advisable to use the exit.",
+    "description": "The stream flows out through a pair of 1 foot diameter sewer pipes. It would be advisable to use the exit.",
+    "descriptionWithoutItems": "The stream flows out through a pair of 1 foot diameter sewer pipes. It would be advisable to use the exit.",
     "actions": [
       {
         "id": "look",
@@ -4330,8 +4330,8 @@ export const SCENES: Record<string, Scene> = {
   "narrow": {
     "id": "narrow",
     "title": "Narrow Corridor",
-    "description": "You are in a long, narrow corridor stretching out of sight to the\nwest.  At the eastern end is a hole through which you can see a\nprofusion of leaves.",
-    "descriptionWithoutItems": "You are in a long, narrow corridor stretching out of sight to the\nwest.  At the eastern end is a hole through which you can see a\nprofusion of leaves.",
+    "description": "You are in a long, narrow corridor stretching out of sight to the west. At the eastern end is a hole through which you can see a profusion of leaves.",
+    "descriptionWithoutItems": "You are in a long, narrow corridor stretching out of sight to the west. At the eastern end is a hole through which you can see a profusion of leaves.",
     "actions": [
       {
         "id": "look",
@@ -4380,8 +4380,8 @@ export const SCENES: Record<string, Scene> = {
   "noclimb": {
     "id": "noclimb",
     "title": "Noclimb",
-    "description": "There is nothing here to climb.  Use \"up\" or \"out\" to leave the pit.",
-    "descriptionWithoutItems": "There is nothing here to climb.  Use \"up\" or \"out\" to leave the pit.",
+    "description": "There is nothing here to climb. Use \"up\" or \"out\" to leave the pit.",
+    "descriptionWithoutItems": "There is nothing here to climb. Use \"up\" or \"out\" to leave the pit.",
     "actions": [
       {
         "id": "look",
@@ -4420,8 +4420,8 @@ export const SCENES: Record<string, Scene> = {
   "incline": {
     "id": "incline",
     "title": "Steep Incline Above Large Room",
-    "description": "You are at the top of a steep incline above a large room.  You could\nclimb down here, but you would not be able to climb up.  There is a\npassage leading back to the north.",
-    "descriptionWithoutItems": "You are at the top of a steep incline above a large room.  You could\nclimb down here, but you would not be able to climb up.  There is a\npassage leading back to the north.",
+    "description": "You are at the top of a steep incline above a large room. You could climb down here, but you would not be able to climb up. There is a passage leading back to the north.",
+    "descriptionWithoutItems": "You are at the top of a steep incline above a large room. You could climb down here, but you would not be able to climb up. There is a passage leading back to the north.",
     "actions": [
       {
         "id": "look",
@@ -4464,8 +4464,8 @@ export const SCENES: Record<string, Scene> = {
   "giantroom": {
     "id": "giantroom",
     "title": "Giant Room",
-    "description": "You are in the Giant Room.  The ceiling here is too high up for your\nlamp to show it.  Cavernous passages lead east, north, and south.  On\nthe west wall is scrawled the inscription, \"FEE FIE FOE FOO\" [sic].",
-    "descriptionWithoutItems": "You are in the Giant Room.  The ceiling here is too high up for your\nlamp to show it.  Cavernous passages lead east, north, and south.  On\nthe west wall is scrawled the inscription, \"FEE FIE FOE FOO\" [sic].",
+    "description": "You are in the Giant Room. The ceiling here is too high up for your lamp to show it. Cavernous passages lead east, north, and south. On the west wall is scrawled the inscription, \"FEE FIE FOE FOO\" [sic].",
+    "descriptionWithoutItems": "You are in the Giant Room. The ceiling here is too high up for your lamp to show it. Cavernous passages lead east, north, and south. On the west wall is scrawled the inscription, \"FEE FIE FOE FOO\" [sic].",
     "actions": [
       {
         "id": "look",
@@ -4598,8 +4598,8 @@ export const SCENES: Record<string, Scene> = {
   "waterfall": {
     "id": "waterfall",
     "title": "Cavern With Waterfall",
-    "description": "You are in a magnificent cavern with a rushing stream, which cascades\nover a sparkling waterfall into a roaring whirlpool which disappears\nthrough a hole in the floor.  Passages exit to the south and west.",
-    "descriptionWithoutItems": "You are in a magnificent cavern with a rushing stream, which cascades\nover a sparkling waterfall into a roaring whirlpool which disappears\nthrough a hole in the floor.  Passages exit to the south and west.",
+    "description": "You are in a magnificent cavern with a rushing stream, which cascades over a sparkling waterfall into a roaring whirlpool which disappears through a hole in the floor. Passages exit to the south and west.",
+    "descriptionWithoutItems": "You are in a magnificent cavern with a rushing stream, which cascades over a sparkling waterfall into a roaring whirlpool which disappears through a hole in the floor. Passages exit to the south and west.",
     "actions": [
       {
         "id": "look",
@@ -4649,8 +4649,8 @@ export const SCENES: Record<string, Scene> = {
   "softroom": {
     "id": "softroom",
     "title": "Soft Room",
-    "description": "You are in the Soft Room.  The walls are covered with heavy curtains,\nthe floor with a thick pile carpet.  Moss covers the ceiling.",
-    "descriptionWithoutItems": "You are in the Soft Room.  The walls are covered with heavy curtains,\nthe floor with a thick pile carpet.  Moss covers the ceiling.",
+    "description": "You are in the Soft Room. The walls are covered with heavy curtains, the floor with a thick pile carpet. Moss covers the ceiling.",
+    "descriptionWithoutItems": "You are in the Soft Room. The walls are covered with heavy curtains, the floor with a thick pile carpet. Moss covers the ceiling.",
     "actions": [
       {
         "id": "look",
@@ -4688,8 +4688,8 @@ export const SCENES: Record<string, Scene> = {
   "oriental": {
     "id": "oriental",
     "title": "Oriental Room",
-    "description": "This is the Oriental Room.  Ancient oriental cave drawings cover the\nwalls.  A gently sloping passage leads upward to the north, another\npassage leads se, and a hands and knees crawl leads west.",
-    "descriptionWithoutItems": "This is the Oriental Room.  Ancient oriental cave drawings cover the\nwalls.  A gently sloping passage leads upward to the north, another\npassage leads se, and a hands and knees crawl leads west.",
+    "description": "This is the Oriental Room. Ancient oriental cave drawings cover the walls. A gently sloping passage leads upward to the north, another passage leads se, and a hands and knees crawl leads west.",
+    "descriptionWithoutItems": "This is the Oriental Room. Ancient oriental cave drawings cover the walls. A gently sloping passage leads upward to the north, another passage leads se, and a hands and knees crawl leads west.",
     "actions": [
       {
         "id": "look",
@@ -4751,8 +4751,8 @@ export const SCENES: Record<string, Scene> = {
   "misty": {
     "id": "misty",
     "title": "Misty Cavern",
-    "description": "You are following a wide path around the outer edge of a large cavern.\nFar below, through a heavy white mist, strange splashing noises can be\nheard.  The mist rises up through a fissure in the ceiling.  The path\nexits to the south and west.",
-    "descriptionWithoutItems": "You are following a wide path around the outer edge of a large cavern.\nFar below, through a heavy white mist, strange splashing noises can be\nheard.  The mist rises up through a fissure in the ceiling.  The path\nexits to the south and west.",
+    "description": "You are following a wide path around the outer edge of a large cavern. Far below, through a heavy white mist, strange splashing noises can be heard. The mist rises up through a fissure in the ceiling. The path exits to the south and west.",
+    "descriptionWithoutItems": "You are following a wide path around the outer edge of a large cavern. Far below, through a heavy white mist, strange splashing noises can be heard. The mist rises up through a fissure in the ceiling. The path exits to the south and west.",
     "actions": [
       {
         "id": "look",
@@ -4783,8 +4783,8 @@ export const SCENES: Record<string, Scene> = {
   "alcove": {
     "id": "alcove",
     "title": "Alcove",
-    "description": "You are in an alcove.  A small nw path seems to widen after a short\ndistance.  An extremely tight tunnel leads east.  It looks like a very\ntight squeeze.  An eerie light can be seen at the other end.",
-    "descriptionWithoutItems": "You are in an alcove.  A small nw path seems to widen after a short\ndistance.  An extremely tight tunnel leads east.  It looks like a very\ntight squeeze.  An eerie light can be seen at the other end.",
+    "description": "You are in an alcove. A small nw path seems to widen after a short distance. An extremely tight tunnel leads east. It looks like a very tight squeeze. An eerie light can be seen at the other end.",
+    "descriptionWithoutItems": "You are in an alcove. A small nw path seems to widen after a short distance. An extremely tight tunnel leads east. It looks like a very tight squeeze. An eerie light can be seen at the other end.",
     "actions": [
       {
         "id": "look",
@@ -4815,8 +4815,8 @@ export const SCENES: Record<string, Scene> = {
   "plover": {
     "id": "plover",
     "title": "Plover Room",
-    "description": "You're in a small chamber lit by an eerie green light.  An extremely\nnarrow tunnel exits to the west.  A dark corridor leads ne.",
-    "descriptionWithoutItems": "You're in a small chamber lit by an eerie green light.  An extremely\nnarrow tunnel exits to the west.  A dark corridor leads ne.",
+    "description": "You're in a small chamber lit by an eerie green light. An extremely narrow tunnel exits to the west. A dark corridor leads ne.",
+    "descriptionWithoutItems": "You're in a small chamber lit by an eerie green light. An extremely narrow tunnel exits to the west. A dark corridor leads ne.",
     "actions": [
       {
         "id": "look",
@@ -4866,8 +4866,8 @@ export const SCENES: Record<string, Scene> = {
   "darkroom": {
     "id": "darkroom",
     "title": "Dark-room",
-    "description": "You're in the dark-room.  A corridor leading south is the only exit.",
-    "descriptionWithoutItems": "You're in the dark-room.  A corridor leading south is the only exit.",
+    "description": "You're in the dark-room. A corridor leading south is the only exit.",
+    "descriptionWithoutItems": "You're in the dark-room. A corridor leading south is the only exit.",
     "actions": [
       {
         "id": "look",
@@ -4911,8 +4911,8 @@ export const SCENES: Record<string, Scene> = {
   "arched": {
     "id": "arched",
     "title": "Arched Hall",
-    "description": "You are in an arched hall.  A coral passage once continued up and east\nfrom here, but is now blocked by debris.  The air smells of sea water.",
-    "descriptionWithoutItems": "You are in an arched hall.  A coral passage once continued up and east\nfrom here, but is now blocked by debris.  The air smells of sea water.",
+    "description": "You are in an arched hall. A coral passage once continued up and east from here, but is now blocked by debris. The air smells of sea water.",
+    "descriptionWithoutItems": "You are in an arched hall. A coral passage once continued up and east from here, but is now blocked by debris. The air smells of sea water.",
     "actions": [
       {
         "id": "look",
@@ -4943,8 +4943,8 @@ export const SCENES: Record<string, Scene> = {
   "shellroom": {
     "id": "shellroom",
     "title": "Shell Room",
-    "description": "You're in a large room carved out of sedimentary rock.  The floor and\nwalls are littered with bits of shells embedded in the stone.  A\nshallow passage proceeds downward, and a somewhat steeper one leads\nup.  A low hands and knees passage enters from the south.",
-    "descriptionWithoutItems": "You're in a large room carved out of sedimentary rock.  The floor and\nwalls are littered with bits of shells embedded in the stone.  A\nshallow passage proceeds downward, and a somewhat steeper one leads\nup.  A low hands and knees passage enters from the south.",
+    "description": "You're in a large room carved out of sedimentary rock. The floor and walls are littered with bits of shells embedded in the stone. A shallow passage proceeds downward, and a somewhat steeper one leads up. A low hands and knees passage enters from the south.",
+    "descriptionWithoutItems": "You're in a large room carved out of sedimentary rock. The floor and walls are littered with bits of shells embedded in the stone. A shallow passage proceeds downward, and a somewhat steeper one leads up. A low hands and knees passage enters from the south.",
     "actions": [
       {
         "id": "look",
@@ -5072,8 +5072,8 @@ export const SCENES: Record<string, Scene> = {
   "anteroom": {
     "id": "anteroom",
     "title": "Anteroom",
-    "description": "You are in an anteroom leading to a large passage to the east.  Small\npassages go west and up.  The remnants of recent digging are evident.\nA sign in midair here says \"Cave under construction beyond this point.\nProceed at own risk.  [Witt Construction Company]\"",
-    "descriptionWithoutItems": "You are in an anteroom leading to a large passage to the east.  Small\npassages go west and up.  The remnants of recent digging are evident.\nA sign in midair here says \"Cave under construction beyond this point.\nProceed at own risk.  [Witt Construction Company]\"",
+    "description": "You are in an anteroom leading to a large passage to the east. Small passages go west and up. The remnants of recent digging are evident. A sign in midair here says \"Cave under construction beyond this point. Proceed at own risk. [Witt Construction Company]\"",
+    "descriptionWithoutItems": "You are in an anteroom leading to a large passage to the east. Small passages go west and up. The remnants of recent digging are evident. A sign in midair here says \"Cave under construction beyond this point. Proceed at own risk. [Witt Construction Company]\"",
     "actions": [
       {
         "id": "look",
@@ -5191,8 +5191,8 @@ export const SCENES: Record<string, Scene> = {
   "wittsend": {
     "id": "wittsend",
     "title": "Witt's End",
-    "description": "You are at Witt's End.  Passages lead off in *ALL* directions.",
-    "descriptionWithoutItems": "You are at Witt's End.  Passages lead off in *ALL* directions.",
+    "description": "You are at Witt's End. Passages lead off in *ALL* directions.",
+    "descriptionWithoutItems": "You are at Witt's End. Passages lead off in *ALL* directions.",
     "actions": [
       {
         "id": "look",
@@ -5204,63 +5204,63 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_futile_crawl_east",
         "label": "East",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_north",
         "label": "North",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_south",
         "label": "South",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_ne",
         "label": "Ne",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_se",
         "label": "Se",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_sw",
         "label": "Sw",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_nw",
         "label": "Nw",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_upwar",
         "label": "Upwar",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
         "id": "say_futile_crawl_down",
         "label": "Down",
         "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the\nmain passage.",
+        "message": "You have crawled around in some little holes and wound up back in the main passage.",
         "uiHint": "hidden"
       },
       {
@@ -5273,7 +5273,7 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_way_blocked_west",
         "label": "West",
         "type": "event",
-        "message": "You have crawled around in some little holes and found your way\nblocked by a recent cave-in.  You are now back in the main passage.",
+        "message": "You have crawled around in some little holes and found your way blocked by a recent cave-in. You are now back in the main passage.",
         "uiHint": "hidden"
       }
     ]
@@ -5281,8 +5281,8 @@ export const SCENES: Record<string, Scene> = {
   "mirrorcanyon": {
     "id": "mirrorcanyon",
     "title": "Mirror Canyon",
-    "description": "You are in a north/south canyon about 25 feet across.  The floor is\ncovered by white mist seeping in from the north.  The walls extend\nupward for well over 100 feet.  Suspended from some unseen point far\nabove you, an enormous two-sided mirror is hanging parallel to and\nmidway between the canyon walls.  (The mirror is obviously provided\nfor the use of the dwarves who, as you know, are extremely vain.)  A\nsmall window can be seen in either wall, some fifty feet up.",
-    "descriptionWithoutItems": "You are in a north/south canyon about 25 feet across.  The floor is\ncovered by white mist seeping in from the north.  The walls extend\nupward for well over 100 feet.  Suspended from some unseen point far\nabove you, an enormous two-sided mirror is hanging parallel to and\nmidway between the canyon walls.  (The mirror is obviously provided\nfor the use of the dwarves who, as you know, are extremely vain.)  A\nsmall window can be seen in either wall, some fifty feet up.",
+    "description": "You are in a north/south canyon about 25 feet across. The floor is covered by white mist seeping in from the north. The walls extend upward for well over 100 feet. Suspended from some unseen point far above you, an enormous two-sided mirror is hanging parallel to and midway between the canyon walls. (The mirror is obviously provided for the use of the dwarves who, as you know, are extremely vain.) A small window can be seen in either wall, some fifty feet up.",
+    "descriptionWithoutItems": "You are in a north/south canyon about 25 feet across. The floor is covered by white mist seeping in from the north. The walls extend upward for well over 100 feet. Suspended from some unseen point far above you, an enormous two-sided mirror is hanging parallel to and midway between the canyon walls. (The mirror is obviously provided for the use of the dwarves who, as you know, are extremely vain.) A small window can be seen in either wall, some fifty feet up.",
     "actions": [
       {
         "id": "look",
@@ -5313,8 +5313,8 @@ export const SCENES: Record<string, Scene> = {
   "window2": {
     "id": "window2",
     "title": "Window On Pit",
-    "description": "You're at a low window overlooking a huge pit, which extends up out of\nsight.  A floor is indistinctly visible over 50 feet below.  Traces of\nwhite mist cover the floor of the pit, becoming thicker to the left.\nMarks in the dust around the window would seem to indicate that\nsomeone has been here recently.  Directly across the pit from you and\n25 feet away there is a similar window looking into a lighted room.  A\nshadowy figure can be seen there peering back at you.",
-    "descriptionWithoutItems": "You're at a low window overlooking a huge pit, which extends up out of\nsight.  A floor is indistinctly visible over 50 feet below.  Traces of\nwhite mist cover the floor of the pit, becoming thicker to the left.\nMarks in the dust around the window would seem to indicate that\nsomeone has been here recently.  Directly across the pit from you and\n25 feet away there is a similar window looking into a lighted room.  A\nshadowy figure can be seen there peering back at you.",
+    "description": "You're at a low window overlooking a huge pit, which extends up out of sight. A floor is indistinctly visible over 50 feet below. Traces of white mist cover the floor of the pit, becoming thicker to the left. Marks in the dust around the window would seem to indicate that someone has been here recently. Directly across the pit from you and 25 feet away there is a similar window looking into a lighted room. A shadowy figure can be seen there peering back at you.",
+    "descriptionWithoutItems": "You're at a low window overlooking a huge pit, which extends up out of sight. A floor is indistinctly visible over 50 feet below. Traces of white mist cover the floor of the pit, becoming thicker to the left. Marks in the dust around the window would seem to indicate that someone has been here recently. Directly across the pit from you and 25 feet away there is a similar window looking into a lighted room. A shadowy figure can be seen there peering back at you.",
     "actions": [
       {
         "id": "look",
@@ -5339,8 +5339,8 @@ export const SCENES: Record<string, Scene> = {
   "topstalactite": {
     "id": "topstalactite",
     "title": "Top Of Stalactite",
-    "description": "A large stalactite extends from the roof and almost reaches the floor\nbelow.  You could climb down it, and jump from it to the floor, but\nhaving done so you would be unable to reach it to climb back up.",
-    "descriptionWithoutItems": "A large stalactite extends from the roof and almost reaches the floor\nbelow.  You could climb down it, and jump from it to the floor, but\nhaving done so you would be unable to reach it to climb back up.",
+    "description": "A large stalactite extends from the roof and almost reaches the floor below. You could climb down it, and jump from it to the floor, but having done so you would be unable to reach it to climb back up.",
+    "descriptionWithoutItems": "A large stalactite extends from the roof and almost reaches the floor below. You could climb down it, and jump from it to the floor, but having done so you would be unable to reach it to climb back up.",
     "actions": [
       {
         "id": "look",
@@ -5451,8 +5451,8 @@ export const SCENES: Record<string, Scene> = {
   "reservoir": {
     "id": "reservoir",
     "title": "Reservoir",
-    "description": "You are at the edge of a large underground reservoir.  An opaque cloud\nof white mist fills the room and rises rapidly upward.  The lake is\nfed by a stream, which tumbles out of a hole in the wall about 10 feet\noverhead and splashes noisily into the water somewhere within the\nmist.  There is a passage going back toward the south.",
-    "descriptionWithoutItems": "You are at the edge of a large underground reservoir.  An opaque cloud\nof white mist fills the room and rises rapidly upward.  The lake is\nfed by a stream, which tumbles out of a hole in the wall about 10 feet\noverhead and splashes noisily into the water somewhere within the\nmist.  There is a passage going back toward the south.",
+    "description": "You are at the edge of a large underground reservoir. An opaque cloud of white mist fills the room and rises rapidly upward. The lake is fed by a stream, which tumbles out of a hole in the wall about 10 feet overhead and splashes noisily into the water somewhere within the mist. There is a passage going back toward the south.",
+    "descriptionWithoutItems": "You are at the edge of a large underground reservoir. An opaque cloud of white mist fills the room and rises rapidly upward. The lake is fed by a stream, which tumbles out of a hole in the wall about 10 feet overhead and splashes noisily into the water somewhere within the mist. There is a passage going back toward the south.",
     "actions": [
       {
         "id": "look",
@@ -5524,8 +5524,8 @@ export const SCENES: Record<string, Scene> = {
   "ne": {
     "id": "ne",
     "title": "Ne End",
-    "description": "You are at the northeast end of an immense room, even larger than the\nGiant Room.  It appears to be a repository for the \"Adventure\"\nprogram.  Massive torches far overhead bathe the room with smoky\nyellow light.  Scattered about you can be seen a pile of bottles (all\nof them empty), a nursery of young beanstalks murmuring quietly, a bed\nof oysters, a bundle of black rods with rusty stars on their ends, and\na collection of brass lanterns.  Off to one side a great many dwarves\nare sleeping on the floor, snoring loudly.  A notice nearby reads: \"Do\nnot disturb the dwarves!\"  An immense mirror is hanging against one\nwall, and stretches to the other end of the room, where various other\nsundry objects can be glimpsed dimly in the distance.",
-    "descriptionWithoutItems": "You are at the northeast end of an immense room, even larger than the\nGiant Room.  It appears to be a repository for the \"Adventure\"\nprogram.  Massive torches far overhead bathe the room with smoky\nyellow light.  Scattered about you can be seen a pile of bottles (all\nof them empty), a nursery of young beanstalks murmuring quietly, a bed\nof oysters, a bundle of black rods with rusty stars on their ends, and\na collection of brass lanterns.  Off to one side a great many dwarves\nare sleeping on the floor, snoring loudly.  A notice nearby reads: \"Do\nnot disturb the dwarves!\"  An immense mirror is hanging against one\nwall, and stretches to the other end of the room, where various other\nsundry objects can be glimpsed dimly in the distance.",
+    "description": "You are at the northeast end of an immense room, even larger than the Giant Room. It appears to be a repository for the \"Adventure\" program. Massive torches far overhead bathe the room with smoky yellow light. Scattered about you can be seen a pile of bottles (all of them empty), a nursery of young beanstalks murmuring quietly, a bed of oysters, a bundle of black rods with rusty stars on their ends, and a collection of brass lanterns. Off to one side a great many dwarves are sleeping on the floor, snoring loudly. A notice nearby reads: \"Do not disturb the dwarves!\" An immense mirror is hanging against one wall, and stretches to the other end of the room, where various other sundry objects can be glimpsed dimly in the distance.",
+    "descriptionWithoutItems": "You are at the northeast end of an immense room, even larger than the Giant Room. It appears to be a repository for the \"Adventure\" program. Massive torches far overhead bathe the room with smoky yellow light. Scattered about you can be seen a pile of bottles (all of them empty), a nursery of young beanstalks murmuring quietly, a bed of oysters, a bundle of black rods with rusty stars on their ends, and a collection of brass lanterns. Off to one side a great many dwarves are sleeping on the floor, snoring loudly. A notice nearby reads: \"Do not disturb the dwarves!\" An immense mirror is hanging against one wall, and stretches to the other end of the room, where various other sundry objects can be glimpsed dimly in the distance.",
     "actions": [
       {
         "id": "look",
@@ -5544,8 +5544,8 @@ export const SCENES: Record<string, Scene> = {
   "sw": {
     "id": "sw",
     "title": "Sw End",
-    "description": "You are at the southwest end of the repository.  To one side is a pit\nfull of fierce green snakes.  On the other side is a row of small\nwicker cages, each of which contains a little sulking bird.  In one\ncorner is a bundle of black rods with rusty marks on their ends.  A\nlarge number of velvet pillows are scattered about on the floor.  A\nvast mirror stretches off to the northeast.  At your feet is a large\nsteel grate, next to which is a sign that reads, \"Treasure Vault.\nKeys in main office.\"",
-    "descriptionWithoutItems": "You are at the southwest end of the repository.  To one side is a pit\nfull of fierce green snakes.  On the other side is a row of small\nwicker cages, each of which contains a little sulking bird.  In one\ncorner is a bundle of black rods with rusty marks on their ends.  A\nlarge number of velvet pillows are scattered about on the floor.  A\nvast mirror stretches off to the northeast.  At your feet is a large\nsteel grate, next to which is a sign that reads, \"Treasure Vault.\nKeys in main office.\"",
+    "description": "You are at the southwest end of the repository. To one side is a pit full of fierce green snakes. On the other side is a row of small wicker cages, each of which contains a little sulking bird. In one corner is a bundle of black rods with rusty marks on their ends. A large number of velvet pillows are scattered about on the floor. A vast mirror stretches off to the northeast. At your feet is a large steel grate, next to which is a sign that reads, \"Treasure Vault. Keys in main office.\"",
+    "descriptionWithoutItems": "You are at the southwest end of the repository. To one side is a pit full of fierce green snakes. On the other side is a row of small wicker cages, each of which contains a little sulking bird. In one corner is a bundle of black rods with rusty marks on their ends. A large number of velvet pillows are scattered about on the floor. A vast mirror stretches off to the northeast. At your feet is a large steel grate, next to which is a sign that reads, \"Treasure Vault. Keys in main office.\"",
     "actions": [
       {
         "id": "look",
@@ -5571,8 +5571,8 @@ export const SCENES: Record<string, Scene> = {
   "swchasm": {
     "id": "swchasm",
     "title": "Sw Side Of Chasm",
-    "description": "You are on one side of a large, deep chasm.  A heavy white mist rising\nup from below obscures all view of the far side.  A sw path leads away\nfrom the chasm into a winding corridor.",
-    "descriptionWithoutItems": "You are on one side of a large, deep chasm.  A heavy white mist rising\nup from below obscures all view of the far side.  A sw path leads away\nfrom the chasm into a winding corridor.",
+    "description": "You are on one side of a large, deep chasm. A heavy white mist rising up from below obscures all view of the far side. A sw path leads away from the chasm into a winding corridor.",
+    "descriptionWithoutItems": "You are on one side of a large, deep chasm. A heavy white mist rising up from below obscures all view of the far side. A sw path leads away from the chasm into a winding corridor.",
     "actions": [
       {
         "id": "look",
@@ -5639,8 +5639,8 @@ export const SCENES: Record<string, Scene> = {
   "winding": {
     "id": "winding",
     "title": "Sloping Corridor",
-    "description": "You are in a long winding corridor sloping out of sight in both\ndirections.",
-    "descriptionWithoutItems": "You are in a long winding corridor sloping out of sight in both\ndirections.",
+    "description": "You are in a long winding corridor sloping out of sight in both directions.",
+    "descriptionWithoutItems": "You are in a long winding corridor sloping out of sight in both directions.",
     "actions": [
       {
         "id": "look",
@@ -5690,14 +5690,14 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_nasty_dragon_east",
         "label": "East",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "message": "The dragon looks rather nasty. You'd best not try to get by.",
         "uiHint": "hidden"
       },
       {
         "id": "say_nasty_dragon_forwa",
         "label": "Forwa",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "message": "The dragon looks rather nasty. You'd best not try to get by.",
         "uiHint": "hidden"
       }
     ]
@@ -5756,14 +5756,14 @@ export const SCENES: Record<string, Scene> = {
         "id": "say_nasty_dragon_north",
         "label": "North",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "message": "The dragon looks rather nasty. You'd best not try to get by.",
         "uiHint": "hidden"
       },
       {
         "id": "say_nasty_dragon_forwa",
         "label": "Forwa",
         "type": "event",
-        "message": "The dragon looks rather nasty.  You'd best not try to get by.",
+        "message": "The dragon looks rather nasty. You'd best not try to get by.",
         "uiHint": "hidden"
       }
     ]
@@ -5771,8 +5771,8 @@ export const SCENES: Record<string, Scene> = {
   "nechasm": {
     "id": "nechasm",
     "title": "Ne Side Of Chasm",
-    "description": "You are on the far side of the chasm.  A ne path leads away from the\nchasm on this side.",
-    "descriptionWithoutItems": "You are on the far side of the chasm.  A ne path leads away from the\nchasm on this side.",
+    "description": "You are on the far side of the chasm. A ne path leads away from the chasm on this side.",
+    "descriptionWithoutItems": "You are on the far side of the chasm. A ne path leads away from the chasm on this side.",
     "actions": [
       {
         "id": "look",
@@ -5844,8 +5844,8 @@ export const SCENES: Record<string, Scene> = {
   "corridor": {
     "id": "corridor",
     "title": "Corridor",
-    "description": "You're in a long east/west corridor.  A faint rumbling noise can be\nheard in the distance.",
-    "descriptionWithoutItems": "You're in a long east/west corridor.  A faint rumbling noise can be\nheard in the distance.",
+    "description": "You're in a long east/west corridor. A faint rumbling noise can be heard in the distance.",
+    "descriptionWithoutItems": "You're in a long east/west corridor. A faint rumbling noise can be heard in the distance.",
     "actions": [
       {
         "id": "look",
@@ -5888,8 +5888,8 @@ export const SCENES: Record<string, Scene> = {
   "fork": {
     "id": "fork",
     "title": "Fork In Path",
-    "description": "The path forks here.  The left fork leads northeast.  A dull rumbling\nseems to get louder in that direction.  The right fork leads southeast\ndown a gentle slope.  The main corridor enters from the west.",
-    "descriptionWithoutItems": "The path forks here.  The left fork leads northeast.  A dull rumbling\nseems to get louder in that direction.  The right fork leads southeast\ndown a gentle slope.  The main corridor enters from the west.",
+    "description": "The path forks here. The left fork leads northeast. A dull rumbling seems to get louder in that direction. The right fork leads southeast down a gentle slope. The main corridor enters from the west.",
+    "descriptionWithoutItems": "The path forks here. The left fork leads northeast. A dull rumbling seems to get louder in that direction. The right fork leads southeast down a gentle slope. The main corridor enters from the west.",
     "actions": [
       {
         "id": "look",
@@ -5950,8 +5950,8 @@ export const SCENES: Record<string, Scene> = {
   "warmwalls": {
     "id": "warmwalls",
     "title": "Junction With Warm Walls",
-    "description": "The walls are quite warm here.  From the north can be heard a steady\nroar, so loud that the entire cave seems to be trembling.  Another\npassage leads south, and a low crawl goes east.",
-    "descriptionWithoutItems": "The walls are quite warm here.  From the north can be heard a steady\nroar, so loud that the entire cave seems to be trembling.  Another\npassage leads south, and a low crawl goes east.",
+    "description": "The walls are quite warm here. From the north can be heard a steady roar, so loud that the entire cave seems to be trembling. Another passage leads south, and a low crawl goes east.",
+    "descriptionWithoutItems": "The walls are quite warm here. From the north can be heard a steady roar, so loud that the entire cave seems to be trembling. Another passage leads south, and a low crawl goes east.",
     "actions": [
       {
         "id": "look",
@@ -6000,8 +6000,8 @@ export const SCENES: Record<string, Scene> = {
   "breathtaking": {
     "id": "breathtaking",
     "title": "Breath-taking View",
-    "description": "You are on the edge of a breath-taking view.  Far below you is an\nactive volcano, from which great gouts of molten lava come surging\nout, cascading back down into the depths.  The glowing rock fills the\nfarthest reaches of the cavern with a blood-red glare, giving every-\nthing an eerie, macabre appearance.  The air is filled with flickering\nsparks of ash and a heavy smell of brimstone.  The walls are hot to\nthe touch, and the thundering of the volcano drowns out all other\nsounds.  Embedded in the jagged roof far overhead are myriad twisted\nformations composed of pure white alabaster, which scatter the murky\nlight into sinister apparitions upon the walls.  To one side is a deep\ngorge, filled with a bizarre chaos of tortured rock which seems to\nhave been crafted by the devil himself.  An immense river of fire\ncrashes out from the depths of the volcano, burns its way through the\ngorge, and plummets into a bottomless pit far off to your left.  To\nthe right, an immense geyser of blistering steam erupts continuously\nfrom a barren island in the center of a sulfurous lake, which bubbles\nominously.  The far right wall is aflame with an incandescence of its\nown, which lends an additional infernal splendor to the already\nhellish scene.  A dark, foreboding passage exits to the south.",
-    "descriptionWithoutItems": "You are on the edge of a breath-taking view.  Far below you is an\nactive volcano, from which great gouts of molten lava come surging\nout, cascading back down into the depths.  The glowing rock fills the\nfarthest reaches of the cavern with a blood-red glare, giving every-\nthing an eerie, macabre appearance.  The air is filled with flickering\nsparks of ash and a heavy smell of brimstone.  The walls are hot to\nthe touch, and the thundering of the volcano drowns out all other\nsounds.  Embedded in the jagged roof far overhead are myriad twisted\nformations composed of pure white alabaster, which scatter the murky\nlight into sinister apparitions upon the walls.  To one side is a deep\ngorge, filled with a bizarre chaos of tortured rock which seems to\nhave been crafted by the devil himself.  An immense river of fire\ncrashes out from the depths of the volcano, burns its way through the\ngorge, and plummets into a bottomless pit far off to your left.  To\nthe right, an immense geyser of blistering steam erupts continuously\nfrom a barren island in the center of a sulfurous lake, which bubbles\nominously.  The far right wall is aflame with an incandescence of its\nown, which lends an additional infernal splendor to the already\nhellish scene.  A dark, foreboding passage exits to the south.",
+    "description": "You are on the edge of a breath-taking view. Far below you is an active volcano, from which great gouts of molten lava come surging out, cascading back down into the depths. The glowing rock fills the farthest reaches of the cavern with a blood-red glare, giving every- thing an eerie, macabre appearance. The air is filled with flickering sparks of ash and a heavy smell of brimstone. The walls are hot to the touch, and the thundering of the volcano drowns out all other sounds. Embedded in the jagged roof far overhead are myriad twisted formations composed of pure white alabaster, which scatter the murky light into sinister apparitions upon the walls. To one side is a deep gorge, filled with a bizarre chaos of tortured rock which seems to have been crafted by the devil himself. An immense river of fire crashes out from the depths of the volcano, burns its way through the gorge, and plummets into a bottomless pit far off to your left. To the right, an immense geyser of blistering steam erupts continuously from a barren island in the center of a sulfurous lake, which bubbles ominously. The far right wall is aflame with an incandescence of its own, which lends an additional infernal splendor to the already hellish scene. A dark, foreboding passage exits to the south.",
+    "descriptionWithoutItems": "You are on the edge of a breath-taking view. Far below you is an active volcano, from which great gouts of molten lava come surging out, cascading back down into the depths. The glowing rock fills the farthest reaches of the cavern with a blood-red glare, giving every- thing an eerie, macabre appearance. The air is filled with flickering sparks of ash and a heavy smell of brimstone. The walls are hot to the touch, and the thundering of the volcano drowns out all other sounds. Embedded in the jagged roof far overhead are myriad twisted formations composed of pure white alabaster, which scatter the murky light into sinister apparitions upon the walls. To one side is a deep gorge, filled with a bizarre chaos of tortured rock which seems to have been crafted by the devil himself. An immense river of fire crashes out from the depths of the volcano, burns its way through the gorge, and plummets into a bottomless pit far off to your left. To the right, an immense geyser of blistering steam erupts continuously from a barren island in the center of a sulfurous lake, which bubbles ominously. The far right wall is aflame with an incandescence of its own, which lends an additional infernal splendor to the already hellish scene. A dark, foreboding passage exits to the south.",
     "actions": [
       {
         "id": "look",
@@ -6051,8 +6051,8 @@ export const SCENES: Record<string, Scene> = {
   "boulders2": {
     "id": "boulders2",
     "title": "Chamber Of Boulders",
-    "description": "You are in a small chamber filled with large boulders.  The walls are\nvery warm, causing the air in the room to be almost stifling from the\nheat.  The only exit is a crawl heading west, through which is coming\na low rumbling.",
-    "descriptionWithoutItems": "You are in a small chamber filled with large boulders.  The walls are\nvery warm, causing the air in the room to be almost stifling from the\nheat.  The only exit is a crawl heading west, through which is coming\na low rumbling.",
+    "description": "You are in a small chamber filled with large boulders. The walls are very warm, causing the air in the room to be almost stifling from the heat. The only exit is a crawl heading west, through which is coming a low rumbling.",
+    "descriptionWithoutItems": "You are in a small chamber filled with large boulders. The walls are very warm, causing the air in the room to be almost stifling from the heat. The only exit is a crawl heading west, through which is coming a low rumbling.",
     "actions": [
       {
         "id": "look",
@@ -6108,8 +6108,8 @@ export const SCENES: Record<string, Scene> = {
   "limestone": {
     "id": "limestone",
     "title": "Limestone Passage",
-    "description": "You are walking along a gently sloping north/south passage lined with\noddly shaped limestone formations.",
-    "descriptionWithoutItems": "You are walking along a gently sloping north/south passage lined with\noddly shaped limestone formations.",
+    "description": "You are walking along a gently sloping north/south passage lined with oddly shaped limestone formations.",
+    "descriptionWithoutItems": "You are walking along a gently sloping north/south passage lined with oddly shaped limestone formations.",
     "actions": [
       {
         "id": "look",
@@ -6164,8 +6164,8 @@ export const SCENES: Record<string, Scene> = {
   "barrenfront": {
     "id": "barrenfront",
     "title": "Front Of Barren Room",
-    "description": "You are standing at the entrance to a large, barren room.  A notice\nabove the entrance reads:  \"Caution!  Bear in room!\"",
-    "descriptionWithoutItems": "You are standing at the entrance to a large, barren room.  A notice\nabove the entrance reads:  \"Caution!  Bear in room!\"",
+    "description": "You are standing at the entrance to a large, barren room. A notice above the entrance reads: \"Caution! Bear in room!\"",
+    "descriptionWithoutItems": "You are standing at the entrance to a large, barren room. A notice above the entrance reads: \"Caution! Bear in room!\"",
     "actions": [
       {
         "id": "look",
@@ -6226,8 +6226,8 @@ export const SCENES: Record<string, Scene> = {
   "barrenroom": {
     "id": "barrenroom",
     "title": "Barren Room",
-    "description": "You are inside a barren room.  The center of the room is completely\nempty except for some dust.  Marks in the dust lead away toward the\nfar end of the room.  The only exit is the way you came in.",
-    "descriptionWithoutItems": "You are inside a barren room.  The center of the room is completely\nempty except for some dust.  Marks in the dust lead away toward the\nfar end of the room.  The only exit is the way you came in.",
+    "description": "You are inside a barren room. The center of the room is completely empty except for some dust. Marks in the dust lead away toward the far end of the room. The only exit is the way you came in.",
+    "descriptionWithoutItems": "You are inside a barren room. The center of the room is completely empty except for some dust. Marks in the dust lead away toward the far end of the room. The only exit is the way you came in.",
     "actions": [
       {
         "id": "look",
@@ -7041,8 +7041,8 @@ export const SCENES: Record<string, Scene> = {
   "storeroom": {
     "id": "storeroom",
     "title": "Storeroom",
-    "description": "You are in the ogre's storeroom.  The only exit is to the south.",
-    "descriptionWithoutItems": "You are in the ogre's storeroom.  The only exit is to the south.",
+    "description": "You are in the ogre's storeroom. The only exit is to the south.",
+    "descriptionWithoutItems": "You are in the ogre's storeroom. The only exit is to the south.",
     "actions": [
       {
         "id": "look",
@@ -7929,8 +7929,8 @@ export const SCENES: Record<string, Scene> = {
   "ledge": {
     "id": "ledge",
     "title": "Ledge",
-    "description": "You are on a small ledge on one face of a sheer cliff.  There are no\npaths away from the ledge.  Across the chasm is a small clearing\nsurrounded by forest.",
-    "descriptionWithoutItems": "You are on a small ledge on one face of a sheer cliff.  There are no\npaths away from the ledge.  Across the chasm is a small clearing\nsurrounded by forest.",
+    "description": "You are on a small ledge on one face of a sheer cliff. There are no paths away from the ledge. Across the chasm is a small clearing surrounded by forest.",
+    "descriptionWithoutItems": "You are on a small ledge on one face of a sheer cliff. There are no paths away from the ledge. Across the chasm is a small clearing surrounded by forest.",
     "actions": [
       {
         "id": "look",
@@ -7962,8 +7962,8 @@ export const SCENES: Record<string, Scene> = {
   "resbottom": {
     "id": "resbottom",
     "title": "Bottom Of Reservoir",
-    "description": "You are walking across the bottom of the reservoir.  Walls of water\nrear up on either side.  The roar of the water cascading past is\nnearly deafening, and the mist is so thick you can barely see.",
-    "descriptionWithoutItems": "You are walking across the bottom of the reservoir.  Walls of water\nrear up on either side.  The roar of the water cascading past is\nnearly deafening, and the mist is so thick you can barely see.",
+    "description": "You are walking across the bottom of the reservoir. Walls of water rear up on either side. The roar of the water cascading past is nearly deafening, and the mist is so thick you can barely see.",
+    "descriptionWithoutItems": "You are walking across the bottom of the reservoir. Walls of water rear up on either side. The roar of the water cascading past is nearly deafening, and the mist is so thick you can barely see.",
     "actions": [
       {
         "id": "look",
@@ -7988,8 +7988,8 @@ export const SCENES: Record<string, Scene> = {
   "resnorth": {
     "id": "resnorth",
     "title": "North Of Reservoir",
-    "description": "You are at the northern edge of the reservoir.  A northwest passage\nleads sharply up from here.",
-    "descriptionWithoutItems": "You are at the northern edge of the reservoir.  A northwest passage\nleads sharply up from here.",
+    "description": "You are at the northern edge of the reservoir. A northwest passage leads sharply up from here.",
+    "descriptionWithoutItems": "You are at the northern edge of the reservoir. A northwest passage leads sharply up from here.",
     "actions": [
       {
         "id": "look",
@@ -8123,8 +8123,8 @@ export const SCENES: Record<string, Scene> = {
   "cliffbase": {
     "id": "cliffbase",
     "title": "Base Of Cliff",
-    "description": "You are at the base of a nearly vertical cliff.  There are some\nslim footholds which would enable you to climb up, but it looks\nextremely dangerous.  Here at the base of the cliff lie the remains\nof several earlier adventurers who apparently failed to make it.",
-    "descriptionWithoutItems": "You are at the base of a nearly vertical cliff.  There are some\nslim footholds which would enable you to climb up, but it looks\nextremely dangerous.  Here at the base of the cliff lie the remains\nof several earlier adventurers who apparently failed to make it.",
+    "description": "You are at the base of a nearly vertical cliff. There are some slim footholds which would enable you to climb up, but it looks extremely dangerous. Here at the base of the cliff lie the remains of several earlier adventurers who apparently failed to make it.",
+    "descriptionWithoutItems": "You are at the base of a nearly vertical cliff. There are some slim footholds which would enable you to climb up, but it looks extremely dangerous. Here at the base of the cliff lie the remains of several earlier adventurers who apparently failed to make it.",
     "actions": [
       {
         "id": "look",
@@ -8187,8 +8187,8 @@ export const SCENES: Record<string, Scene> = {
   "footslip": {
     "id": "footslip",
     "title": "Footslip",
-    "description": "Just as you reach the top, your foot slips on a loose rock and you\ntumble several hundred feet to join the other unlucky adventurers.",
-    "descriptionWithoutItems": "Just as you reach the top, your foot slips on a loose rock and you\ntumble several hundred feet to join the other unlucky adventurers.",
+    "description": "Just as you reach the top, your foot slips on a loose rock and you tumble several hundred feet to join the other unlucky adventurers.",
+    "descriptionWithoutItems": "Just as you reach the top, your foot slips on a loose rock and you tumble several hundred feet to join the other unlucky adventurers.",
     "actions": [
       {
         "id": "look",
@@ -8207,8 +8207,8 @@ export const SCENES: Record<string, Scene> = {
   "clifftop": {
     "id": "clifftop",
     "title": "Clifftop",
-    "description": "Just as you reach the top, your foot slips on a loose rock and you\nmake one last desperate grab.  Your luck holds, as does your grip.\nWith an enormous heave, you lift yourself to the ledge above.",
-    "descriptionWithoutItems": "Just as you reach the top, your foot slips on a loose rock and you\nmake one last desperate grab.  Your luck holds, as does your grip.\nWith an enormous heave, you lift yourself to the ledge above.",
+    "description": "Just as you reach the top, your foot slips on a loose rock and you make one last desperate grab. Your luck holds, as does your grip. With an enormous heave, you lift yourself to the ledge above.",
+    "descriptionWithoutItems": "Just as you reach the top, your foot slips on a loose rock and you make one last desperate grab. Your luck holds, as does your grip. With an enormous heave, you lift yourself to the ledge above.",
     "actions": [
       {
         "id": "look",
@@ -8227,8 +8227,8 @@ export const SCENES: Record<string, Scene> = {
   "cliffledge": {
     "id": "cliffledge",
     "title": "Top Of Cliff",
-    "description": "You are on a small ledge at the top of a nearly vertical cliff.\nThere is a low crawl leading off to the northeast.",
-    "descriptionWithoutItems": "You are on a small ledge at the top of a nearly vertical cliff.\nThere is a low crawl leading off to the northeast.",
+    "description": "You are on a small ledge at the top of a nearly vertical cliff. There is a low crawl leading off to the northeast.",
+    "descriptionWithoutItems": "You are on a small ledge at the top of a nearly vertical cliff. There is a low crawl leading off to the northeast.",
     "actions": [
       {
         "id": "look",
