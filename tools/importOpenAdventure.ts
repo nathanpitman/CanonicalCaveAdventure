@@ -291,9 +291,9 @@ function main() {
   const messageTable: Record<string, string> = { ...ARBITRARY_MESSAGES };
   for (const [msgId, msg] of arbitraryMsgs) {
     if (typeof msg === "string") {
-      messageTable[msgId] = msg;
+      messageTable[msgId] = normaliseText(msg);
     } else if (msg && typeof msg === "object" && msg.text) {
-      messageTable[msgId] = msg.text;
+      messageTable[msgId] = normaliseText(msg.text);
     }
   }
 
@@ -331,7 +331,7 @@ function main() {
 
     const sceneId = toSceneId(locId);
     const title = extractTitle(locId, loc.description);
-    const description = loc.description.long || loc.description.short || "A mysterious place.";
+    const description = normaliseText(loc.description.long || loc.description.short || "A mysterious place.");
 
     const actions: Action[] = [
       { id: "look", label: "LOOK AROUND", type: "command", command: "look" },
@@ -370,7 +370,7 @@ function main() {
         // 4D) SPEAK ACTIONS (message-only, hidden from UI pills)
         if (actionType === "speak") {
           const msgId = target;
-          const msgText = messageTable[msgId] || `[${msgId}] You can't go that way.`;
+          const msgText = normaliseText(messageTable[msgId] || `[${msgId}] You can't go that way.`);
           
           for (const verb of verbs) {
             const verbLower = safeVerbId(verb);
@@ -444,7 +444,7 @@ function main() {
       sceneItems.push(itemId);
 
       const displayName = DISPLAY_NAME_MAP[objId] || obj.inventory || titleCase(objId);
-      const itemDesc = obj.descriptions?.[0] || `You see ${displayName} here.`;
+      const itemDesc = normaliseText(obj.descriptions?.[0] || `You see ${displayName} here.`);
       itemDescriptions[itemId] = itemDesc;
 
       actions.push({
@@ -456,7 +456,7 @@ function main() {
       });
 
       if (!ITEMS[itemId]) {
-        const itemDescription = obj.descriptions?.[0] || `A ${displayName.toLowerCase()}.`;
+        const itemDescription = normaliseText(obj.descriptions?.[0] || `A ${displayName.toLowerCase()}.`);
 
         const item: Item = {
           id: itemId,
