@@ -29,6 +29,8 @@ const STOPWORDS = new Set([
   "this", "that", "those", "these", "just", "now", "then", "here", "there"
 ]);
 
+const ARTICLES = new Set(["the", "a", "an", "my", "that", "this", "some"]);
+
 // Direction synonyms -> canonical direction tokens
 // Includes canonical YAML stems (inwar, upwar, outsi, etc.)
 const DIRECTION_SYNONYMS: Record<string, string> = {
@@ -102,12 +104,122 @@ const NOUN_SYNONYMS: Record<string, string[]> = {
   "y2": ["y2"],
 };
 
+// Verbs that can precede a target in "<verb> <target> with/using <item>" patterns
+const TARGET_FIRST_VERBS = new Set([
+  "unlock", "open", "lift", "break", "light", "pour",
+  "push", "pull", "turn", "insert", "drop", "give", "feed",
+  "close", "lock", "smash", "cut", "fill", "empty",
+]);
+
+// Prepositions that separate item from target
+const PREPOSITIONS = new Set([
+  "to", "on", "with", "using", "into", "onto", "from", "at",
+]);
+
 export interface NormalizedCommand {
   intent: "move" | "take" | "use" | "look" | "inventory" | "help" | "back" | "unknown";
   canonicalTokens: string[];
   rawTokens: string[];
   targetNoun?: string;
   resolvedActionId?: string;
+  itemToken?: string;
+  targetToken?: string;
+  verbToken?: string;
+  preposition?: string;
+}
+
+function stripArticles(text: string): string {
+  return text.split(/\s+/).filter(w => !ARTICLES.has(w)).join(" ").trim();
+}
+
+function resolveItemId(phrase: string): string | null {
+  const clean = stripArticles(phrase).toLowerCase();
+  if (!clean) return null;
+  if (canonObjectIds.has(clean)) return clean;
+  const mapped = canonObjectNames.get(clean);
+  if (mapped) return mapped;
+  for (const word of clean.split(/\s+/)) {
+    if (canonObjectIds.has(word)) return word;
+    const m = canonObjectNames.get(word);
+    if (m) return m;
+  }
+  return null;
+}
+
+function tryStructuredParse(input: string): Pick<NormalizedCommand, "itemToken" | "targetToken" | "verbToken" | "preposition"> | null {
+  const text = input.toLowerCase().replace(/[.,!?;:'"]/g, "").trim();
+
+  // Pattern A1: use/apply/activate <item> (to|on|with|using|into) <target>
+  const useWithTarget = /^(use|apply|activate)\s+(.+?)\s+(to|on|with|using|into|onto|at)\s+(.+)$/;
+  const m1 = text.match(useWithTarget);
+  if (m1) {
+    const itemRaw = stripArticles(m1[2]);
+    const prep = m1[3];
+    const targetRaw = stripArticles(m1[4]);
+    const itemId = resolveItemId(itemRaw);
+    const targetId = resolveItemId(targetRaw);
+    return {
+      itemToken: itemId || itemRaw,
+      targetToken: targetId || targetRaw,
+      verbToken: "use",
+      preposition: prep,
+    };
+  }
+
+  // Pattern A2: use/apply/activate <item> to <verb> <target>
+  const useToVerb = /^(use|apply|activate)\s+(.+?)\s+to\s+(open|unlock|lift|break|light|pour|push|pull|turn|insert|close|lock|smash|cut|fill|empty)\s+(.+)$/;
+  const m2 = text.match(useToVerb);
+  if (m2) {
+    const itemRaw = stripArticles(m2[2]);
+    const verb = m2[3];
+    const targetRaw = stripArticles(m2[4]);
+    const itemId = resolveItemId(itemRaw);
+    const targetId = resolveItemId(targetRaw);
+    return {
+      itemToken: itemId || itemRaw,
+      targetToken: targetId || targetRaw,
+      verbToken: verb,
+      preposition: "to",
+    };
+  }
+
+  // Pattern A3: <verb> <target> (with|using) <item>
+  const verbTargetWith = /^(unlock|open|lift|break|light|pour|push|pull|turn|insert|close|lock|smash|cut|fill|empty|drink)\s+(.+?)\s+(with|using|from)\s+(.+)$/;
+  const m3 = text.match(verbTargetWith);
+  if (m3) {
+    const verb = m3[1];
+    const targetRaw = stripArticles(m3[2]);
+    const prep = m3[3];
+    const itemRaw = stripArticles(m3[4]);
+    const itemId = resolveItemId(itemRaw);
+    const targetId = resolveItemId(targetRaw);
+    return {
+      itemToken: itemId || itemRaw,
+      targetToken: targetId || targetRaw,
+      verbToken: verb,
+      preposition: prep,
+    };
+  }
+
+  // Pattern A4: <verb> <item> (no target, single-verb item actions)
+  // e.g. "light lamp", "drink water", "pour oil"
+  const singleVerbItem = /^(light|drink|pour|eat|burn|rub|wave|read|fill|empty)\s+(.+)$/;
+  const m4 = text.match(singleVerbItem);
+  if (m4) {
+    const verb = m4[1];
+    const itemRaw = stripArticles(m4[2]);
+    const itemId = resolveItemId(itemRaw);
+    if (itemId) {
+      return {
+        itemToken: itemId,
+        targetToken: undefined,
+        verbToken: verb,
+        preposition: undefined,
+      };
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -141,6 +253,21 @@ export function normalizeCommand(
       availableMoveTargets.add(a.label.toLowerCase());
     }
   });
+
+  // === Structured item/target parsing (before generic action handling) ===
+  const structured = tryStructuredParse(withPunctuation);
+  if (structured && structured.itemToken) {
+    return {
+      intent: "use",
+      canonicalTokens: [structured.itemToken],
+      rawTokens,
+      targetNoun: structured.targetToken,
+      itemToken: structured.itemToken,
+      targetToken: structured.targetToken,
+      verbToken: structured.verbToken,
+      preposition: structured.preposition,
+    };
+  }
   
   // === Pattern 1: "go to X" / "head to X" / "return to X" ===
   const goToPattern = /^(go|move|walk|head|travel|return|proceed)\s+(to|toward|towards|into)\s+(.+)$/;
@@ -238,6 +365,18 @@ export function normalizeCommand(
   for (const [phrase, canonical] of Object.entries(ACTION_SYNONYMS)) {
     if (cleaned === phrase || cleaned.startsWith(phrase + " ")) {
       const remainder = cleaned.slice(phrase.length).trim();
+
+      if (canonical === "use" && remainder) {
+        const itemId = resolveItemId(remainder);
+        return {
+          intent: "use",
+          canonicalTokens: [canonical, ...remainder.split(/\s+/).filter(Boolean)],
+          rawTokens,
+          targetNoun: remainder || undefined,
+          itemToken: itemId || remainder,
+        };
+      }
+
       return {
         intent: canonical as any,
         canonicalTokens: [canonical, ...remainder.split(/\s+/).filter(Boolean)],

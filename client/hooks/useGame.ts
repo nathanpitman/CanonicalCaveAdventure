@@ -542,8 +542,58 @@ export function useGame() {
         return;
       }
       
-      // For take/use/look/inventory intents with targets, let existing patterns handle them
-      // (they have more sophisticated matching)
+      // === STRUCTURED ITEM/TARGET INTENT ROUTING ===
+      if (normalized.intent === "use" && normalized.itemToken) {
+        const itemId = normalized.itemToken;
+        const targetId = normalized.targetToken;
+
+        if (!gameState.inventory.find(
+          (id) => id.toLowerCase() === itemId || 
+                  ITEMS[id]?.name.toLowerCase().split(" ").some(w => w === itemId)
+        )) {
+          addMessage("system", "You don't have that.");
+          checkLampWarning();
+          return;
+        }
+
+        const inventoryItemId = gameState.inventory.find(
+          (id) => id.toLowerCase() === itemId ||
+                  ITEMS[id]?.name.toLowerCase().split(" ").some(w => w === itemId)
+        );
+
+        if (inventoryItemId) {
+          const item = ITEMS[inventoryItemId];
+          if (item && item.usable && item.useEffect) {
+            handleUseItem(inventoryItemId);
+            checkLampWarning();
+            return;
+          }
+
+          if (targetId) {
+            const matchingAction = availableActions.find((a) => {
+              if (a.requiresItem === inventoryItemId) return true;
+              const idLower = a.id.toLowerCase();
+              const labelLower = a.label.toLowerCase();
+              return idLower.includes(targetId) || labelLower.includes(targetId);
+            });
+            if (matchingAction) {
+              handleAction(matchingAction);
+              checkLampWarning();
+              return;
+            }
+          }
+
+          if (item && item.usable) {
+            handleUseItem(inventoryItemId);
+            checkLampWarning();
+            return;
+          }
+
+          addMessage("system", "That doesn't seem to work here.");
+          checkLampWarning();
+          return;
+        }
+      }
 
       // Natural language patterns for LOOK
       if (
