@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { View, StyleSheet, Pressable, Platform } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
-import { TorchIcon } from "@/components/TorchIcon";
+import { FlashlightBatteryIcon } from "@/components/FlashlightBatteryIcon";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { BorderRadius, Spacing, Fonts } from "@/constants/theme";
+import { INITIAL_LAMP_LIMIT } from "@/data/canonConstants";
 
 interface TorchIndicatorProps {
   lampLimit: number;
@@ -20,8 +21,8 @@ export function TorchIndicator({ lampLimit, lampLit }: TorchIndicatorProps) {
   const isDead = lampLimit <= 0;
   const isLit = lampLit && !isDead;
   const displayTurns = isDead ? 0 : Math.max(0, lampLimit);
+  const chargePercent = isDead ? 0 : Math.min(100, (lampLimit / INITIAL_LAMP_LIMIT) * 100);
 
-  const iconColor = isLit ? theme.primary : theme.textSecondary;
   const numberColor = isLit ? theme.text : theme.textSecondary;
 
   const handlePress = useCallback(() => {
@@ -74,11 +75,13 @@ export function TorchIndicator({ lampLimit, lampLit }: TorchIndicatorProps) {
         accessibilityState={{ expanded: open }}
         testID="torch-indicator"
       >
-        <TorchIcon
-          size={18}
-          lit={isLit}
-          color={iconColor}
-          glowColor={theme.primary}
+        <FlashlightBatteryIcon
+          width={30}
+          height={15}
+          chargePercent={chargePercent}
+          active={isLit}
+          activeColor={theme.primary}
+          inactiveColor={theme.textSecondary}
         />
         <ThemedText
           style={[
