@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { BatteryIndicator } from "@/components/BatteryIndicator";
+import { TorchIndicator } from "@/components/TorchIndicator";
 import { ProgressChaptersBar } from "@/components/ProgressChaptersBar";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -45,17 +45,19 @@ export function GameHeader({
           ariaLabel="Adventure progress"
         />
         <View style={styles.headerRow}>
-          <View style={styles.spacer}>
-            {hasLamp ? <BatteryIndicator lampLimit={lampLimit} lampLit={lampLit} /> : null}
-          </View>
+          <ThemedText
+            style={[styles.sceneTitle, { color: theme.text }]}
+            numberOfLines={1}
+            testID="header-title"
+          >
+            {fullTitle}
+          </ThemedText>
 
-          <View style={styles.titleContainer}>
-            <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
-              {fullTitle}
-            </ThemedText>
-          </View>
-
-          <View style={styles.spacer} />
+          {hasLamp ? (
+            <View style={styles.torchContainer}>
+              <TorchIndicator lampLimit={lampLimit} lampLit={lampLit} />
+            </View>
+          ) : null}
         </View>
       </View>
       <LinearGradient
@@ -78,22 +80,19 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     marginTop: Spacing.sm,
-  },
-  spacer: {
-    width: 50,
-    alignItems: "flex-start",
-    overflow: "visible",
-    zIndex: 100,
-  },
-  titleContainer: {
-    flex: 1,
-    alignItems: "center",
+    minHeight: 24,
   },
   sceneTitle: {
     fontSize: 14,
     fontWeight: "600",
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+  torchContainer: {
+    flexShrink: 0,
+    overflow: "visible",
+    zIndex: 100,
   },
   fadeGradient: {
     position: "absolute",
