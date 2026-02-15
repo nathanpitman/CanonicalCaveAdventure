@@ -101,10 +101,10 @@ export default function GameScreen() {
               {
                 backgroundColor: theme.backgroundDefault,
                 borderTopColor: theme.backgroundSecondary,
-                paddingBottom: Math.max(insets.bottom, 16) + Spacing.md,
+                paddingBottom: Math.max(insets.bottom, 8),
               },
               Platform.OS === "web" && {
-                paddingBottom: `calc(${Spacing.md + 16}px + env(safe-area-inset-bottom, 0px))` as any,
+                paddingBottom: `calc(8px + env(safe-area-inset-bottom, 0px))` as any,
               },
             ]}
           >
