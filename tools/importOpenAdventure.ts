@@ -191,6 +191,15 @@ const ARBITRARY_MESSAGES: Record<string, string> = {
 // ============================================================
 // UTILITY FUNCTIONS
 // ============================================================
+function normaliseText(text: string): string {
+  return text
+    .replace(/\n\n/g, "\x00PARA\x00")
+    .replace(/\n/g, " ")
+    .replace(/\x00PARA\x00/g, "\n\n")
+    .replace(/  +/g, " ")
+    .trim();
+}
+
 function toSceneId(locName: string): string {
   return locName.toLowerCase().replace(/^loc_/, "");
 }
