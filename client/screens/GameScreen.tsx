@@ -4,7 +4,6 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
-  useWindowDimensions,
   Pressable,
   Platform,
 } from "react-native";
@@ -15,8 +14,6 @@ import { MessageBubble } from "@/components/MessageBubble";
 import { CommandInput } from "@/components/CommandInput";
 import { GameHeader } from "@/components/GameHeader";
 import { HelpModal } from "@/components/HelpModal";
-import { Minimap } from "@/components/Minimap";
-import { MinimapDropdown } from "@/components/MinimapDropdown";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useGame } from "@/hooks/useGame";
@@ -24,11 +21,8 @@ import { Spacing, BorderRadius } from "@/constants/theme";
 import { Message } from "@/data/gameState";
 import { SCENES } from "@/data/story";
 
-const SIDEBAR_WIDTH = 260;
-
 export default function GameScreen() {
   const { theme } = useTheme();
-  const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const {
     gameState,
@@ -42,10 +36,8 @@ export default function GameScreen() {
   } = useGame();
 
   const [helpVisible, setHelpVisible] = useState(false);
-  const [minimapVisible, setMinimapVisible] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
-  const isLandscape = width > height && width >= 700;
   const actions = getShortcutActions();
   const currentScene = SCENES[gameState.sceneId];
   const sceneTitle = currentScene?.title || "Unknown";
@@ -58,7 +50,6 @@ export default function GameScreen() {
       }, 100);
     }
   }, [messages.length]);
-
 
   const renderMessage = ({ item, index }: { item: Message; index: number }) => (
     <MessageBubble message={item} index={index} />
@@ -77,15 +68,13 @@ export default function GameScreen() {
     );
   }
 
-  const gameContent = (
-    <View style={styles.gameArea}>
+  return (
+    <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <GameHeader
         lampLimit={gameState.lamp.limit}
         lampLit={gameState.lamp.lit}
         sceneTitle={sceneTitle}
         hasLamp={hasLamp}
-        onMinimapPress={() => setMinimapVisible(true)}
-        showMinimapButton={!isLandscape}
       />
 
       <KeyboardAvoidingView style={styles.content} behavior="padding">
@@ -139,40 +128,6 @@ export default function GameScreen() {
       <HelpModal visible={helpVisible} onClose={() => setHelpVisible(false)} />
     </View>
   );
-
-  if (isLandscape) {
-    return (
-      <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
-        <View style={styles.landscapeLayout}>
-          <View
-            style={[
-              styles.sidebar,
-              { paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: theme.backgroundDefault },
-            ]}
-          >
-            <Minimap
-              visitHistory={gameState.visitHistory || ["chasm_base"]}
-              currentSceneId={gameState.sceneId}
-            />
-          </View>
-          {gameContent}
-        </View>
-      </View>
-    );
-  }
-
-  return (
-    <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
-      {gameContent}
-
-      <MinimapDropdown
-        visible={minimapVisible}
-        visitHistory={gameState.visitHistory || ["chasm_base"]}
-        currentSceneId={gameState.sceneId}
-        onClose={() => setMinimapVisible(false)}
-      />
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
@@ -183,16 +138,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  landscapeLayout: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  sidebar: {
-    width: SIDEBAR_WIDTH,
-  },
-  gameArea: {
-    flex: 1,
   },
   content: {
     flex: 1,

@@ -18,13 +18,11 @@ client/
 ├── components/       # Reusable UI components
 │   ├── ActionButton.tsx      # Quick action buttons
 │   ├── CommandInput.tsx      # Slide-up command panel with Help/Restart
-│   ├── GameHeader.tsx        # Header with lamp indicator + minimap button
+│   ├── GameHeader.tsx        # Header with lamp indicator + location title
 │   ├── GameOverModal.tsx     # Win/lose screen
 │   ├── HelpModal.tsx         # Help/commands reference
 │   ├── BatteryIndicator.tsx  # Circular lamp life gauge (canon turn-based)
 │   ├── MessageBubble.tsx     # Narrative text bubbles
-│   ├── Minimap.tsx           # Chronological journey display
-│   ├── MinimapDropdown.tsx   # Slide-down minimap from top (portrait)
 │   └── ...
 ├── data/
 │   ├── story.ts              # All scenes, items, and game content
@@ -39,7 +37,7 @@ client/
 ├── navigation/
 │   └── RootStackNavigator.tsx
 └── constants/
-    └── theme.ts              # Dark cave theme colors
+    └── theme.ts              # Dark/light theme colors
 
 server/
 ├── index.ts          # Express server
@@ -56,9 +54,6 @@ server/
 - **Autosave**: Game automatically saves after every state change
 - **Dynamic descriptions**: Room descriptions update when items are taken
 - **Go back command**: Return to previous room with "go back" or "back"
-- **Chronological minimap**: Shows your journey through visited scenes
-  - Portrait mode: Slide-out drawer accessible via map icon
-  - Landscape mode: Permanent sidebar on the left
 - **180+ explorable scenes**: Includes classic Colossal Cave Adventure content imported from Open Adventure
 
 ## Commands
@@ -126,6 +121,15 @@ The game separates canon action availability from UI suggestions:
 
 ## Recent Changes
 
+- Removed minimap feature entirely
+  - Deleted Minimap, MinimapDropdown, MinimapDrawer components
+  - Header is now a non-interactive location title indicator
+  - No landscape sidebar or portrait dropdown
+  - visitHistory still tracked in game state for potential future use
+- Added automatic system dark/light mode
+  - Follows OS prefers-color-scheme, updates live
+  - Dynamic theme-color meta tag per theme
+  - color-scheme set on document root for keyboard appearance
 - Added PWA support for iOS Add to Home Screen
   - manifest.json with proper icons, start_url, standalone display
   - Apple-touch-icon and iOS web app meta tags
@@ -159,24 +163,15 @@ The game separates canon action availability from UI suggestions:
   - 184 scenes and 28 items from adventure.yaml
   - Created import script at tools/importOpenAdventure.ts
   - Extended movement system for 12+ directions
-- Updated header to show scene title with minimap access
-  - Map icon + scene title + chevron on left (clickable)
-  - Clicking header slides down minimap from top
+- Header shows "Canonical / scene title" as non-interactive location indicator
   - Lamp indicator only appears after picking up lamp
   - Lamp indicator has info popover explaining fuel system
 - Action pills in command panel
   - Hidden in collapsed state, fade in when expanded
   - Press state shows reversed/inverted colors
   - Gradient fade on right edge when scrolling
-- Moved action shortcuts into slide-up command panel
-  - Actions now appear as pill buttons with icons below the input
-  - Icons chosen based on action type (eye for look, arrows for move, etc.)
 - Transformed command input into slide-up panel
   - Drag up to reveal Help and Restart Story options
-  - Removed hamburger menu in favor of this integrated UI
-- Added chronological minimap showing visited scenes
-  - Portrait: slide-down dropdown from top
-  - Landscape: permanent sidebar on left
 - Added "go back" command to return to previous room
 - Implemented autosave (replaces manual save/load)
 - Added natural language command parsing

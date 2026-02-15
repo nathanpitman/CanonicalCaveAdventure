@@ -1,13 +1,7 @@
 import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 
 import { BatteryIndicator } from "@/components/BatteryIndicator";
 import { ThemedText } from "@/components/ThemedText";
@@ -19,35 +13,16 @@ interface GameHeaderProps {
   lampLit: boolean;
   sceneTitle: string;
   hasLamp: boolean;
-  onMinimapPress?: () => void;
-  showMinimapButton?: boolean;
 }
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function GameHeader({
   lampLimit,
   lampLit,
   sceneTitle,
   hasLamp,
-  onMinimapPress,
-  showMinimapButton = false,
 }: GameHeaderProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const headerScale = useSharedValue(1);
-
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: headerScale.value }],
-  }));
-
-  const handlePressIn = () => {
-    headerScale.value = withSpring(0.98, { damping: 15, stiffness: 300 });
-  };
-
-  const handlePressOut = () => {
-    headerScale.value = withSpring(1, { damping: 15, stiffness: 300 });
-  };
 
   const fullTitle = `Canonical / ${sceneTitle}`;
 
@@ -66,29 +41,13 @@ export function GameHeader({
           <View style={styles.spacer}>
             {hasLamp ? <BatteryIndicator lampLimit={lampLimit} lampLit={lampLit} /> : null}
           </View>
-          
-          {showMinimapButton && onMinimapPress ? (
-            <AnimatedPressable
-              onPress={onMinimapPress}
-              onPressIn={handlePressIn}
-              onPressOut={handlePressOut}
-              style={[styles.titleTouchable, headerAnimatedStyle]}
-              testID="minimap-button"
-            >
-              <Feather name="map" size={16} color={theme.primary} style={styles.mapIcon} />
-              <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
-                {fullTitle}
-              </ThemedText>
-              <Feather name="chevron-down" size={12} color={theme.textSecondary} style={styles.chevron} />
-            </AnimatedPressable>
-          ) : (
-            <View style={styles.titleContainer}>
-              <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
-                {fullTitle}
-              </ThemedText>
-            </View>
-          )}
-          
+
+          <View style={styles.titleContainer}>
+            <ThemedText style={[styles.sceneTitle, { color: theme.text }]} numberOfLines={1}>
+              {fullTitle}
+            </ThemedText>
+          </View>
+
           <View style={styles.spacer} />
         </View>
       </View>
@@ -120,21 +79,9 @@ const styles = StyleSheet.create({
     overflow: "visible",
     zIndex: 100,
   },
-  titleTouchable: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
   titleContainer: {
     flex: 1,
     alignItems: "center",
-  },
-  mapIcon: {
-    marginRight: 6,
-  },
-  chevron: {
-    marginLeft: 4,
   },
   sceneTitle: {
     fontSize: 14,
