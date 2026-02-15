@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { BatteryIndicator } from "@/components/BatteryIndicator";
+import { ProgressChaptersBar } from "@/components/ProgressChaptersBar";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing } from "@/constants/theme";
@@ -13,6 +14,7 @@ interface GameHeaderProps {
   lampLit: boolean;
   sceneTitle: string;
   hasLamp: boolean;
+  milestonesCompleted?: number;
 }
 
 export function GameHeader({
@@ -20,6 +22,7 @@ export function GameHeader({
   lampLit,
   sceneTitle,
   hasLamp,
+  milestonesCompleted = 0,
 }: GameHeaderProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
@@ -32,11 +35,15 @@ export function GameHeader({
         style={[
           styles.container,
           {
-            paddingTop: insets.top + Spacing.sm,
+            paddingTop: insets.top + Spacing.xs,
             backgroundColor: theme.backgroundRoot,
           },
         ]}
       >
+        <ProgressChaptersBar
+          completed={milestonesCompleted}
+          ariaLabel="Adventure progress"
+        />
         <View style={styles.headerRow}>
           <View style={styles.spacer}>
             {hasLamp ? <BatteryIndicator lampLimit={lampLimit} lampLit={lampLit} /> : null}

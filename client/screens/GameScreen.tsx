@@ -29,6 +29,7 @@ export default function GameScreen() {
     messages,
     isLoading,
     gameOver,
+    milestonesCompletedCount,
     getShortcutActions,
     handleAction,
     parseCommand,
@@ -75,6 +76,7 @@ export default function GameScreen() {
         lampLit={gameState.lamp.lit}
         sceneTitle={sceneTitle}
         hasLamp={hasLamp}
+        milestonesCompleted={milestonesCompletedCount}
       />
 
       <KeyboardAvoidingView style={styles.content} behavior="padding">

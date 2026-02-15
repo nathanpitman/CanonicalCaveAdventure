@@ -20,6 +20,14 @@ import {
 } from "@/data/story";
 import { normalizeCommand } from "@/data/lexicon";
 import { WARN_TIME } from "@/data/canonConstants";
+import {
+  PROGRESS_MILESTONES,
+  MILESTONE_SCENE_TRIGGERS,
+  MILESTONE_ITEM_TRIGGERS,
+  MILESTONE_FLAG_TRIGGERS,
+  MAZE_SCENE_IDS,
+  MilestoneId,
+} from "@/data/progressMilestones";
 
 export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -27,6 +35,81 @@ export function useGame() {
   const [isLoading, setIsLoading] = useState(true);
   const [gameOver, setGameOver] = useState<"escaped" | "died" | null>(null);
   const initialized = useRef(false);
+
+  const awardMilestone = useCallback((id: MilestoneId) => {
+    setGameState((prev) => {
+      if (prev.milestonesCompleted.includes(id)) return prev;
+      if (__DEV__) console.log(`[Milestone] Awarded: ${id}`);
+      return {
+        ...prev,
+        milestonesCompleted: [...prev.milestonesCompleted, id],
+      };
+    });
+  }, []);
+
+  const milestonesCompletedCount = PROGRESS_MILESTONES.filter((m) =>
+    gameState.milestonesCompleted.includes(m)
+  ).length;
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const sceneId = gameState.sceneId;
+    const sceneMilestone = MILESTONE_SCENE_TRIGGERS[sceneId];
+    if (sceneMilestone) awardMilestone(sceneMilestone);
+
+    for (const itemId of gameState.inventory) {
+      const itemMilestone = MILESTONE_ITEM_TRIGGERS[itemId];
+      if (itemMilestone) awardMilestone(itemMilestone);
+    }
+
+    for (const [flagName, flagValue] of Object.entries(gameState.flags)) {
+      if (flagValue) {
+        const flagMilestone = MILESTONE_FLAG_TRIGGERS[flagName];
+        if (flagMilestone) awardMilestone(flagMilestone);
+      }
+    }
+
+    if (MAZE_SCENE_IDS.includes(sceneId)) {
+      const visitedMazeScenes = gameState.visitHistory.filter((s) =>
+        MAZE_SCENE_IDS.includes(s)
+      );
+      const uniqueMaze = new Set(visitedMazeScenes);
+      if (uniqueMaze.size >= 5) awardMilestone("maze_mastery");
+    }
+
+    if (gameState.visitHistory.includes("snakeblock")) {
+      const snakeIdx = gameState.visitHistory.indexOf("snakeblock");
+      const afterSnake = gameState.visitHistory.slice(snakeIdx + 1);
+      if (afterSnake.some((s) => s === "kinghall" || s === "misthall")) {
+        awardMilestone("snake_removed");
+      }
+    }
+
+    if (
+      gameState.visitHistory.includes("eastfissure") ||
+      gameState.visitHistory.includes("westfissure")
+    ) {
+      const visited = new Set(gameState.visitHistory);
+      if (visited.has("eastfissure") && visited.has("westfissure")) {
+        awardMilestone("crystal_bridge_formed");
+      }
+    }
+
+    const treasureItems = ["nugget", "coins", "eggs", "trident", "emerald", "pyramid", "ruby", "sapph"];
+    const treasureCount = treasureItems.filter((t) => gameState.inventory.includes(t)).length;
+    if (treasureCount >= 3) awardMilestone("treasury_resolved");
+    if (treasureCount >= 5) awardMilestone("pirate_event");
+
+    if (gameState.visitHistory.includes("oriental") || gameState.visitHistory.includes("plover")) {
+      awardMilestone("dragon_event");
+    }
+
+    if (gameOver === "escaped") {
+      awardMilestone("ascent_triggered");
+      awardMilestone("game_complete");
+    }
+  }, [gameState.sceneId, gameState.inventory, gameState.flags, gameState.visitHistory, gameOver, isLoading, awardMilestone]);
 
   const hapticFeedback = useCallback(
     (type: "light" | "medium" | "success" | "warning" | "error") => {
@@ -901,6 +984,7 @@ export function useGame() {
             lit: saveData.gameState.inventory?.includes("lamp") || false,
           },
           batteryState: saveData.gameState.batteryState || initialGameState.batteryState,
+          milestonesCompleted: saveData.gameState.milestonesCompleted || [],
         };
         setGameState(migratedState);
         setMessages(saveData.messages);
@@ -934,6 +1018,7 @@ export function useGame() {
     messages,
     isLoading,
     gameOver,
+    milestonesCompletedCount,
     getCurrentScene,
     getAvailableActions,
     getShortcutActions,
