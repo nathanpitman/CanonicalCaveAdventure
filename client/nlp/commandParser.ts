@@ -142,8 +142,8 @@ function tryStructuredUse(text: string, out: ParsedCommand): boolean {
     out.verb = "use";
     out.itemPhrase = itemRaw;
     out.targetPhrase = targetRaw;
-    out.itemToken = resolveItemId(itemRaw) || itemRaw;
-    out.targetToken = resolveItemId(targetRaw) || targetRaw;
+    out.itemToken = resolveItemId(itemRaw) || undefined;
+    out.targetToken = resolveItemId(targetRaw) || undefined;
     return true;
   }
 
@@ -156,8 +156,8 @@ function tryStructuredUse(text: string, out: ParsedCommand): boolean {
     out.verb = m2[3];
     out.itemPhrase = itemRaw;
     out.targetPhrase = targetRaw;
-    out.itemToken = resolveItemId(itemRaw) || itemRaw;
-    out.targetToken = resolveItemId(targetRaw) || targetRaw;
+    out.itemToken = resolveItemId(itemRaw) || undefined;
+    out.targetToken = resolveItemId(targetRaw) || undefined;
     return true;
   }
 
@@ -170,8 +170,8 @@ function tryStructuredUse(text: string, out: ParsedCommand): boolean {
     out.verb = m3[1];
     out.itemPhrase = itemRaw;
     out.targetPhrase = targetRaw;
-    out.itemToken = resolveItemId(itemRaw) || itemRaw;
-    out.targetToken = resolveItemId(targetRaw) || targetRaw;
+    out.itemToken = resolveItemId(itemRaw) || undefined;
+    out.targetToken = resolveItemId(targetRaw) || undefined;
     return true;
   }
 
@@ -250,7 +250,7 @@ function tryTake(text: string, out: ParsedCommand): boolean {
       out.intent = "take";
       out.verb = "take";
       out.itemPhrase = itemRaw;
-      out.itemToken = resolveItemId(itemRaw) || itemRaw;
+      out.itemToken = resolveItemId(itemRaw) || undefined;
       return true;
     }
   }
@@ -266,7 +266,7 @@ function trySimpleUse(text: string, out: ParsedCommand): boolean {
       out.intent = "use";
       out.verb = "use";
       out.itemPhrase = itemRaw;
-      out.itemToken = resolveItemId(itemRaw) || itemRaw;
+      out.itemToken = resolveItemId(itemRaw) || undefined;
       return true;
     }
   }

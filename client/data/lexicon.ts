@@ -150,3 +150,163 @@ export function getCanonicalObjectId(token: string): string | null {
   if (canonObjectIds.has(lower)) return lower;
   return canonObjectNames.get(lower) || null;
 }
+
+export interface FuzzyCandidate {
+  id: string;
+  name?: string;
+}
+
+export interface FuzzyResult {
+  matchId: string | null;
+  confidence: "high" | "near" | "none";
+  suggestion?: string;
+}
+
+function singularize(word: string): string[] {
+  const forms = [word];
+  if (word.endsWith("ies") && word.length > 4) {
+    forms.push(word.slice(0, -3) + "y");
+  } else if (word.endsWith("es") && word.length > 3) {
+    forms.push(word.slice(0, -2));
+  } else if (word.endsWith("s") && !word.endsWith("ss") && word.length > 2) {
+    forms.push(word.slice(0, -1));
+  }
+  return forms;
+}
+
+function normalizeForFuzzy(phrase: string): string[] {
+  const clean = stripArticles(phrase)
+    .toLowerCase()
+    .replace(/[.,!?;:'"]/g, "")
+    .trim();
+  if (!clean) return [];
+  const words = clean.split(/\s+/).filter(Boolean);
+  const expanded: string[] = [];
+  for (const w of words) {
+    for (const form of singularize(w)) {
+      if (!expanded.includes(form)) expanded.push(form);
+    }
+  }
+  return expanded;
+}
+
+function tokenOverlapScore(inputTokens: string[], candidateTokens: string[]): number {
+  if (inputTokens.length === 0 || candidateTokens.length === 0) return 0;
+
+  let matchCount = 0;
+  for (const inputWord of inputTokens) {
+    for (const candWord of candidateTokens) {
+      if (candWord === inputWord) {
+        matchCount += 1;
+        break;
+      }
+      if (inputWord.length >= 3 && candWord.startsWith(inputWord)) {
+        matchCount += 0.8;
+        break;
+      }
+      if (candWord.length >= 3 && inputWord.startsWith(candWord)) {
+        matchCount += 0.8;
+        break;
+      }
+      if (inputWord.length >= 4 && candWord.length >= 4) {
+        if (candWord.includes(inputWord) || inputWord.includes(candWord)) {
+          matchCount += 0.6;
+          break;
+        }
+      }
+    }
+  }
+
+  const maxLen = Math.max(inputTokens.length, candidateTokens.length);
+  return matchCount / maxLen;
+}
+
+export function resolveObjectToken(
+  phrase: string,
+  candidates: FuzzyCandidate[]
+): FuzzyResult {
+  if (!phrase || candidates.length === 0) {
+    return { matchId: null, confidence: "none" };
+  }
+
+  const inputTokens = normalizeForFuzzy(phrase);
+  if (inputTokens.length === 0) {
+    return { matchId: null, confidence: "none" };
+  }
+
+  const inputJoined = inputTokens.join(" ");
+
+  let bestScore = 0;
+  let bestCandidate: FuzzyCandidate | null = null;
+
+  for (const cand of candidates) {
+    const candId = cand.id.toLowerCase();
+    const candName = (cand.name || "").toLowerCase();
+
+    if (candId === inputJoined || candName === inputJoined) {
+      return { matchId: cand.id, confidence: "high" };
+    }
+
+    for (const form of inputTokens) {
+      if (candId === form) {
+        return { matchId: cand.id, confidence: "high" };
+      }
+    }
+
+    const candTokens: string[] = [];
+    for (const w of candId.split(/[\s_-]+/)) {
+      for (const f of singularize(w)) {
+        if (!candTokens.includes(f)) candTokens.push(f);
+      }
+    }
+    if (candName) {
+      for (const w of candName.split(/\s+/)) {
+        for (const f of singularize(w.toLowerCase())) {
+          if (!candTokens.includes(f)) candTokens.push(f);
+        }
+      }
+    }
+
+    for (const form of inputTokens) {
+      for (const ct of candTokens) {
+        if (ct === form) {
+          return { matchId: cand.id, confidence: "high" };
+        }
+      }
+    }
+
+    if (inputJoined.length >= 3) {
+      if (candId.startsWith(inputJoined) || candName.startsWith(inputJoined)) {
+        return { matchId: cand.id, confidence: "high" };
+      }
+      for (const ct of candTokens) {
+        if (ct.startsWith(inputJoined) || inputJoined.startsWith(ct)) {
+          const score = Math.min(inputJoined.length, ct.length) / Math.max(inputJoined.length, ct.length);
+          if (score >= 0.7) {
+            return { matchId: cand.id, confidence: "high" };
+          }
+        }
+      }
+    }
+
+    const score = tokenOverlapScore(inputTokens, candTokens);
+    if (score > bestScore) {
+      bestScore = score;
+      bestCandidate = cand;
+    }
+  }
+
+  if (bestScore >= 0.7 && bestCandidate) {
+    return { matchId: bestCandidate.id, confidence: "high" };
+  }
+
+  if (bestScore >= 0.4 && bestCandidate) {
+    return {
+      matchId: bestCandidate.id,
+      confidence: "near",
+      suggestion: bestCandidate.name || bestCandidate.id,
+    };
+  }
+
+  return { matchId: null, confidence: "none" };
+}
