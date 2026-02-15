@@ -169,7 +169,6 @@ export function CommandInput({
 
   const handleConfirmRestart = () => {
     setShowConfirm(false);
-    collapse();
     onRestart();
   };
 
@@ -178,7 +177,6 @@ export function CommandInput({
   };
 
   const handleHelpPress = () => {
-    collapse();
     onHelp();
   };
 
