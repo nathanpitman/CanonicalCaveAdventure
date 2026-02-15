@@ -23,7 +23,9 @@
     },
     "web": {
       "output": "single",
-      "favicon": "./assets/images/icon.png"
+      "favicon": "./public/favicon.png",
+      "name": "Canonical",
+      "shortName": "Canonical"
     },
     "plugins": [
       [

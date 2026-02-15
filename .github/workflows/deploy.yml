@@ -36,6 +36,9 @@ jobs:
       - name: Build web export
         run: npx expo export --platform web
 
+      - name: Inject PWA meta tags
+        run: node tools/injectPwaMeta.js
+
       - name: Add SPA fallback and .nojekyll
         run: |
           cp dist/index.html dist/404.html
