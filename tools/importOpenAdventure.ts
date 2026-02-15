@@ -36,7 +36,7 @@ interface Scene {
   items?: string[];
   sound?: string;
   conditions?: Record<string, boolean>;
-  hints?: string[];
+  hints?: number[];
 }
 
 interface Item {
@@ -293,14 +293,19 @@ function main() {
     : new Map();
 
   const hints: any[] = Array.isArray(data.hints) ? data.hints : [];
+  const obituariesRaw: any[] = Array.isArray(data.obituaries) ? data.obituaries : [];
+  const turnThresholdsRaw: any[] = Array.isArray(data.turn_thresholds) ? data.turn_thresholds : [];
 
   console.log(`Found ${locations.size} locations`);
   console.log(`Found ${objects.size} objects`);
   console.log(`Found ${arbitraryMsgs.size} arbitrary messages`);
   console.log(`Found ${hints.length} hints`);
+  console.log(`Found ${obituariesRaw.length} obituaries`);
+  console.log(`Found ${turnThresholdsRaw.length} turn thresholds`);
 
   // Build hints table
   interface HintEntry {
+    number: number;
     name: string;
     turns: number;
     penalty: number;
@@ -308,15 +313,51 @@ function main() {
     hint: string;
   }
   const HINTS: HintEntry[] = [];
+  const hintNameToNumber: Map<string, number> = new Map();
   for (const h of hints) {
     const hintData = h.hint || h;
     if (hintData && hintData.name) {
+      const num = hintData.number || (HINTS.length + 1);
+      hintNameToNumber.set(hintData.name, num);
       HINTS.push({
+        number: num,
         name: hintData.name,
         turns: hintData.turns || 0,
         penalty: hintData.penalty || 0,
         question: normaliseText(hintData.question || ""),
         hint: normaliseText(hintData.hint || ""),
+      });
+    }
+  }
+
+  // Build obituaries table
+  interface ObituaryEntry {
+    query: string;
+    yesResponse: string;
+  }
+  const OBITUARIES: ObituaryEntry[] = [];
+  for (const obit of obituariesRaw) {
+    if (obit && obit.query) {
+      OBITUARIES.push({
+        query: normaliseText(obit.query),
+        yesResponse: normaliseText(obit.yes_response || ""),
+      });
+    }
+  }
+
+  // Build turn thresholds table
+  interface TurnThresholdEntry {
+    threshold: number;
+    pointLoss: number;
+    message: string;
+  }
+  const TURN_THRESHOLDS: TurnThresholdEntry[] = [];
+  for (const tt of turnThresholdsRaw) {
+    if (tt && tt.threshold) {
+      TURN_THRESHOLDS.push({
+        threshold: tt.threshold,
+        pointLoss: tt.point_loss || 0,
+        message: normaliseText(tt.message || ""),
       });
     }
   }
@@ -554,6 +595,21 @@ function main() {
       scene.conditions = loc.conditions;
     }
 
+    if (loc.hints && Array.isArray(loc.hints) && loc.hints.length > 0) {
+      const hintNumbers: number[] = [];
+      for (const hRef of loc.hints) {
+        if (hRef && hRef.name) {
+          const num = hintNameToNumber.get(hRef.name);
+          if (num !== undefined) {
+            hintNumbers.push(num);
+          }
+        }
+      }
+      if (hintNumbers.length > 0) {
+        scene.hints = hintNumbers;
+      }
+    }
+
     SCENES[sceneId] = scene;
   }
 
@@ -737,7 +793,7 @@ export interface Scene {
   items?: string[];
   sound?: string;
   conditions?: Record<string, boolean>;
-  hints?: string[];
+  hints?: number[];
 }
 
 export interface Item {
@@ -753,11 +809,23 @@ export interface Item {
 }
 
 export interface HintEntry {
+  number: number;
   name: string;
   turns: number;
   penalty: number;
   question: string;
   hint: string;
+}
+
+export interface ObituaryEntry {
+  query: string;
+  yesResponse: string;
+}
+
+export interface TurnThresholdEntry {
+  threshold: number;
+  pointLoss: number;
+  message: string;
 }
 
 export const START_SCENE_ID: string = ${JSON.stringify(START_SCENE_ID)};
@@ -772,6 +840,10 @@ export const CANON_TRAVEL_VERBS: string[] = ${JSON.stringify([...canonTravelVerb
 export const CANON_OBJECTS: { id: string; name: string }[] = ${JSON.stringify(canonObjects, null, 2)};
 
 export const HINTS: HintEntry[] = ${JSON.stringify(HINTS, null, 2)};
+
+export const OBITUARIES: ObituaryEntry[] = ${JSON.stringify(OBITUARIES, null, 2)};
+
+export const TURN_THRESHOLDS: TurnThresholdEntry[] = ${JSON.stringify(TURN_THRESHOLDS, null, 2)};
 
 export const ITEMS: Record<string, Item> = ${JSON.stringify(ITEMS, null, 2)};
 

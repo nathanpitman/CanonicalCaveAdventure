@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
-// Generated: 2026-02-15T16:14:11.134Z
+// Generated: 2026-02-15T18:39:59.100Z
 // Canonical Open Adventure import with travel mechanics
 
 export interface Action {
@@ -33,7 +33,7 @@ export interface Scene {
   items?: string[];
   sound?: string;
   conditions?: Record<string, boolean>;
-  hints?: string[];
+  hints?: number[];
 }
 
 export interface Item {
@@ -49,11 +49,23 @@ export interface Item {
 }
 
 export interface HintEntry {
+  number: number;
   name: string;
   turns: number;
   penalty: number;
   question: string;
   hint: string;
+}
+
+export interface ObituaryEntry {
+  query: string;
+  yesResponse: string;
+}
+
+export interface TurnThresholdEntry {
+  threshold: number;
+  pointLoss: number;
+  message: string;
 }
 
 export const START_SCENE_ID: string = "start";
@@ -241,6 +253,7 @@ export const CANON_OBJECTS: { id: string; name: string }[] = [
 
 export const HINTS: HintEntry[] = [
   {
+    "number": 1,
     "name": "CAVE",
     "turns": 4,
     "penalty": 2,
@@ -248,6 +261,7 @@ export const HINTS: HintEntry[] = [
     "hint": "The grate is very solid and has a hardened steel lock. You cannot enter without a key, and there are no keys nearby. I would recommend looking elsewhere for the keys."
   },
   {
+    "number": 2,
     "name": "BIRD",
     "turns": 5,
     "penalty": 2,
@@ -255,6 +269,7 @@ export const HINTS: HintEntry[] = [
     "hint": "Something about you seems to be frightening the bird. Perhaps you might figure out what it is."
   },
   {
+    "number": 3,
     "name": "SNAKE",
     "turns": 8,
     "penalty": 2,
@@ -262,6 +277,7 @@ export const HINTS: HintEntry[] = [
     "hint": "You can't kill the snake, or drive it away, or avoid it, or anything like that. There is a way to get by, but you don't have the necessary resources right now."
   },
   {
+    "number": 4,
     "name": "MAZE",
     "turns": 75,
     "penalty": 4,
@@ -269,6 +285,7 @@ export const HINTS: HintEntry[] = [
     "hint": "You can make the passages look less alike by dropping things."
   },
   {
+    "number": 5,
     "name": "DARK",
     "turns": 25,
     "penalty": 5,
@@ -276,6 +293,7 @@ export const HINTS: HintEntry[] = [
     "hint": "There is a way to explore that region without having to worry about falling into a pit. None of the objects available is immediately useful in discovering the secret."
   },
   {
+    "number": 6,
     "name": "WITT",
     "turns": 20,
     "penalty": 3,
@@ -283,6 +301,7 @@ export const HINTS: HintEntry[] = [
     "hint": "Don't go west.\\n"
   },
   {
+    "number": 7,
     "name": "CLIFF",
     "turns": 8,
     "penalty": 2,
@@ -290,6 +309,7 @@ export const HINTS: HintEntry[] = [
     "hint": "This section is quite advanced. Find the cave first.\\n"
   },
   {
+    "number": 8,
     "name": "WOODS",
     "turns": 25,
     "penalty": 2,
@@ -297,6 +317,7 @@ export const HINTS: HintEntry[] = [
     "hint": "Go east ten times. If that doesn't get you out, then go south, then west twice, then south."
   },
   {
+    "number": 9,
     "name": "OGRE",
     "turns": 10,
     "penalty": 4,
@@ -304,11 +325,50 @@ export const HINTS: HintEntry[] = [
     "hint": "There is nothing the presence of which will prevent you from defeating him; thus it can't hurt to fetch everything you possibly can."
   },
   {
+    "number": 10,
     "name": "JADE",
     "turns": 1,
     "penalty": 4,
     "question": "You're missing only one other treasure. Do you need help finding it?",
     "hint": "Once you've found all the other treasures, it is no longer possible to locate the one you're now missing."
+  }
+];
+
+export const OBITUARIES: ObituaryEntry[] = [
+  {
+    "query": "Oh dear, you seem to have gotten yourself killed. I might be able to help you out, but I've never really done this before. Do you want me to try to reincarnate you?",
+    "yesResponse": "All right. But don't blame me if something goes wr...... --- POOF!! --- You are engulfed in a cloud of orange smoke. Coughing and gasping, you emerge from the smoke and find...."
+  },
+  {
+    "query": "You clumsy oaf, you've done it again! I don't know how long I can keep this up. Do you want me to try reincarnating you again?",
+    "yesResponse": "Okay, now where did I put my orange smoke?.... >POOF!< Everything disappears in a dense cloud of orange smoke."
+  },
+  {
+    "query": "Now you've really done it! I'm out of orange smoke! You don't expect me to do a decent reincarnation without any orange smoke, do you?",
+    "yesResponse": "Okay, if you're so smart, do it yourself! I'm leaving!"
+  }
+];
+
+export const TURN_THRESHOLDS: TurnThresholdEntry[] = [
+  {
+    "threshold": 350,
+    "pointLoss": 2,
+    "message": "Tsk! A wizard wouldn't have to take 350 turns. This is going to cost you a couple of points."
+  },
+  {
+    "threshold": 500,
+    "pointLoss": 3,
+    "message": "500 turns? That's another few points you've lost."
+  },
+  {
+    "threshold": 1000,
+    "pointLoss": 5,
+    "message": "Are you still at it? Five points off for exceeding 1000 turns!"
+  },
+  {
+    "threshold": 2500,
+    "pointLoss": 10,
+    "message": "Good grief, don't you *EVER* give up? Do you realize you've spent over 2500 turns at this? That's another ten points off, a total of twenty points lost for taking so long."
   }
 ];
 
@@ -943,7 +1003,10 @@ export const SCENES: Record<string, Scene> = {
       "ABOVE": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      7
+    ]
   },
   "slit": {
     "id": "slit",
@@ -1156,7 +1219,11 @@ export const SCENES: Record<string, Scene> = {
     "conditions": {
       "ABOVE": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      1,
+      10
+    ]
   },
   "belowgrate": {
     "id": "belowgrate",
@@ -1570,7 +1637,10 @@ export const SCENES: Record<string, Scene> = {
     ],
     "itemDescriptions": {
       "bird": "A cheerful little bird is sitting here singing."
-    }
+    },
+    "hints": [
+      2
+    ]
   },
   "pittop": {
     "id": "pittop",
@@ -1757,7 +1827,10 @@ export const SCENES: Record<string, Scene> = {
     "sound": "WIND_WHISTLES",
     "conditions": {
       "DEEP": true
-    }
+    },
+    "hints": [
+      10
+    ]
   },
   "crack": {
     "id": "crack",
@@ -1995,7 +2068,10 @@ export const SCENES: Record<string, Scene> = {
     ],
     "conditions": {
       "DEEP": true
-    }
+    },
+    "hints": [
+      3
+    ]
   },
   "neckbroke": {
     "id": "neckbroke",
@@ -3060,7 +3136,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike2": {
     "id": "alike2",
@@ -3100,7 +3179,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike3": {
     "id": "alike3",
@@ -3146,7 +3228,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike4": {
     "id": "alike4",
@@ -3204,7 +3289,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "mazeend1": {
     "id": "mazeend1",
@@ -3238,7 +3326,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOARRR": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "mazeend2": {
     "id": "mazeend2",
@@ -3272,7 +3363,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOARRR": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "mazeend3": {
     "id": "mazeend3",
@@ -3306,7 +3400,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOARRR": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike5": {
     "id": "alike5",
@@ -3340,7 +3437,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike6": {
     "id": "alike6",
@@ -3386,7 +3486,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike7": {
     "id": "alike7",
@@ -3432,7 +3535,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike8": {
     "id": "alike8",
@@ -3490,7 +3596,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike9": {
     "id": "alike9",
@@ -3530,7 +3639,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "mazeend4": {
     "id": "mazeend4",
@@ -3564,7 +3676,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOARRR": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike10": {
     "id": "alike10",
@@ -3610,7 +3725,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "mazeend5": {
     "id": "mazeend5",
@@ -3644,7 +3762,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOARRR": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "pitbrink": {
     "id": "pitbrink",
@@ -4005,7 +4126,10 @@ export const SCENES: Record<string, Scene> = {
     "sound": "WIND_WHISTLES",
     "conditions": {
       "DEEP": true
-    }
+    },
+    "hints": [
+      10
+    ]
   },
   "bedquilt": {
     "id": "bedquilt",
@@ -4697,7 +4821,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "mazeend8": {
     "id": "mazeend8",
@@ -4730,7 +4857,10 @@ export const SCENES: Record<string, Scene> = {
     "conditions": {
       "DEEP": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "mazeend9": {
     "id": "mazeend9",
@@ -4764,7 +4894,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOARRR": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike12": {
     "id": "alike12",
@@ -4912,7 +5045,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOARRR": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "alike14": {
     "id": "alike14",
@@ -4946,7 +5082,10 @@ export const SCENES: Record<string, Scene> = {
       "DEEP": true,
       "NOBACK": true,
       "ALLALIKE": true
-    }
+    },
+    "hints": [
+      4
+    ]
   },
   "narrow": {
     "id": "narrow",
@@ -5497,7 +5636,10 @@ export const SCENES: Record<string, Scene> = {
     ],
     "conditions": {
       "DEEP": true
-    }
+    },
+    "hints": [
+      5
+    ]
   },
   "plover": {
     "id": "plover",
@@ -5554,7 +5696,10 @@ export const SCENES: Record<string, Scene> = {
     "conditions": {
       "DEEP": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      5
+    ]
   },
   "darkroom": {
     "id": "darkroom",
@@ -5604,7 +5749,10 @@ export const SCENES: Record<string, Scene> = {
     },
     "conditions": {
       "DEEP": true
-    }
+    },
+    "hints": [
+      5
+    ]
   },
   "arched": {
     "id": "arched",
@@ -6015,7 +6163,10 @@ export const SCENES: Record<string, Scene> = {
     "conditions": {
       "DEEP": true,
       "NOBACK": true
-    }
+    },
+    "hints": [
+      6
+    ]
   },
   "mirrorcanyon": {
     "id": "mirrorcanyon",
@@ -6053,7 +6204,10 @@ export const SCENES: Record<string, Scene> = {
     "sound": "WIND_WHISTLES",
     "conditions": {
       "DEEP": true
-    }
+    },
+    "hints": [
+      10
+    ]
   },
   "window2": {
     "id": "window2",
@@ -6904,7 +7058,10 @@ export const SCENES: Record<string, Scene> = {
       "NOARRR": true,
       "LIT": true,
       "DEEP": true
-    }
+    },
+    "hints": [
+      10
+    ]
   },
   "boulders2": {
     "id": "boulders2",
@@ -8014,7 +8171,10 @@ export const SCENES: Record<string, Scene> = {
     ],
     "conditions": {
       "DEEP": true
-    }
+    },
+    "hints": [
+      9
+    ]
   },
   "storeroom": {
     "id": "storeroom",
@@ -8105,7 +8265,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest2": {
     "id": "forest2",
@@ -8151,7 +8314,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest3": {
     "id": "forest3",
@@ -8197,7 +8363,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest4": {
     "id": "forest4",
@@ -8243,7 +8412,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest5": {
     "id": "forest5",
@@ -8289,7 +8461,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest6": {
     "id": "forest6",
@@ -8335,7 +8510,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest7": {
     "id": "forest7",
@@ -8381,7 +8559,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest8": {
     "id": "forest8",
@@ -8427,7 +8608,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest9": {
     "id": "forest9",
@@ -8473,7 +8657,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest10": {
     "id": "forest10",
@@ -8519,7 +8706,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest11": {
     "id": "forest11",
@@ -8565,7 +8755,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest12": {
     "id": "forest12",
@@ -8611,7 +8804,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest13": {
     "id": "forest13",
@@ -8657,7 +8853,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest14": {
     "id": "forest14",
@@ -8703,7 +8902,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest15": {
     "id": "forest15",
@@ -8749,7 +8951,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest16": {
     "id": "forest16",
@@ -8795,7 +9000,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest17": {
     "id": "forest17",
@@ -8841,7 +9049,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest18": {
     "id": "forest18",
@@ -8887,7 +9098,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest19": {
     "id": "forest19",
@@ -8933,7 +9147,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest20": {
     "id": "forest20",
@@ -8979,7 +9196,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest21": {
     "id": "forest21",
@@ -9025,7 +9245,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "forest22": {
     "id": "forest22",
@@ -9084,7 +9307,10 @@ export const SCENES: Record<string, Scene> = {
       "FOREST": true,
       "NOBACK": true,
       "LIT": true
-    }
+    },
+    "hints": [
+      8
+    ]
   },
   "ledge": {
     "id": "ledge",
