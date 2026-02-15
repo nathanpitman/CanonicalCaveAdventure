@@ -25,6 +25,7 @@ export interface GameState {
   };
   batteryState: "fresh" | "used" | "dead" | "absent";
   removedActions: Record<string, string[]>;
+  milestonesCompleted: string[];
 }
 
 export interface SaveData {
@@ -53,6 +54,7 @@ export const initialGameState: GameState = {
   },
   batteryState: "fresh",
   removedActions: {},
+  milestonesCompleted: [],
 };
 
 export async function saveGame(
