@@ -25,7 +25,9 @@
       "output": "single",
       "favicon": "./public/favicon.png",
       "name": "Canonical",
-      "shortName": "Canonical"
+      "shortName": "Canonical",
+      "themeColor": "#0A0A0A",
+      "backgroundColor": "#0A0A0A"
     },
     "plugins": [
       [

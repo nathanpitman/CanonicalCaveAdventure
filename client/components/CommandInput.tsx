@@ -37,8 +37,8 @@ interface CommandInputProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const COLLAPSED_HEIGHT = 75;
-const EXPANDED_HEIGHT = 165;
+const COLLAPSED_HEIGHT = 80;
+const EXPANDED_HEIGHT = 170;
 const DRAG_THRESHOLD = 50;
 
 const PLACEHOLDER_EXAMPLES = [
@@ -95,8 +95,9 @@ export function CommandInput({
   const isExpanded = useSharedValue(false);
   const startY = useSharedValue(0);
 
-  const totalCollapsedHeight = COLLAPSED_HEIGHT + insets.bottom;
-  const totalExpandedHeight = EXPANDED_HEIGHT + insets.bottom;
+  const bottomPad = Math.max(insets.bottom, Spacing.sm);
+  const totalCollapsedHeight = COLLAPSED_HEIGHT + bottomPad;
+  const totalExpandedHeight = EXPANDED_HEIGHT + bottomPad;
 
   useEffect(() => {
     if (isFocused || command.length > 0) return;
@@ -247,7 +248,7 @@ export function CommandInput({
             {
               backgroundColor: theme.backgroundDefault,
               borderTopColor: theme.backgroundSecondary,
-              paddingBottom: insets.bottom,
+              paddingBottom: Math.max(insets.bottom, Spacing.sm),
             },
             containerAnimatedStyle,
           ]}
@@ -435,6 +436,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     paddingLeft: Spacing.lg,
     paddingRight: Spacing.xs,
+    paddingVertical: Spacing.xs,
     borderWidth: 1,
   },
   inputWrapper: {
