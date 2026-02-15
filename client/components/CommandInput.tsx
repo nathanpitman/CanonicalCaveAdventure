@@ -46,10 +46,10 @@ const PLACEHOLDER_EXAMPLES = [
   "look around",
   "take lamp",
   "go north",
-  "use rope",
+  "take keys",
   "inventory",
-  "examine walls",
-  "pick up canister",
+  "go inside",
+  "grab bottle",
   "head east",
 ];
 
