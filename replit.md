@@ -18,7 +18,8 @@ client/
 ├── components/       # Reusable UI components
 │   ├── ActionButton.tsx      # Quick action buttons
 │   ├── CommandInput.tsx      # Slide-up command panel with Help/Restart
-│   ├── GameHeader.tsx        # Header with lamp indicator + location title
+│   ├── GameHeader.tsx        # Header with progress bar + lamp indicator + location title
+│   ├── ProgressChaptersBar.tsx # YouTube-chapters-style segmented progress bar
 │   ├── GameOverModal.tsx     # Win/lose screen
 │   ├── HelpModal.tsx         # Help/commands reference
 │   ├── BatteryIndicator.tsx  # Circular lamp life gauge (canon turn-based)
@@ -28,6 +29,7 @@ client/
 │   ├── story.ts              # All scenes, items, and game content
 │   ├── gameState.ts          # Game state types and AsyncStorage
 │   ├── canonConstants.ts     # INITIAL_LAMP_LIMIT, WARN_TIME, BATTERY_LIFE_BONUS
+│   ├── progressMilestones.ts # 14 milestone definitions + trigger mappings
 │   └── lexicon.ts            # Additive natural language synonym mappings
 ├── hooks/
 │   └── useGame.ts            # Main game logic hook
@@ -121,6 +123,14 @@ The game separates canon action availability from UI suggestions:
 
 ## Recent Changes
 
+- Added YouTube-chapters-style progress bar to header
+  - 14-segment thin bar at top of title bar showing milestone progress
+  - Milestones tracked monotonically in game state (never decrease)
+  - Persisted via AsyncStorage alongside game saves
+  - Pulse animation on newly completed segments
+  - Milestones triggered by scene visits, item pickups, flag changes
+  - ProgressChaptersBar component with accessibility support
+  - progressMilestones.ts defines milestone IDs and trigger mappings
 - Removed minimap feature entirely
   - Deleted Minimap, MinimapDropdown, MinimapDrawer components
   - Header is now a non-interactive location title indicator
