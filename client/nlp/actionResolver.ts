@@ -5,14 +5,15 @@ import {
   DIRECTION_SYNONYMS,
   resolveObjectToken,
   FuzzyCandidate,
+  FuzzyResult,
 } from "@/data/lexicon";
 
 export type Resolution =
-  | { type: "action"; action: Action }
-  | { type: "useItem"; itemId: string }
-  | { type: "takeItem"; itemId: string; actionId: string }
-  | { type: "move"; toSceneId: string }
-  | { type: "direction"; direction: string }
+  | { type: "action"; action: Action; correction?: string }
+  | { type: "useItem"; itemId: string; correction?: string }
+  | { type: "takeItem"; itemId: string; actionId: string; correction?: string }
+  | { type: "move"; toSceneId: string; correction?: string }
+  | { type: "direction"; direction: string; correction?: string }
   | { type: "message"; text: string }
   | { type: "look" }
   | { type: "inventory" }
@@ -86,6 +87,49 @@ function buildMovementCandidates(ctx: ResolverContext): FuzzyCandidate[] {
   return candidates;
 }
 
+function correctionNote(correctedFrom: string, correctedTo: string): string {
+  return `(interpreting '${correctedFrom}' as '${correctedTo}')`;
+}
+
+function applyFuzzyItem(
+  phrase: string,
+  candidates: FuzzyCandidate[],
+  failMsg: string
+): { itemId: string; correction?: string } | { message: string } {
+  const result = resolveObjectToken(phrase, candidates);
+
+  if (result.confidence === "exact" && result.matchId) {
+    return { itemId: result.matchId };
+  }
+
+  if (result.confidence === "corrected" && result.matchId) {
+    const note = result.correctedFrom
+      ? correctionNote(result.correctedFrom, result.suggestion || result.matchId)
+      : undefined;
+    return { itemId: result.matchId, correction: note };
+  }
+
+  if (result.confidence === "suggestion" && result.suggestion) {
+    return { message: `I couldn't find that item. Did you mean '${result.suggestion}'?` };
+  }
+
+  return { message: failMsg };
+}
+
+function applyFuzzyTarget(
+  phrase: string,
+  candidates: FuzzyCandidate[]
+): FuzzyResult {
+  return resolveObjectToken(phrase, candidates);
+}
+
+function applyFuzzyMovement(
+  phrase: string,
+  candidates: FuzzyCandidate[]
+): FuzzyResult {
+  return resolveObjectToken(phrase, candidates);
+}
+
 export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
   switch (parsed.intent) {
     case "look":
@@ -133,9 +177,20 @@ function resolveMove(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
     }
 
     const moveCandidates = buildMovementCandidates(ctx);
-    const fuzzy = resolveObjectToken(parsed.direction, moveCandidates);
-    if (fuzzy.confidence === "near" && fuzzy.suggestion) {
-      return { type: "message", text: `You can't go that way. Did you mean '${fuzzy.suggestion}'?` };
+    const fuzzy = applyFuzzyMovement(parsed.direction, moveCandidates);
+    if (fuzzy.confidence === "corrected" && fuzzy.matchId) {
+      const matchedAction = availableActions.find(a =>
+        a.id === `go_${fuzzy.matchId}` || a.id.replace(/^go_/, "") === fuzzy.matchId
+      );
+      if (matchedAction && matchedAction.to) {
+        const note = fuzzy.correctedFrom
+          ? ` ${correctionNote(fuzzy.correctedFrom, fuzzy.suggestion || fuzzy.matchId)}`
+          : "";
+        return { type: "action", action: matchedAction, correction: note || undefined };
+      }
+    }
+    if (fuzzy.confidence === "suggestion" && fuzzy.suggestion) {
+      return { type: "message", text: `Did you mean '${fuzzy.suggestion}'?` };
     }
 
     return { type: "message", text: "You can't go that way." };
@@ -156,45 +211,11 @@ function resolveMove(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
       }
     }
 
-    for (const action of moveActions) {
-      const label = action.label.toLowerCase();
-      const actionToken = action.id.replace(/^go_/, "").toLowerCase();
-      if (actionToken.startsWith(phrase) || label.startsWith(phrase) ||
-          label.startsWith(`go ${phrase}`)) {
-        if (action.to) {
-          return { type: "action", action };
-        }
-      }
-    }
-
-    if (phrase.length >= 4) {
-      for (const action of moveActions) {
-        const label = action.label.toLowerCase();
-        const actionToken = action.id.replace(/^go_/, "").toLowerCase();
-        if (label.includes(phrase) || actionToken.includes(phrase)) {
-          if (action.to) {
-            return { type: "action", action };
-          }
-        }
-      }
-    }
-
     const synonyms = NOUN_SYNONYMS[phrase] || [phrase];
     for (const synonym of synonyms) {
       for (const action of moveActions) {
         const actionToken = action.id.replace(/^go_/, "").toLowerCase();
-        if (actionToken === synonym || actionToken.startsWith(synonym.slice(0, 5))) {
-          if (action.to) {
-            return { type: "action", action };
-          }
-        }
-      }
-    }
-
-    for (const action of moveActions) {
-      const actionToken = action.id.replace(/^go_/, "").toLowerCase();
-      if (phrase.length >= 4 && actionToken.length >= 4) {
-        if (actionToken.includes(phrase.slice(0, 4)) || phrase.includes(actionToken.slice(0, 4))) {
+        if (actionToken === synonym) {
           if (action.to) {
             return { type: "action", action };
           }
@@ -211,24 +232,29 @@ function resolveMove(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
       if (a.type !== "event" || !(a as any).message) return false;
       const label = a.label.toLowerCase();
       const id = a.id.toLowerCase();
-      return label === phrase || label.includes(phrase) || id.includes(phrase);
+      return label === phrase || id.includes(phrase);
     });
     if (eventAction) {
       return { type: "action", action: eventAction };
     }
 
     const moveCandidates = buildMovementCandidates(ctx);
-    const fuzzy = resolveObjectToken(phrase, moveCandidates);
-    if (fuzzy.confidence === "high" && fuzzy.matchId) {
+    const fuzzy = applyFuzzyMovement(phrase, moveCandidates);
+
+    if ((fuzzy.confidence === "exact" || fuzzy.confidence === "corrected") && fuzzy.matchId) {
       const matchedAction = moveActions.find(a =>
         a.id === `go_${fuzzy.matchId}` || a.id.replace(/^go_/, "") === fuzzy.matchId
       );
       if (matchedAction && matchedAction.to) {
-        return { type: "action", action: matchedAction };
+        const note = fuzzy.confidence === "corrected" && fuzzy.correctedFrom
+          ? correctionNote(fuzzy.correctedFrom, fuzzy.suggestion || fuzzy.matchId)
+          : undefined;
+        return { type: "action", action: matchedAction, correction: note };
       }
     }
-    if (fuzzy.confidence === "near" && fuzzy.suggestion) {
-      return { type: "message", text: `You can't go that way. Did you mean '${fuzzy.suggestion}'?` };
+
+    if (fuzzy.confidence === "suggestion" && fuzzy.suggestion) {
+      return { type: "message", text: `Did you mean '${fuzzy.suggestion}'?` };
     }
 
     return { type: "message", text: "You can't go that way." };
@@ -246,36 +272,18 @@ function resolveUse(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
   }
 
   const inventoryCandidates = buildInventoryCandidates(ctx);
+  const itemResult = applyFuzzyItem(itemPhrase, inventoryCandidates, "You don't have that.");
 
-  const directMatch = inventory.find(id => {
-    if (id.toLowerCase() === itemPhrase.toLowerCase()) return true;
-    const item = items[id];
-    if (item && item.name.toLowerCase().split(" ").some(w => w.toLowerCase() === itemPhrase.toLowerCase())) return true;
-    return false;
-  });
-
-  let inventoryItemId: string | undefined;
-
-  if (directMatch) {
-    inventoryItemId = directMatch;
-  } else if (parsed.itemToken && inventory.includes(parsed.itemToken)) {
-    inventoryItemId = parsed.itemToken;
-  } else {
-    const fuzzyItem = resolveObjectToken(itemPhrase, inventoryCandidates);
-
-    if (fuzzyItem.confidence === "high" && fuzzyItem.matchId) {
-      inventoryItemId = fuzzyItem.matchId;
-    } else if (fuzzyItem.confidence === "near" && fuzzyItem.suggestion) {
-      return { type: "message", text: `I couldn't find that item. Did you mean '${fuzzyItem.suggestion}'?` };
-    } else {
-      return { type: "message", text: "You don't have that." };
-    }
+  if ("message" in itemResult) {
+    return { type: "message", text: itemResult.message };
   }
 
+  const inventoryItemId = itemResult.itemId;
+  const itemCorrection = itemResult.correction;
   const item = items[inventoryItemId];
 
   if (item && item.usable && item.useEffect) {
-    return { type: "useItem", itemId: inventoryItemId };
+    return { type: "useItem", itemId: inventoryItemId, correction: itemCorrection };
   }
 
   const targetPhrase = parsed.targetPhrase || parsed.targetToken;
@@ -287,13 +295,13 @@ function resolveUse(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
       return idLower.includes(targetPhrase.toLowerCase()) || labelLower.includes(targetPhrase.toLowerCase());
     });
     if (directAction) {
-      return { type: "action", action: directAction };
+      return { type: "action", action: directAction, correction: itemCorrection };
     }
 
     const sceneCandidates = buildSceneTargetCandidates(ctx);
-    const fuzzyTarget = resolveObjectToken(targetPhrase, sceneCandidates);
+    const fuzzyTarget = applyFuzzyTarget(targetPhrase, sceneCandidates);
 
-    if (fuzzyTarget.confidence === "high" && fuzzyTarget.matchId) {
+    if ((fuzzyTarget.confidence === "exact" || fuzzyTarget.confidence === "corrected") && fuzzyTarget.matchId) {
       const matchedAction = availableActions.find(a => {
         const idLower = a.id.toLowerCase();
         const labelLower = a.label.toLowerCase();
@@ -301,11 +309,15 @@ function resolveUse(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
                a.requiresItem === inventoryItemId;
       });
       if (matchedAction) {
-        return { type: "action", action: matchedAction };
+        const targetNote = fuzzyTarget.confidence === "corrected" && fuzzyTarget.correctedFrom
+          ? correctionNote(fuzzyTarget.correctedFrom, fuzzyTarget.suggestion || fuzzyTarget.matchId)
+          : undefined;
+        const combined = [itemCorrection, targetNote].filter(Boolean).join(" ") || undefined;
+        return { type: "action", action: matchedAction, correction: combined };
       }
     }
 
-    if (fuzzyTarget.confidence === "near" && fuzzyTarget.suggestion) {
+    if (fuzzyTarget.confidence === "suggestion" && fuzzyTarget.suggestion) {
       return { type: "message", text: `I don't see that here. Did you mean '${fuzzyTarget.suggestion}'?` };
     }
 
@@ -313,7 +325,7 @@ function resolveUse(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
   }
 
   if (item && item.usable) {
-    return { type: "useItem", itemId: inventoryItemId };
+    return { type: "useItem", itemId: inventoryItemId, correction: itemCorrection };
   }
 
   return { type: "message", text: "That doesn't seem to work here." };
@@ -327,20 +339,6 @@ function resolveTake(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
     return { type: "message", text: "Take what?" };
   }
 
-  const target = itemPhrase.toLowerCase();
-
-  const takeAction = availableActions.find(a => {
-    if (!a.addsItem) return false;
-    const itemId = a.addsItem.toLowerCase();
-    const itemName = items[a.addsItem]?.name.toLowerCase() || "";
-    return itemId.includes(target) || itemName.includes(target) ||
-           target.includes(itemId) || target.split(/\s+/).some(w => itemId.includes(w) || itemName.includes(w));
-  });
-
-  if (takeAction && takeAction.addsItem) {
-    return { type: "takeItem", itemId: takeAction.addsItem, actionId: takeAction.id };
-  }
-
   const takeCandidates: FuzzyCandidate[] = availableActions
     .filter(a => a.addsItem)
     .map(a => ({
@@ -348,17 +346,24 @@ function resolveTake(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
       name: items[a.addsItem!]?.name,
     }));
 
-  if (takeCandidates.length > 0) {
-    const fuzzy = resolveObjectToken(itemPhrase, takeCandidates);
-    if (fuzzy.confidence === "high" && fuzzy.matchId) {
-      const matchedAction = availableActions.find(a => a.addsItem === fuzzy.matchId);
-      if (matchedAction && matchedAction.addsItem) {
-        return { type: "takeItem", itemId: matchedAction.addsItem, actionId: matchedAction.id };
-      }
+  if (takeCandidates.length === 0) {
+    return { type: "message", text: "You don't see that here." };
+  }
+
+  const fuzzy = resolveObjectToken(itemPhrase, takeCandidates);
+
+  if ((fuzzy.confidence === "exact" || fuzzy.confidence === "corrected") && fuzzy.matchId) {
+    const matchedAction = availableActions.find(a => a.addsItem === fuzzy.matchId);
+    if (matchedAction && matchedAction.addsItem) {
+      const note = fuzzy.confidence === "corrected" && fuzzy.correctedFrom
+        ? correctionNote(fuzzy.correctedFrom, fuzzy.suggestion || fuzzy.matchId)
+        : undefined;
+      return { type: "takeItem", itemId: matchedAction.addsItem, actionId: matchedAction.id, correction: note };
     }
-    if (fuzzy.confidence === "near" && fuzzy.suggestion) {
-      return { type: "message", text: `You don't see that here. Did you mean '${fuzzy.suggestion}'?` };
-    }
+  }
+
+  if (fuzzy.confidence === "suggestion" && fuzzy.suggestion) {
+    return { type: "message", text: `You don't see that here. Did you mean '${fuzzy.suggestion}'?` };
   }
 
   return { type: "message", text: "You don't see that here." };

@@ -158,8 +158,19 @@ export interface FuzzyCandidate {
 
 export interface FuzzyResult {
   matchId: string | null;
-  confidence: "high" | "near" | "none";
+  confidence: "exact" | "corrected" | "suggestion" | "none";
   suggestion?: string;
+  correctedFrom?: string;
+}
+
+export function normalizeToken(s: string): string {
+  return s.toLowerCase().replace(/[.,!?;:'"]/g, "").replace(/\s+/g, " ").trim();
+}
+
+function tokenize(phrase: string): string[] {
+  const clean = stripArticles(normalizeToken(phrase));
+  if (!clean) return [];
+  return clean.split(/\s+/).filter(Boolean);
 }
 
 function singularize(word: string): string[] {
@@ -174,82 +185,131 @@ function singularize(word: string): string[] {
   return forms;
 }
 
-function normalizeForFuzzy(phrase: string): string[] {
-  const clean = stripArticles(phrase)
-    .toLowerCase()
-    .replace(/[.,!?;:'"]/g, "")
-    .trim();
-  if (!clean) return [];
-  const words = clean.split(/\s+/).filter(Boolean);
-  const expanded: string[] = [];
-  for (const w of words) {
-    for (const form of singularize(w)) {
-      if (!expanded.includes(form)) expanded.push(form);
-    }
+function pluralize(word: string): string[] {
+  const forms = [word];
+  if (!word.endsWith("s")) {
+    forms.push(word + "s");
   }
-  return expanded;
+  if (word.endsWith("y") && word.length > 2) {
+    forms.push(word.slice(0, -1) + "ies");
+  }
+  return forms;
 }
 
-function levenshtein(a: string, b: string): number {
+function expandForms(word: string): string[] {
+  const all = new Set<string>();
+  for (const s of singularize(word)) {
+    all.add(s);
+    for (const p of pluralize(s)) all.add(p);
+  }
+  for (const p of pluralize(word)) {
+    all.add(p);
+    for (const s of singularize(p)) all.add(s);
+  }
+  return Array.from(all);
+}
+
+export function editDistanceAtMost2(a: string, b: string): number {
   const m = a.length;
   const n = b.length;
-  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-  for (let i = 0; i <= m; i++) dp[i][0] = i;
-  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  if (Math.abs(m - n) > 2) return 3;
+
+  let prev2: number[] | null = null;
+  let prev1 = new Array(n + 1);
+  let curr = new Array(n + 1);
+
+  for (let j = 0; j <= n; j++) prev1[j] = j;
+
   for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    let rowMin = curr[0];
+
     for (let j = 1; j <= n; j++) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,
-        dp[i][j - 1] + 1,
-        dp[i - 1][j - 1] + cost
+      curr[j] = Math.min(
+        prev1[j] + 1,
+        curr[j - 1] + 1,
+        prev1[j - 1] + cost
       );
+      if (
+        i > 1 && j > 1 &&
+        a[i - 1] === b[j - 2] &&
+        a[i - 2] === b[j - 1] &&
+        prev2 !== null
+      ) {
+        curr[j] = Math.min(curr[j], prev2[j - 2] + cost);
+      }
+      if (curr[j] < rowMin) rowMin = curr[j];
     }
-  }
-  return dp[m][n];
-}
 
-function editDistanceScore(inputWord: string, candWord: string): number {
-  const maxLen = Math.max(inputWord.length, candWord.length);
-  if (maxLen === 0) return 0;
-  const dist = levenshtein(inputWord, candWord);
-  return 1 - dist / maxLen;
-}
+    if (rowMin > 2) return 3;
 
-function tokenOverlapScore(inputTokens: string[], candidateTokens: string[]): number {
-  if (inputTokens.length === 0 || candidateTokens.length === 0) return 0;
-
-  let matchCount = 0;
-  for (const inputWord of inputTokens) {
-    let bestWordScore = 0;
-    for (const candWord of candidateTokens) {
-      if (candWord === inputWord) {
-        bestWordScore = 1;
-        break;
-      }
-      if (inputWord.length >= 3 && candWord.startsWith(inputWord)) {
-        bestWordScore = Math.max(bestWordScore, 0.85);
-        continue;
-      }
-      if (candWord.length >= 3 && inputWord.startsWith(candWord)) {
-        bestWordScore = Math.max(bestWordScore, 0.85);
-        continue;
-      }
-      if (inputWord.length >= 4 && candWord.length >= 4) {
-        if (candWord.includes(inputWord) || inputWord.includes(candWord)) {
-          bestWordScore = Math.max(bestWordScore, 0.6);
-          continue;
-        }
-      }
-      if (inputWord.length >= 2 && candWord.length >= 2) {
-        const edScore = editDistanceScore(inputWord, candWord);
-        bestWordScore = Math.max(bestWordScore, edScore);
-      }
-    }
-    matchCount += bestWordScore;
+    prev2 = prev1;
+    prev1 = curr;
+    curr = new Array(n + 1);
   }
 
-  return matchCount / inputTokens.length;
+  return Math.min(prev1[n], 3);
+}
+
+function getCandidateTokens(cand: FuzzyCandidate): string[] {
+  const tokens = new Set<string>();
+  for (const form of expandForms(cand.id.toLowerCase())) tokens.add(form);
+  if (cand.name) {
+    for (const w of cand.name.toLowerCase().split(/\s+/)) {
+      if (w.length > 2) {
+        for (const form of expandForms(w)) tokens.add(form);
+      }
+    }
+  }
+  return Array.from(tokens);
+}
+
+interface MatchResult {
+  candidate: FuzzyCandidate;
+  distance: number;
+  matchedToken: string;
+  inputToken: string;
+}
+
+function findBestTokenMatch(
+  inputWord: string,
+  candidates: FuzzyCandidate[]
+): MatchResult[] {
+  const results: MatchResult[] = [];
+
+  for (const cand of candidates) {
+    const candTokens = getCandidateTokens(cand);
+    let bestDist = 3;
+    let bestToken = "";
+
+    for (const ct of candTokens) {
+      const d = editDistanceAtMost2(inputWord, ct);
+      if (d < bestDist) {
+        bestDist = d;
+        bestToken = ct;
+        if (d === 0) break;
+      }
+    }
+
+    if (bestDist <= 2) {
+      results.push({
+        candidate: cand,
+        distance: bestDist,
+        matchedToken: bestToken,
+        inputToken: inputWord,
+      });
+    }
+  }
+
+  results.sort((a, b) => {
+    if (a.distance !== b.distance) return a.distance - b.distance;
+    if (a.matchedToken[0] === a.inputToken[0] && b.matchedToken[0] !== b.inputToken[0]) return -1;
+    if (b.matchedToken[0] === b.inputToken[0] && a.matchedToken[0] !== a.inputToken[0]) return 1;
+    return 0;
+  });
+
+  return results;
 }
 
 export function resolveObjectToken(
@@ -260,88 +320,74 @@ export function resolveObjectToken(
     return { matchId: null, confidence: "none" };
   }
 
-  const inputTokens = normalizeForFuzzy(phrase);
+  const inputTokens = tokenize(phrase);
   if (inputTokens.length === 0) {
     return { matchId: null, confidence: "none" };
   }
 
-  const inputJoined = inputTokens.join(" ");
+  for (const inputWord of inputTokens) {
+    const inputForms = expandForms(inputWord);
 
-  let bestScore = 0;
-  let bestCandidate: FuzzyCandidate | null = null;
-
-  for (const cand of candidates) {
-    const candId = cand.id.toLowerCase();
-    const candName = (cand.name || "").toLowerCase();
-
-    if (candId === inputJoined || candName === inputJoined) {
-      return { matchId: cand.id, confidence: "high" };
-    }
-
-    for (const form of inputTokens) {
-      if (candId === form) {
-        return { matchId: cand.id, confidence: "high" };
-      }
-    }
-
-    const candTokens: string[] = [];
-    for (const w of candId.split(/[\s_-]+/)) {
-      for (const f of singularize(w)) {
-        if (!candTokens.includes(f)) candTokens.push(f);
-      }
-    }
-    if (candName) {
-      for (const w of candName.split(/\s+/)) {
-        for (const f of singularize(w.toLowerCase())) {
-          if (!candTokens.includes(f)) candTokens.push(f);
+    for (const cand of candidates) {
+      const candTokens = getCandidateTokens(cand);
+      for (const form of inputForms) {
+        if (candTokens.includes(form)) {
+          return { matchId: cand.id, confidence: "exact" };
         }
       }
-    }
-
-    for (const form of inputTokens) {
-      for (const ct of candTokens) {
-        if (ct === form) {
-          return { matchId: cand.id, confidence: "high" };
-        }
-      }
-    }
-
-    if (inputJoined.length >= 3) {
-      if (candId.startsWith(inputJoined) || candName.startsWith(inputJoined)) {
-        return { matchId: cand.id, confidence: "high" };
-      }
-      for (const ct of candTokens) {
-        if (ct.startsWith(inputJoined) || inputJoined.startsWith(ct)) {
-          const score = Math.min(inputJoined.length, ct.length) / Math.max(inputJoined.length, ct.length);
-          if (score >= 0.7) {
-            return { matchId: cand.id, confidence: "high" };
-          }
-        }
-      }
-    }
-
-    let score = tokenOverlapScore(inputTokens, candTokens);
-    if (inputTokens.length === 1 && inputTokens[0].length >= 2) {
-      const firstChar = inputTokens[0][0];
-      if (candId[0] === firstChar || candTokens.some(ct => ct[0] === firstChar)) {
-        score += 0.01;
-      }
-    }
-    if (score > bestScore) {
-      bestScore = score;
-      bestCandidate = cand;
     }
   }
 
-  if (bestScore >= 0.7 && bestCandidate) {
-    return { matchId: bestCandidate.id, confidence: "high" };
+  const allMatches: MatchResult[] = [];
+  for (const inputWord of inputTokens) {
+    const matches = findBestTokenMatch(inputWord, candidates);
+    allMatches.push(...matches);
   }
 
-  if (bestScore >= 0.4 && bestCandidate) {
+  if (allMatches.length === 0) {
+    return { matchId: null, confidence: "none" };
+  }
+
+  allMatches.sort((a, b) => {
+    if (a.distance !== b.distance) return a.distance - b.distance;
+    if (a.matchedToken[0] === a.inputToken[0] && b.matchedToken[0] !== b.inputToken[0]) return -1;
+    if (b.matchedToken[0] === b.inputToken[0] && a.matchedToken[0] !== a.inputToken[0]) return 1;
+    return 0;
+  });
+
+  const best = allMatches[0];
+
+  if (best.distance === 1) {
+    const tiedAtD1 = allMatches.filter(m => m.distance === 1);
+    const uniqueCands = new Set(tiedAtD1.map(m => m.candidate.id));
+    if (uniqueCands.size > 1) {
+      return { matchId: null, confidence: "none" };
+    }
+    if (best.inputToken.length >= 4) {
+      return {
+        matchId: best.candidate.id,
+        confidence: "corrected",
+        suggestion: best.candidate.name || best.candidate.id,
+        correctedFrom: best.inputToken,
+      };
+    }
     return {
-      matchId: bestCandidate.id,
-      confidence: "near",
-      suggestion: bestCandidate.name || bestCandidate.id,
+      matchId: best.candidate.id,
+      confidence: "suggestion",
+      suggestion: best.candidate.name || best.candidate.id,
+    };
+  }
+
+  if (best.distance === 2) {
+    const tiedAtD2 = allMatches.filter(m => m.distance === 2);
+    const uniqueCands = new Set(tiedAtD2.map(m => m.candidate.id));
+    if (uniqueCands.size > 1) {
+      return { matchId: null, confidence: "none" };
+    }
+    return {
+      matchId: best.candidate.id,
+      confidence: "suggestion",
+      suggestion: best.candidate.name || best.candidate.id,
     };
   }
 

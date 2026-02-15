@@ -935,26 +935,31 @@ export function useGame() {
           return;
 
         case "direction":
+          if (resolution.correction) addMessage("system", resolution.correction);
           handleDirection(resolution.direction);
           checkLampWarning();
           return;
 
         case "action":
+          if (resolution.correction) addMessage("system", resolution.correction);
           handleAction(resolution.action);
           checkLampWarning();
           return;
 
         case "useItem":
+          if (resolution.correction) addMessage("system", resolution.correction);
           handleUseItem(resolution.itemId);
           checkLampWarning();
           return;
 
         case "takeItem":
+          if (resolution.correction) addMessage("system", resolution.correction);
           handleTakeItem(resolution.itemId, resolution.actionId);
           checkLampWarning();
           return;
 
         case "move":
+          if (resolution.correction) addMessage("system", resolution.correction);
           handleMove(resolution.toSceneId);
           checkLampWarning();
           return;
