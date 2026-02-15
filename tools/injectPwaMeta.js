@@ -19,7 +19,9 @@ const metaTags = `
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Canonical">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0A0A0A">
+    <meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#F5F0E8" media="(prefers-color-scheme: light)">
+    <meta name="color-scheme" content="light dark">
     <meta name="application-name" content="Canonical">
     <meta name="mobile-web-app-capable" content="yes">`;
 

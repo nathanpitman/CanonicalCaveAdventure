@@ -13,6 +13,7 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Minimap } from "./Minimap";
+import { useTheme } from "@/hooks/useTheme";
 
 const DRAWER_WIDTH = 260;
 
@@ -29,6 +30,7 @@ export function MinimapDrawer({
   currentSceneId,
   onClose,
 }: MinimapDrawerProps) {
+  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const translateX = useSharedValue(-DRAWER_WIDTH);
 
@@ -83,7 +85,7 @@ export function MinimapDrawer({
           style={[
             styles.drawer,
             drawerStyle,
-            { paddingTop: insets.top, paddingBottom: insets.bottom },
+            { paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: theme.backgroundDefault },
           ]}
         >
           <Minimap
@@ -109,6 +111,5 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: DRAWER_WIDTH,
-    backgroundColor: "#1A1612",
   },
 });

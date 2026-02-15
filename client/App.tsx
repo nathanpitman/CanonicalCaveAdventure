@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet, Platform, useColorScheme } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -8,21 +8,17 @@ import { StatusBar } from "expo-status-bar";
 
 import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-
-const ROOT_BG = "#0A0A0A";
+import { Colors } from "@/constants/theme";
 
 export default function App() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const theme = Colors[colorScheme ?? "dark"];
+
   useEffect(() => {
     if (Platform.OS === "web") {
-      document.body.style.backgroundColor = ROOT_BG;
-
-      let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.name = "theme-color";
-        document.head.appendChild(meta);
-      }
-      meta.content = ROOT_BG;
+      document.body.style.backgroundColor = theme.backgroundRoot;
+      document.documentElement.style.colorScheme = isDark ? "dark" : "light";
 
       const ensureMeta = (name: string, content: string) => {
         let tag = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
@@ -33,20 +29,21 @@ export default function App() {
         }
         tag.content = content;
       };
+      ensureMeta("theme-color", theme.backgroundRoot);
       ensureMeta("apple-mobile-web-app-capable", "yes");
       ensureMeta("apple-mobile-web-app-status-bar-style", "black-translucent");
     }
-  }, []);
+  }, [isDark, theme.backgroundRoot]);
 
   return (
     <ErrorBoundary>
       <SafeAreaProvider>
-        <GestureHandlerRootView style={styles.root}>
+        <GestureHandlerRootView style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
           <KeyboardProvider>
             <NavigationContainer>
               <RootStackNavigator />
             </NavigationContainer>
-            <StatusBar style="light" />
+            <StatusBar style={isDark ? "light" : "dark"} />
           </KeyboardProvider>
         </GestureHandlerRootView>
       </SafeAreaProvider>
@@ -57,6 +54,5 @@ export default function App() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: ROOT_BG,
   },
 });

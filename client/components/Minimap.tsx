@@ -28,7 +28,7 @@ export function Minimap({
   const { theme } = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.backgroundDefault }]}>
+    <View style={[styles.container, { backgroundColor: theme.backgroundDefault, borderRightColor: theme.border + "4D" }]}>
       <View style={styles.header}>
         <Text style={[styles.title, { color: theme.primary }]}>Journey</Text>
         {showCloseButton && onClose ? (
@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderRightWidth: 1,
-    borderRightColor: "rgba(102, 68, 0, 0.3)",
   },
   header: {
     flexDirection: "row",

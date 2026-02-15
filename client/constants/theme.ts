@@ -4,25 +4,29 @@ const amberPrimary = "#FF9500";
 const amberDark = "#CC7700";
 const amberDim = "#664400";
 
+const amberPrimaryLight = "#D97E00";
+const amberDarkLight = "#B36A00";
+const amberDimLight = "#E8D5B0";
+
 export const Colors = {
   light: {
-    text: "#E8DDD0",
-    textSecondary: "#A89580",
-    textDisabled: "#5A5248",
-    buttonText: "#0A0A0A",
-    tabIconDefault: "#A89580",
-    tabIconSelected: amberPrimary,
-    link: amberPrimary,
-    backgroundRoot: "#0A0A0A",
-    backgroundDefault: "#1A1612",
-    backgroundSecondary: "#2A2218",
-    backgroundTertiary: "#3A3228",
-    primary: amberPrimary,
-    primaryDark: amberDark,
-    primaryDim: amberDim,
-    danger: "#D32F2F",
-    success: "#66BB6A",
-    border: amberDim,
+    text: "#2C2416",
+    textSecondary: "#7A6B58",
+    textDisabled: "#B0A494",
+    buttonText: "#FFFFFF",
+    tabIconDefault: "#7A6B58",
+    tabIconSelected: amberPrimaryLight,
+    link: amberPrimaryLight,
+    backgroundRoot: "#F5F0E8",
+    backgroundDefault: "#FFFFFF",
+    backgroundSecondary: "#EDE6DA",
+    backgroundTertiary: "#E0D7C8",
+    primary: amberPrimaryLight,
+    primaryDark: amberDarkLight,
+    primaryDim: amberDimLight,
+    danger: "#C62828",
+    success: "#2E7D32",
+    border: "#D5C9B5",
   },
   dark: {
     text: "#E8DDD0",

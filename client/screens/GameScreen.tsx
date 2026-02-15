@@ -143,7 +143,7 @@ export default function GameScreen() {
           <View
             style={[
               styles.sidebar,
-              { paddingTop: insets.top, paddingBottom: insets.bottom },
+              { paddingTop: insets.top, paddingBottom: insets.bottom, backgroundColor: theme.backgroundDefault },
             ]}
           >
             <Minimap
@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
   },
   sidebar: {
     width: SIDEBAR_WIDTH,
-    backgroundColor: "#1A1612",
   },
   gameArea: {
     flex: 1,

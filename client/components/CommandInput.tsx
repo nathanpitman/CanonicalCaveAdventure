@@ -81,7 +81,7 @@ export function CommandInput({
   actions,
   onAction,
 }: CommandInputProps) {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
   const [command, setCommand] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -288,6 +288,7 @@ export function CommandInput({
                 returnKeyType="send"
                 autoCapitalize="none"
                 autoCorrect={false}
+                keyboardAppearance={isDark ? "dark" : "light"}
                 testID="command-input"
               />
             </View>
