@@ -4,6 +4,7 @@ import { Platform } from "react-native";
 
 import {
   GameState,
+  PendingPrompt,
   Message,
   initialGameState,
   saveGame,
@@ -16,6 +17,9 @@ import {
   ITEMS,
   INTRO_MESSAGES,
   HELP_TEXT,
+  HINTS,
+  OBITUARIES,
+  TURN_THRESHOLDS,
   Action,
 } from "@/data/story";
 import { normalizeCommand } from "@/data/lexicon";
@@ -287,6 +291,201 @@ export function useGame() {
     });
   }, []);
 
+  const isHintEligible = useCallback((hintNumber: number): boolean => {
+    const gs = gameState;
+    switch (hintNumber) {
+      case 1: return !gs.flags.grateOpen;
+      case 2: return gs.sceneId === "birdchamber" && gs.inventory.includes("rod") && !gs.inventory.includes("bird");
+      case 3: return gs.sceneId === "snakeblock" && !gs.inventory.includes("bird");
+      case 4: {
+        const mazeScenes = ["maze1", "maze2", "maze3", "maze4", "maze5", "maze6", "maze7",
+          "maze8", "maze9", "maze10", "maze11", "maze12", "maze13", "maze14"];
+        return mazeScenes.includes(gs.sceneId) && !gs.inventory.includes("coins");
+      }
+      case 5: return gs.sceneId === "westside" && !gs.flags.crystalBridge;
+      case 6: return gs.sceneId === "deadend13";
+      case 7: return true;
+      case 8: return !gs.inventory.includes("emerald");
+      case 9: return gs.sceneId === "alcove" && gs.inventory.includes("emerald");
+      case 10: {
+        const treasureItems = ["nugget", "coins", "eggs", "trident", "emerald", "pyramid",
+          "ruby", "sapph", "pearl", "chest", "rug", "spices", "chain"];
+        const treasureCount = treasureItems.filter(t => gs.inventory.includes(t)).length;
+        return treasureCount >= 12;
+      }
+      default: return true;
+    }
+  }, [gameState]);
+
+  const checkHints = useCallback(() => {
+    const scene = SCENES[gameState.sceneId];
+    if (!scene || !scene.hints || scene.hints.length === 0) return;
+
+    for (const hintNum of scene.hints) {
+      if (gameState.hintState.hintsGiven.includes(hintNum)) continue;
+      if (!isHintEligible(hintNum)) continue;
+
+      const hint = HINTS.find(h => h.number === hintNum);
+      if (!hint) continue;
+
+      const currentTurns = gameState.hintState.turnsInLocation[hintNum] || 0;
+      const newTurns = currentTurns + 1;
+
+      setGameState(prev => ({
+        ...prev,
+        hintState: {
+          ...prev.hintState,
+          turnsInLocation: {
+            ...prev.hintState.turnsInLocation,
+            [hintNum]: newTurns,
+          },
+        },
+      }));
+
+      if (newTurns >= hint.turns) {
+        setGameState(prev => ({
+          ...prev,
+          pendingPrompt: {
+            type: "hint_question",
+            text: hint.question,
+            hintNumber: hintNum,
+          },
+        }));
+        return;
+      }
+    }
+  }, [gameState, isHintEligible]);
+
+  const triggerDeath = useCallback((deathMessage?: string) => {
+    if (deathMessage) {
+      addMessage("narration", deathMessage);
+    }
+
+    const { numdie, maxDeaths } = gameState.deathState;
+    if (numdie >= maxDeaths) {
+      addMessage("narration", "You have used all your chances. This time you really are dead.");
+      setGameOver("died");
+      hapticFeedback("error");
+      return;
+    }
+
+    const obituaryIndex = Math.min(numdie, OBITUARIES.length - 1);
+    const obituary = OBITUARIES[obituaryIndex];
+
+    setGameState(prev => ({
+      ...prev,
+      pendingPrompt: {
+        type: "obituary",
+        text: obituary.query,
+        obituaryIndex,
+      },
+    }));
+    hapticFeedback("error");
+  }, [gameState.deathState, addMessage, hapticFeedback]);
+
+  const handlePromptResponse = useCallback((accepted: boolean) => {
+    const prompt = gameState.pendingPrompt;
+    if (!prompt) return;
+
+    if (prompt.type === "hint_question") {
+      if (accepted && prompt.hintNumber !== undefined) {
+        const hint = HINTS.find(h => h.number === prompt.hintNumber);
+        if (hint) {
+          setGameState(prev => ({
+            ...prev,
+            pendingPrompt: {
+              type: "hint_answer",
+              text: hint.hint,
+              hintNumber: hint.number,
+            },
+          }));
+          return;
+        }
+      }
+      setGameState(prev => ({
+        ...prev,
+        pendingPrompt: null,
+        hintState: {
+          ...prev.hintState,
+          turnsInLocation: {
+            ...prev.hintState.turnsInLocation,
+            [prompt.hintNumber!]: 0,
+          },
+        },
+      }));
+    } else if (prompt.type === "hint_answer") {
+      const hint = HINTS.find(h => h.number === prompt.hintNumber);
+      addMessage("system", prompt.text);
+      setGameState(prev => ({
+        ...prev,
+        pendingPrompt: null,
+        stats: {
+          ...prev.stats,
+          score: prev.stats.score - (hint?.penalty || 0),
+        },
+        hintState: {
+          ...prev.hintState,
+          hintsGiven: [...prev.hintState.hintsGiven, prompt.hintNumber!],
+          turnsInLocation: {
+            ...prev.hintState.turnsInLocation,
+            [prompt.hintNumber!]: 0,
+          },
+        },
+      }));
+    } else if (prompt.type === "obituary") {
+      if (accepted) {
+        const obituary = OBITUARIES[prompt.obituaryIndex || 0];
+        addMessage("narration", obituary.yesResponse);
+
+        setGameState(prev => ({
+          ...prev,
+          pendingPrompt: null,
+          sceneId: "building",
+          previousSceneId: null,
+          inventory: [],
+          lamp: {
+            ...prev.lamp,
+            lit: false,
+          },
+          deathState: {
+            ...prev.deathState,
+            numdie: prev.deathState.numdie + 1,
+          },
+        }));
+
+        setTimeout(() => {
+          addMessage("narration", getSceneDescription("building"));
+        }, 500);
+      } else {
+        addMessage("narration", "Very well. Game over.");
+        setGameState(prev => ({
+          ...prev,
+          pendingPrompt: null,
+        }));
+        setGameOver("died");
+      }
+    }
+  }, [gameState.pendingPrompt, addMessage, getSceneDescription]);
+
+  const checkTurnThresholds = useCallback(() => {
+    for (const threshold of TURN_THRESHOLDS) {
+      if (
+        gameState.stats.turns >= threshold.threshold &&
+        !gameState.thresholdsTriggered.includes(threshold.threshold)
+      ) {
+        addMessage("warning", threshold.message);
+        setGameState(prev => ({
+          ...prev,
+          stats: {
+            ...prev.stats,
+            score: prev.stats.score - threshold.pointLoss,
+          },
+          thresholdsTriggered: [...prev.thresholdsTriggered, threshold.threshold],
+        }));
+      }
+    }
+  }, [gameState.stats.turns, gameState.thresholdsTriggered, addMessage]);
+
   const checkLampWarning = useCallback(() => {
     const { lamp } = gameState;
     if (!lamp.lit) return;
@@ -303,16 +502,9 @@ export function useGame() {
         "warning",
         "Your lamp has run out of power."
       );
-      setTimeout(() => {
-        addMessage(
-          "narration",
-          "The brass lantern flickers and dies. In the absolute darkness of the deep earth, you are lost forever."
-        );
-        setGameOver("died");
-      }, 1500);
-      hapticFeedback("error");
+      triggerDeath("The brass lantern flickers and dies. In the absolute darkness of the deep earth, you stumble and fall...");
     }
-  }, [gameState.lamp, addMessage, hapticFeedback, gameOver]);
+  }, [gameState.lamp, addMessage, hapticFeedback, gameOver, triggerDeath]);
 
   const handleMove = useCallback(
     (toSceneId: string) => {
@@ -1016,6 +1208,12 @@ export function useGame() {
     initGame();
   }, [addMessage]);
 
+  useEffect(() => {
+    if (isLoading || gameOver) return;
+    checkTurnThresholds();
+    checkHints();
+  }, [gameState.stats.turns]);
+
   return {
     gameState,
     messages,
@@ -1028,5 +1226,6 @@ export function useGame() {
     handleAction,
     parseCommand,
     handleNewGame,
+    handlePromptResponse,
   };
 }

@@ -14,6 +14,7 @@ import { MessageBubble } from "@/components/MessageBubble";
 import { CommandInput } from "@/components/CommandInput";
 import { GameHeader } from "@/components/GameHeader";
 import { HelpModal } from "@/components/HelpModal";
+import { PendingPromptModal } from "@/components/PendingPromptModal";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useGame } from "@/hooks/useGame";
@@ -34,6 +35,7 @@ export default function GameScreen() {
     handleAction,
     parseCommand,
     handleNewGame,
+    handlePromptResponse,
   } = useGame();
 
   const [helpVisible, setHelpVisible] = useState(false);
@@ -128,6 +130,11 @@ export default function GameScreen() {
       </KeyboardAvoidingView>
 
       <HelpModal visible={helpVisible} onClose={() => setHelpVisible(false)} />
+      <PendingPromptModal
+        prompt={gameState.pendingPrompt}
+        onYes={() => handlePromptResponse(true)}
+        onNo={() => handlePromptResponse(false)}
+      />
     </View>
   );
 }
