@@ -123,6 +123,25 @@ The game separates canon action availability from UI suggestions:
 
 ## Recent Changes
 
+- Implemented canonical hint system with 10 gating rules
+  - Per-location hint eligibility via scene.hints[] (55 locations mapped)
+  - Turn-counting per hint number; two-stage prompt (question -> answer)
+  - 10 hard-coded gating rules in isHintEligible() (grate, bird, snake, maze, etc.)
+  - Score penalty applied when hint is accepted
+  - PendingPromptModal component for yes/no prompts
+- Implemented canonical obituary/death/reincarnation system
+  - 3 obituary entries from YAML with query/yesResponse text
+  - Death triggers obituary prompt instead of immediate game over
+  - Reincarnation: drops inventory, respawns at building, increments numdie
+  - Maximum 3 deaths before permanent game over
+  - triggerDeath() replaces direct setGameOver("died") for lamp death
+- Implemented turn thresholds with score deductions
+  - 4 thresholds from YAML (350, 500, 1000, 2500 turns)
+  - Warning message displayed and score deducted once per threshold
+  - Tracked in thresholdsTriggered[] to prevent re-triggering
+- Added score tracking to game state (stats.score)
+- GameState extended with hintState, deathState, thresholdsTriggered, pendingPrompt
+- Save migration handles all new state fields gracefully
 - Aligned YAML importer with canonical adventure.yaml structure
   - Scene descriptions now use structured format: { long, short, maptag? } matching YAML
   - Removed redundant descriptionWithoutItems field from types and output
