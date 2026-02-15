@@ -123,6 +123,14 @@ The game separates canon action availability from UI suggestions:
 
 ## Recent Changes
 
+- Aligned YAML importer with canonical adventure.yaml structure
+  - Scene descriptions now use structured format: { long, short, maptag? } matching YAML
+  - Removed redundant descriptionWithoutItems field from types and output
+  - Added sound, conditions fields to Scene type (preserved from YAML)
+  - Added HintEntry type and HINTS export with all 10 canonical hints
+  - Improved text normalisation: handles \r\n, multi-newline paragraphs, collapses spaces
+  - All consumers (useGame.ts) updated to use description.long
+  - generatedStory.ts regenerated with full schema alignment
 - Added YouTube-chapters-style progress bar to header
   - 14-segment thin bar at top of title bar showing milestone progress
   - Milestones tracked monotonically in game state (never decrease)
