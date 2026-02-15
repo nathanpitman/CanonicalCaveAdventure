@@ -184,6 +184,15 @@ The game separates canon action availability from UI suggestions:
   - Apple-touch-icon and iOS web app meta tags
   - Post-export injection script for HTML head tags
   - Updated GitHub Actions workflow to run injection
+- Implemented strict Damerau-Levenshtein typo tolerance system
+  - editDistanceAtMost2() with transpose support, early exit at >2
+  - Distance 1 + len>=4 + unique: auto-correct and execute with "(interpreting 'X' as 'Y')" note
+  - Distance 1 + len<4: "Did you mean '...'?" suggestion only
+  - Distance 2 + unique: "Did you mean '...'?" suggestion only
+  - Ambiguous ties: no suggestion, show normal failure
+  - All matching restricted to scene-valid candidates only (inventory/actions/directions)
+  - No hardcoded synonyms; singular/plural handled via expandForms() (key↔keys, lamp↔lamps)
+  - FuzzyResult confidence levels: exact, corrected, suggestion, none
 - Upgraded command parser for forgiving natural language item interactions
   - Structured item/target/verb parsing in lexicon.ts (tryStructuredParse)
   - Supports "use X to Y Z", "Y Z with X", "use X on Z" patterns
