@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
   Pressable,
+  Platform,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -107,7 +108,10 @@ export default function GameScreen() {
               {
                 backgroundColor: theme.backgroundDefault,
                 borderTopColor: theme.backgroundSecondary,
-                paddingBottom: insets.bottom + Spacing.md,
+                paddingBottom: Math.max(insets.bottom, 16) + Spacing.md,
+              },
+              Platform.OS === "web" && {
+                paddingBottom: `calc(${Spacing.md + 16}px + env(safe-area-inset-bottom, 0px))` as any,
               },
             ]}
           >

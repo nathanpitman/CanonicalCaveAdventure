@@ -32,6 +32,14 @@ export default function App() {
       ensureMeta("theme-color", theme.backgroundRoot);
       ensureMeta("apple-mobile-web-app-capable", "yes");
       ensureMeta("apple-mobile-web-app-status-bar-style", "black-translucent");
+
+      const viewportMeta = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null;
+      if (viewportMeta) {
+        const current = viewportMeta.content;
+        if (!current.includes("viewport-fit=cover")) {
+          viewportMeta.content = current + ", viewport-fit=cover";
+        }
+      }
     }
   }, [isDark, theme.backgroundRoot]);
 

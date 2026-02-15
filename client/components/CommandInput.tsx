@@ -39,6 +39,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const COLLAPSED_HEIGHT = 80;
 const EXPANDED_HEIGHT = 170;
+const WEB_BOTTOM_BASE = 16;
 const DRAG_THRESHOLD = 50;
 
 const PLACEHOLDER_EXAMPLES = [
@@ -95,7 +96,9 @@ export function CommandInput({
   const isExpanded = useSharedValue(false);
   const startY = useSharedValue(0);
 
-  const bottomPad = Math.max(insets.bottom, Spacing.sm);
+  const bottomPad = Platform.OS === "web"
+    ? Math.max(insets.bottom, WEB_BOTTOM_BASE)
+    : Math.max(insets.bottom, Spacing.sm);
   const totalCollapsedHeight = COLLAPSED_HEIGHT + bottomPad;
   const totalExpandedHeight = EXPANDED_HEIGHT + bottomPad;
 
@@ -248,7 +251,10 @@ export function CommandInput({
             {
               backgroundColor: theme.backgroundDefault,
               borderTopColor: theme.backgroundSecondary,
-              paddingBottom: Math.max(insets.bottom, Spacing.sm),
+              paddingBottom: bottomPad,
+            },
+            Platform.OS === "web" && {
+              paddingBottom: `calc(${WEB_BOTTOM_BASE}px + env(safe-area-inset-bottom, 0px))` as any,
             },
             containerAnimatedStyle,
           ]}

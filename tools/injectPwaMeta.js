@@ -32,6 +32,14 @@ if (html.includes('apple-mobile-web-app-capable')) {
 
 html = html.replace('</head>', metaTags + '\n  </head>');
 
+html = html.replace(
+  /(<meta\s+name="viewport"\s+content="[^"]*)/,
+  (match) => {
+    if (match.includes('viewport-fit=cover')) return match;
+    return match + ', viewport-fit=cover';
+  }
+);
+
 fs.writeFileSync(indexPath, html, 'utf-8');
 
 const notFoundPath = path.join(distDir, '404.html');
