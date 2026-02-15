@@ -164,6 +164,11 @@ export function CommandInput({
     if (command.trim()) {
       onSubmit(command.trim());
       setCommand("");
+      requestAnimationFrame(() => {
+        if (!showConfirm) {
+          inputRef.current?.focus();
+        }
+      });
     }
   };
 
