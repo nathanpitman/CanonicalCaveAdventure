@@ -81,7 +81,7 @@ export default function GameScreen() {
         milestonesCompleted={milestonesCompletedCount}
       />
 
-      <KeyboardAvoidingView style={styles.content} behavior="padding">
+      <KeyboardAvoidingView style={styles.content} behavior={Platform.OS === "web" ? undefined : "padding"}>
         <FlatList
           ref={flatListRef}
           data={messages}
