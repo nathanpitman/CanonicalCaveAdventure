@@ -23,7 +23,8 @@ import {
   LAMP_MESSAGES,
   Action,
 } from "@/data/story";
-import { normalizeCommand } from "@/data/lexicon";
+import { parseInput } from "@/nlp/commandParser";
+import { resolve } from "@/nlp/actionResolver";
 import { WARN_TIME, BATTERY_LIFE_BONUS } from "@/data/canonConstants";
 import {
   PROGRESS_MILESTONES,
@@ -849,371 +850,131 @@ export function useGame() {
   const parseCommand = useCallback(
     (input: string) => {
       const rawInput = input.trim();
-      const command = rawInput.toLowerCase();
-      
-      const stripArticles = (text: string) => 
-        text.replace(/\b(the|a|an|some|my|that|this)\b/gi, "").replace(/\s+/g, " ").trim();
-      
-      const cleanCommand = stripArticles(command);
-      const words = cleanCommand.split(/\s+/);
 
       addMessage("action", `> ${rawInput}`);
 
-      // === LEXICON NORMALIZATION (additive layer) ===
-      // Try normalizing command first, but preserve canon commands
       const availableActions = getAvailableActions();
-      const normalized = normalizeCommand(rawInput, availableActions);
-      
-      // If lexicon resolved to a specific action, execute it
-      if (normalized.intent === "move" && normalized.resolvedActionId) {
-        const action = availableActions.find(a => a.id === normalized.resolvedActionId);
-        if (action && action.to) {
-          handleMove(action.to);
+      const parsed = parseInput(rawInput);
+      const resolution = resolve(parsed, {
+        availableActions,
+        inventory: gameState.inventory,
+        items: ITEMS,
+        scenes: SCENES,
+      });
+
+      if (__DEV__) {
+        console.log("[NLP]", parsed.intent, parsed, "->", resolution.type);
+      }
+
+      switch (resolution.type) {
+        case "look":
+          addMessage("narration", getSceneDescription(gameState.sceneId));
+          decreaseLampLife();
           checkLampWarning();
           return;
-        }
-      }
-      
-      if (normalized.intent === "back") {
-        handleGoBack();
-        return;
-      }
-      
-      // === STRUCTURED ITEM/TARGET INTENT ROUTING ===
-      if (normalized.intent === "use" && normalized.itemToken) {
-        const itemId = normalized.itemToken;
-        const targetId = normalized.targetToken;
 
-        if (!gameState.inventory.find(
-          (id) => id.toLowerCase() === itemId || 
-                  ITEMS[id]?.name.toLowerCase().split(" ").some(w => w === itemId)
-        )) {
-          addMessage("system", "You don't have that.");
-          checkLampWarning();
-          return;
-        }
-
-        const inventoryItemId = gameState.inventory.find(
-          (id) => id.toLowerCase() === itemId ||
-                  ITEMS[id]?.name.toLowerCase().split(" ").some(w => w === itemId)
-        );
-
-        if (inventoryItemId) {
-          const item = ITEMS[inventoryItemId];
-          if (item && item.usable && item.useEffect) {
-            handleUseItem(inventoryItemId);
-            checkLampWarning();
-            return;
+        case "inventory":
+          if (gameState.inventory.length === 0) {
+            addMessage("system", "Your pockets are empty.");
+          } else {
+            const items = gameState.inventory
+              .map((id) => ITEMS[id]?.name || id)
+              .join(", ");
+            addMessage("system", `You are carrying: ${items}`);
           }
+          return;
 
-          if (targetId) {
-            const matchingAction = availableActions.find((a) => {
-              if (a.requiresItem === inventoryItemId) return true;
-              const idLower = a.id.toLowerCase();
-              const labelLower = a.label.toLowerCase();
-              return idLower.includes(targetId) || labelLower.includes(targetId);
-            });
-            if (matchingAction) {
-              handleAction(matchingAction);
-              checkLampWarning();
-              return;
+        case "help":
+          addMessage("system", HELP_TEXT);
+          return;
+
+        case "back":
+          handleGoBack();
+          return;
+
+        case "new":
+          handleNewGame();
+          return;
+
+        case "lamp_on":
+          if (!gameState.inventory.includes("lamp")) {
+            addMessage("system", "You don't have the lamp.");
+          } else if (gameState.lamp.lit) {
+            addMessage("system", "Your lamp is already on.");
+          } else if (gameState.lamp.limit <= 0) {
+            addMessage("system", LAMP_MESSAGES.LAMP_OUT);
+          } else {
+            setGameState((prev) => ({
+              ...prev,
+              lamp: { ...prev.lamp, lit: true },
+            }));
+            addMessage("system", LAMP_MESSAGES.LAMP_ON);
+            hapticFeedback("medium");
+          }
+          decreaseLampLife();
+          checkLampWarning();
+          return;
+
+        case "lamp_off":
+          if (!gameState.inventory.includes("lamp")) {
+            addMessage("system", "You don't have the lamp.");
+          } else if (!gameState.lamp.lit) {
+            addMessage("system", "Your lamp is already off.");
+          } else {
+            setGameState((prev) => ({
+              ...prev,
+              lamp: { ...prev.lamp, lit: false },
+            }));
+            addMessage("system", LAMP_MESSAGES.LAMP_OFF);
+            if (isLocationDark(gameState.sceneId)) {
+              addMessage("narration", LAMP_MESSAGES.PITCH_DARK);
             }
+            hapticFeedback("medium");
           }
+          decreaseLampLife();
+          return;
 
-          if (item && item.usable) {
-            handleUseItem(inventoryItemId);
-            checkLampWarning();
-            return;
-          }
-
-          addMessage("system", "That doesn't seem to work here.");
+        case "direction":
+          handleDirection(resolution.direction);
           checkLampWarning();
           return;
-        }
-      }
 
-      // Natural language patterns for LOOK
-      if (
-        command === "look" ||
-        command === "look around" ||
-        command === "examine" ||
-        command === "examine room" ||
-        command === "examine surroundings" ||
-        command === "inspect" ||
-        command === "observe" ||
-        command === "check surroundings" ||
-        command === "where am i" ||
-        command === "what do i see" ||
-        command === "describe"
-      ) {
-        addMessage("narration", getSceneDescription(gameState.sceneId));
-        decreaseLampLife();
-        checkLampWarning();
-        return;
-      }
-
-      // Natural language patterns for HELP
-      if (
-        command === "help" ||
-        command === "?" ||
-        command === "commands" ||
-        command === "what can i do" ||
-        command === "how to play" ||
-        command === "instructions"
-      ) {
-        addMessage("system", HELP_TEXT);
-        return;
-      }
-
-      // Lamp on/off toggle commands
-      const lampOnPatterns = [
-        "lamp on", "light lamp", "turn on lamp", "turn lamp on",
-        "lantern on", "light lantern", "turn on lantern", "turn lantern on",
-        "torch on", "light torch", "turn on torch", "turn torch on",
-        "on lamp", "on lantern", "on torch",
-      ];
-      const lampOffPatterns = [
-        "lamp off", "extinguish lamp", "turn off lamp", "turn lamp off",
-        "lantern off", "extinguish lantern", "turn off lantern", "turn lantern off",
-        "torch off", "extinguish torch", "turn off torch", "turn torch off",
-        "off lamp", "off lantern", "off torch",
-        "douse lamp", "douse lantern", "douse torch",
-      ];
-      if (lampOnPatterns.includes(command)) {
-        if (!gameState.inventory.includes("lamp")) {
-          addMessage("system", "You don't have the lamp.");
-        } else if (gameState.lamp.lit) {
-          addMessage("system", "Your lamp is already on.");
-        } else if (gameState.lamp.limit <= 0) {
-          addMessage("system", LAMP_MESSAGES.LAMP_OUT);
-        } else {
-          setGameState((prev) => ({
-            ...prev,
-            lamp: { ...prev.lamp, lit: true },
-          }));
-          addMessage("system", LAMP_MESSAGES.LAMP_ON);
-          hapticFeedback("medium");
-        }
-        decreaseLampLife();
-        checkLampWarning();
-        return;
-      }
-      if (lampOffPatterns.includes(command)) {
-        if (!gameState.inventory.includes("lamp")) {
-          addMessage("system", "You don't have the lamp.");
-        } else if (!gameState.lamp.lit) {
-          addMessage("system", "Your lamp is already off.");
-        } else {
-          setGameState((prev) => ({
-            ...prev,
-            lamp: { ...prev.lamp, lit: false },
-          }));
-          addMessage("system", LAMP_MESSAGES.LAMP_OFF);
-          if (isLocationDark(gameState.sceneId)) {
-            addMessage("narration", LAMP_MESSAGES.PITCH_DARK);
-          }
-          hapticFeedback("medium");
-        }
-        decreaseLampLife();
-        return;
-      }
-
-      // Natural language patterns for INVENTORY
-      if (
-        command === "inventory" ||
-        command === "inv" ||
-        command === "i" ||
-        command === "items" ||
-        command === "check inventory" ||
-        command === "show inventory" ||
-        command === "what do i have" ||
-        command === "what am i carrying" ||
-        command === "my items" ||
-        command === "bag" ||
-        command === "backpack" ||
-        command === "pockets"
-      ) {
-        if (gameState.inventory.length === 0) {
-          addMessage("system", "Your pockets are empty.");
-        } else {
-          const items = gameState.inventory
-            .map((id) => ITEMS[id]?.name || id)
-            .join(", ");
-          addMessage("system", `You are carrying: ${items}`);
-        }
-        return;
-      }
-
-      // Natural language patterns for NEW GAME
-      if (command === "new" || command === "new game" || command === "restart" || command === "start over") {
-        handleNewGame();
-        return;
-      }
-
-      // Natural language patterns for TAKE/PICK UP/GRAB
-      const takePatterns = [
-        /^(take|get|grab|pick up|collect|pick|acquire|snag|retrieve)\s+(.+)$/i,
-      ];
-      for (const pattern of takePatterns) {
-        const match = cleanCommand.match(pattern);
-        if (match) {
-          const target = stripArticles(match[2]);
-          if (!target) {
-            addMessage("system", "Take what?");
-            checkLampWarning();
-            return;
-          }
-          const availableActions = getAvailableActions();
-          const takeAction = availableActions.find(
-            (a) =>
-              a.addsItem &&
-              (a.addsItem.toLowerCase().includes(target) ||
-                ITEMS[a.addsItem]?.name.toLowerCase().includes(target))
-          );
-          if (takeAction && takeAction.addsItem) {
-            handleTakeItem(takeAction.addsItem, takeAction.id);
-          } else {
-            addMessage("system", "You don't see that here.");
-          }
+        case "action":
+          handleAction(resolution.action);
           checkLampWarning();
           return;
-        }
-      }
 
-      // Natural language patterns for USE
-      const usePatterns = [
-        /^(use|activate|apply|consume|drink|eat|light|burn)\s+(.+)$/i,
-      ];
-      for (const pattern of usePatterns) {
-        const match = cleanCommand.match(pattern);
-        if (match) {
-          const target = stripArticles(match[2]);
-          if (!target) {
-            addMessage("system", "Use what?");
-            checkLampWarning();
-            return;
-          }
-          const itemToUse = gameState.inventory.find(
-            (id) =>
-              id.toLowerCase().includes(target) ||
-              ITEMS[id]?.name.toLowerCase().includes(target)
-          );
-          if (itemToUse) {
-            handleUseItem(itemToUse);
-          } else {
-            addMessage("system", "You don't have that.");
-          }
+        case "useItem":
+          handleUseItem(resolution.itemId);
           checkLampWarning();
           return;
-        }
-      }
 
-      // Natural language patterns for GO BACK
-      if (
-        command === "go back" ||
-        command === "back" ||
-        command === "return" ||
-        command === "retreat" ||
-        command === "go back the way i came" ||
-        command === "turn back" ||
-        command === "retrace" ||
-        command === "retrace my steps"
-      ) {
-        handleGoBack();
-        return;
-      }
-
-      // Natural language patterns for MOVEMENT
-      const movePatterns = [
-        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(to\s+)?(the\s+)?(north|south|east|west|up|down|in|out|ne|nw|se|sw|northeast|northwest|southeast|southwest|n|s|e|w|u|d)$/i,
-        /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(north|south|east|west|up|down|n|s|e|w|u|d)(ward|wards)?$/i,
-        /^(enter|exit)\s+(.+)$/i,
-      ];
-      for (const pattern of movePatterns) {
-        const match = command.match(pattern);
-        if (match) {
-          const dirWord = match[match.length - 1].replace(/ward(s)?$/i, "");
-          handleDirection(dirWord);
+        case "takeItem":
+          handleTakeItem(resolution.itemId, resolution.actionId);
           checkLampWarning();
           return;
-        }
-      }
 
-      // Direct direction commands
-      const directDirections: Record<string, string> = {
-        north: "north",
-        south: "south",
-        east: "east",
-        west: "west",
-        n: "north",
-        s: "south",
-        e: "east",
-        w: "west",
-        up: "up",
-        down: "down",
-        u: "up",
-        d: "down",
-        in: "in",
-        out: "out",
-        ne: "ne",
-        nw: "nw",
-        se: "se",
-        sw: "sw",
-        northeast: "ne",
-        northwest: "nw",
-        southeast: "se",
-        southwest: "sw",
-      };
-      if (directDirections[words[0]]) {
-        handleDirection(directDirections[words[0]]);
-        checkLampWarning();
-        return;
-      }
-
-      // Fallback: try to match any item name for implicit take
-      const implicitTake = availableActions.find(
-        (a) =>
-          a.addsItem &&
-          (cleanCommand.includes(a.addsItem.toLowerCase()) ||
-            ITEMS[a.addsItem]?.name.toLowerCase().split(" ").some(word => cleanCommand.includes(word)))
-      );
-      if (implicitTake && implicitTake.addsItem) {
-        if (command.includes("pick") || command.includes("grab") || command.includes("take") || command.includes("get")) {
-          handleTakeItem(implicitTake.addsItem, implicitTake.id);
+        case "move":
+          handleMove(resolution.toSceneId);
           checkLampWarning();
           return;
-        }
+
+        case "message":
+          addMessage("system", resolution.text);
+          checkLampWarning();
+          return;
+
+        case "fallback":
+          break;
       }
 
-      // Magic word patterns: "say xyzzy", "cast xyzzy", "speak plugh", etc.
-      const magicWordPatterns = [
-        /^(?:say|speak|cast|chant|utter|invoke)\s+(.+)$/i,
-      ];
-      for (const pattern of magicWordPatterns) {
-        const magicMatch = cleanCommand.match(pattern);
-        if (magicMatch) {
-          const magicWord = magicMatch[1].toLowerCase().trim();
-          const actions = getAvailableActions();
-          const magicAction = actions.find(
-            (a) => a.type === "move" && (
-              a.id === `go_${magicWord}` ||
-              a.label.toLowerCase() === magicWord
-            )
-          );
-          if (magicAction && magicAction.to) {
-            handleMove(magicAction.to);
-            checkLampWarning();
-            return;
-          }
-        }
-      }
+      // === FALLBACK: old single-token and default travel logic ===
+      const command = rawInput.toLowerCase().replace(/[.,!?;:'"]/g, "").trim();
+      const words = command.split(/\s+/).filter(Boolean);
 
-      // Single-token travel verb support (xyzzy, plugh, enter, depression, etc.)
       if (words.length === 1) {
-        const token = words[0].toLowerCase();
-        const actions = getAvailableActions();
-        
-        const moveAction = actions.find(
+        const token = words[0];
+        const moveAction = availableActions.find(
           (a) => a.type === "move" && (
             a.id === `go_${token}` ||
             a.label.toLowerCase() === token ||
@@ -1225,8 +986,8 @@ export function useGame() {
           checkLampWarning();
           return;
         }
-        
-        const eventAction = actions.find(
+
+        const eventAction = availableActions.find(
           (a) => a.type === "event" && (a as any).message && (
             a.label.toLowerCase() === token ||
             a.id.includes(token)
@@ -1238,7 +999,6 @@ export function useGame() {
         }
       }
 
-      // Default travel fallback - check for go_default action
       const defaultMove = availableActions.find(
         (a) => a.type === "move" && a.id === "go_default"
       );
@@ -1248,7 +1008,6 @@ export function useGame() {
         return;
       }
 
-      // Unknown command
       addMessage(
         "system",
         `I don't understand "${rawInput}". Try commands like "look", "take lamp", "go east", "go back", or type "help".`
