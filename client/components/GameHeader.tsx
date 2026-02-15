@@ -72,6 +72,7 @@ export function GameHeader({
 const styles = StyleSheet.create({
   wrapper: {
     position: "relative",
+    zIndex: 1000,
   },
   container: {
     paddingHorizontal: Spacing.lg,
