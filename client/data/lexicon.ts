@@ -190,35 +190,66 @@ function normalizeForFuzzy(phrase: string): string[] {
   return expanded;
 }
 
+function levenshtein(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return dp[m][n];
+}
+
+function editDistanceScore(inputWord: string, candWord: string): number {
+  const maxLen = Math.max(inputWord.length, candWord.length);
+  if (maxLen === 0) return 0;
+  const dist = levenshtein(inputWord, candWord);
+  return 1 - dist / maxLen;
+}
+
 function tokenOverlapScore(inputTokens: string[], candidateTokens: string[]): number {
   if (inputTokens.length === 0 || candidateTokens.length === 0) return 0;
 
   let matchCount = 0;
   for (const inputWord of inputTokens) {
+    let bestWordScore = 0;
     for (const candWord of candidateTokens) {
       if (candWord === inputWord) {
-        matchCount += 1;
+        bestWordScore = 1;
         break;
       }
       if (inputWord.length >= 3 && candWord.startsWith(inputWord)) {
-        matchCount += 0.8;
-        break;
+        bestWordScore = Math.max(bestWordScore, 0.85);
+        continue;
       }
       if (candWord.length >= 3 && inputWord.startsWith(candWord)) {
-        matchCount += 0.8;
-        break;
+        bestWordScore = Math.max(bestWordScore, 0.85);
+        continue;
       }
       if (inputWord.length >= 4 && candWord.length >= 4) {
         if (candWord.includes(inputWord) || inputWord.includes(candWord)) {
-          matchCount += 0.6;
-          break;
+          bestWordScore = Math.max(bestWordScore, 0.6);
+          continue;
         }
       }
+      if (inputWord.length >= 2 && candWord.length >= 2) {
+        const edScore = editDistanceScore(inputWord, candWord);
+        bestWordScore = Math.max(bestWordScore, edScore);
+      }
     }
+    matchCount += bestWordScore;
   }
 
-  const maxLen = Math.max(inputTokens.length, candidateTokens.length);
-  return matchCount / maxLen;
+  return matchCount / inputTokens.length;
 }
 
 export function resolveObjectToken(
@@ -289,7 +320,13 @@ export function resolveObjectToken(
       }
     }
 
-    const score = tokenOverlapScore(inputTokens, candTokens);
+    let score = tokenOverlapScore(inputTokens, candTokens);
+    if (inputTokens.length === 1 && inputTokens[0].length >= 2) {
+      const firstChar = inputTokens[0][0];
+      if (candId[0] === firstChar || candTokens.some(ct => ct[0] === firstChar)) {
+        score += 0.01;
+      }
+    }
     if (score > bestScore) {
       bestScore = score;
       bestCandidate = cand;

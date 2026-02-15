@@ -159,9 +159,22 @@ function resolveMove(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
     for (const action of moveActions) {
       const label = action.label.toLowerCase();
       const actionToken = action.id.replace(/^go_/, "").toLowerCase();
-      if (label.includes(phrase) || actionToken.includes(phrase)) {
+      if (actionToken.startsWith(phrase) || label.startsWith(phrase) ||
+          label.startsWith(`go ${phrase}`)) {
         if (action.to) {
           return { type: "action", action };
+        }
+      }
+    }
+
+    if (phrase.length >= 4) {
+      for (const action of moveActions) {
+        const label = action.label.toLowerCase();
+        const actionToken = action.id.replace(/^go_/, "").toLowerCase();
+        if (label.includes(phrase) || actionToken.includes(phrase)) {
+          if (action.to) {
+            return { type: "action", action };
+          }
         }
       }
     }
