@@ -73,10 +73,11 @@ server/
 
 ## Design
 
-- **Theme**: Dark cave aesthetic with amber lamp glow
-- **Primary color**: #FF9500 (amber)
-- **Background**: #0A0A0A (near black)
-- **Surface**: #1A1612 (dark brown-black)
+- **Theme**: Automatic system dark/light mode (follows OS prefers-color-scheme)
+- **Dark mode**: Cave aesthetic — #FF9500 amber accent, #0A0A0A background, #1A1612 surface
+- **Light mode**: Warm parchment — #D97E00 amber accent, #F5F0E8 background, #FFFFFF surface
+- **Theme switching**: Live — updates immediately when OS theme changes
+- **Safari integration**: theme-color meta tag updates dynamically per theme, color-scheme set on root
 
 ## Running the App
 
