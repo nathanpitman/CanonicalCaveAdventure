@@ -37,9 +37,9 @@ interface CommandInputProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const COLLAPSED_HEIGHT = 80;
-const EXPANDED_HEIGHT = 170;
-const WEB_BOTTOM_BASE = 16;
+const COLLAPSED_HEIGHT = 68;
+const EXPANDED_HEIGHT = 158;
+const WEB_BOTTOM_BASE = 8;
 const DRAG_THRESHOLD = 50;
 
 const PLACEHOLDER_EXAMPLES = [
@@ -98,7 +98,7 @@ export function CommandInput({
 
   const bottomPad = Platform.OS === "web"
     ? Math.max(insets.bottom, WEB_BOTTOM_BASE)
-    : Math.max(insets.bottom, Spacing.sm);
+    : Math.max(insets.bottom, Spacing.xs);
   const totalCollapsedHeight = COLLAPSED_HEIGHT + bottomPad;
   const totalExpandedHeight = EXPANDED_HEIGHT + bottomPad;
 
