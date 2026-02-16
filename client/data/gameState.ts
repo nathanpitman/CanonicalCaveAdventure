@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { START_SCENE_ID } from "./story";
 import { INITIAL_LAMP_LIMIT } from "./canonConstants";
 import { buildInitialObjectLocations } from "./canonObjects";
+import { DwarfSystemState, buildInitialDwarfState } from "./dwarves";
 
 export interface Message {
   id: string;
@@ -49,6 +50,8 @@ export interface GameState {
   pendingPrompt: PendingPrompt | null;
   visitCounts: Record<string, number>;
   briefMode: boolean;
+  dwarfState: DwarfSystemState;
+  rngSeed: number;
 }
 
 export interface SaveData {
@@ -93,6 +96,8 @@ export const initialGameState: GameState = {
   pendingPrompt: null,
   visitCounts: { [START_SCENE_ID]: 1 },
   briefMode: false,
+  dwarfState: buildInitialDwarfState(),
+  rngSeed: Math.floor(Math.random() * 1048576),
 };
 
 export async function saveGame(

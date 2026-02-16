@@ -42,6 +42,12 @@ import {
   calculateScore,
   getScoreClass,
 } from "@/data/canonObjects";
+import {
+  processDwarfTurn,
+  getKnifeMessage,
+  CHEST_HIDE_LOC,
+  MESSAGE_HIDE_LOC,
+} from "@/data/dwarves";
 
 export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -569,6 +575,67 @@ export function useGame() {
     }
   }, [gameState.lamp, gameState.batteryState, gameState.inventory, addMessage, hapticFeedback, gameOver, isCurrentlyDark]);
 
+  const processDwarves = useCallback(() => {
+    if (gameOver) return;
+
+    const result = processDwarfTurn(
+      gameState.dwarfState,
+      gameState.sceneId,
+      gameState.inventory,
+      gameState.objectLocations,
+      gameState.lamp.lit,
+      0,
+      gameState.rngSeed,
+    );
+
+    setGameState((prev) => {
+      const newObjectLocations = { ...prev.objectLocations };
+      const newInventory = [...prev.inventory];
+
+      if (result.state.chestPlaced && !prev.dwarfState.chestPlaced) {
+        newObjectLocations["chest"] = CHEST_HIDE_LOC;
+        newObjectLocations["messag"] = MESSAGE_HIDE_LOC;
+      }
+
+      const stolenItems: string[] = [];
+      for (const msg of result.messages) {
+        if (msg.includes("I'll just take all this booty")) {
+          for (const tid of TREASURE_IDS) {
+            const idx = newInventory.indexOf(tid);
+            if (idx !== -1) {
+              if (tid === "pyramid" && (prev.sceneId === "plover" || prev.sceneId === "darkroom")) {
+                continue;
+              }
+              stolenItems.push(tid);
+              newInventory.splice(idx, 1);
+              newObjectLocations[tid] = CHEST_HIDE_LOC;
+            }
+          }
+        }
+      }
+
+      return {
+        ...prev,
+        dwarfState: result.state,
+        rngSeed: result.seed,
+        inventory: stolenItems.length > 0 ? newInventory : prev.inventory,
+        objectLocations: newObjectLocations,
+      };
+    });
+
+    for (const msg of result.messages) {
+      if (msg.includes("dwarf") || msg.includes("pirate") || msg.includes("rustle") || msg.includes("rustling") || msg.includes("booty") || msg.includes("Shiver")) {
+        addMessage("narration", msg);
+      } else {
+        addMessage("warning", msg);
+      }
+    }
+
+    if (result.playerDied) {
+      triggerDeath();
+    }
+  }, [gameState.dwarfState, gameState.sceneId, gameState.inventory, gameState.objectLocations, gameState.lamp.lit, gameState.rngSeed, gameOver, addMessage, triggerDeath]);
+
   const handleMove = useCallback(
     (toSceneId: string) => {
       const newScene = SCENES[toSceneId];
@@ -604,8 +671,9 @@ export function useGame() {
       decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
       hapticFeedback("light");
+      processDwarves();
     },
-    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath]
+    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves]
   );
 
   const handleGoBack = useCallback(() => {
@@ -645,7 +713,8 @@ export function useGame() {
     addMessage("narration", getSceneDescription(targetSceneId));
     hapticFeedback("light");
     checkLampWarning();
-  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath]);
+    processDwarves();
+  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath, processDwarves]);
 
   const handleTakeItem = useCallback(
     (itemId: string, actionId: string) => {
@@ -1083,16 +1152,60 @@ export function useGame() {
           checkLampWarning();
           return;
 
-        case "attack":
-          addMessage("system", "There is nothing here to attack.");
+        case "attack": {
+          const dwarvesHere = gameState.dwarfState.dwarves.filter(
+            (d) => d.alive && d.loc === gameState.sceneId
+          );
+          if (dwarvesHere.length > 0) {
+            addMessage("narration", "With what? Your bare hands?");
+          } else {
+            addMessage("system", "There is nothing here to attack.");
+          }
           decreaseLampLife();
           return;
+        }
 
-        case "throw":
+        case "throw": {
           if (resolution.correction) addMessage("system", resolution.correction);
-          handleDropItem(resolution.itemId);
+          const throwDwarvesHere = gameState.dwarfState.dwarves.filter(
+            (d) => d.alive && d.loc === gameState.sceneId
+          );
+          if (resolution.itemId === "axe" && throwDwarvesHere.length > 0) {
+            const r = Math.random();
+            if (r < 0.33) {
+              const targetIdx = gameState.dwarfState.dwarves.findIndex(
+                (d) => d.alive && d.loc === gameState.sceneId
+              );
+              if (targetIdx >= 0) {
+                setGameState((prev) => {
+                  const newDwarves = prev.dwarfState.dwarves.map((d, i) =>
+                    i === targetIdx ? { ...d, alive: false } : d
+                  );
+                  return {
+                    ...prev,
+                    dwarfState: { ...prev.dwarfState, dwarves: newDwarves },
+                    objectLocations: { ...prev.objectLocations, axe: prev.sceneId },
+                    inventory: prev.inventory.filter((id) => id !== "axe"),
+                  };
+                });
+                addMessage("narration", "You killed a little dwarf! The body vanishes in a cloud of greasy black smoke.");
+              }
+            } else {
+              setGameState((prev) => ({
+                ...prev,
+                objectLocations: { ...prev.objectLocations, axe: prev.sceneId },
+                inventory: prev.inventory.filter((id) => id !== "axe"),
+              }));
+              addMessage("narration", "You throw the axe at the dwarf, but it misses and falls to the ground.");
+            }
+          } else if (resolution.itemId) {
+            handleDropItem(resolution.itemId);
+          } else {
+            addMessage("system", "Throw what?");
+          }
           checkLampWarning();
           return;
+        }
 
         case "feed":
           addMessage("system", "There is nothing here that wants to be fed.");
@@ -1231,6 +1344,8 @@ export function useGame() {
           objectStates: saveData.gameState.objectStates || {},
           visitCounts: saveData.gameState.visitCounts || { [saveData.gameState.sceneId]: 1 },
           briefMode: saveData.gameState.briefMode ?? false,
+          dwarfState: saveData.gameState.dwarfState || initialGameState.dwarfState,
+          rngSeed: saveData.gameState.rngSeed ?? initialGameState.rngSeed,
         };
         setGameState(migratedState);
         setMessages(saveData.messages);
