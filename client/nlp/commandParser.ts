@@ -13,7 +13,7 @@ import {
 
 export interface ParsedCommand {
   raw: string;
-  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "unknown";
+  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "quit" | "unknown";
   verb?: string;
   itemPhrase?: string;
   targetPhrase?: string;
@@ -490,6 +490,50 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
+  const eatPattern = /^(eat|devour|consume)\s*(.*)$/;
+  const em = text.match(eatPattern);
+  if (em) {
+    out.intent = "eat";
+    out.verb = "eat";
+    const target = stripArticles(em[2] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const rubPattern = /^rub\s*(.*)$/;
+  const rbm = text.match(rubPattern);
+  if (rbm) {
+    out.intent = "rub";
+    out.verb = "rub";
+    const target = stripArticles(rbm[1] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const closePattern = /^(close|shut|lock)\s*(.*)$/;
+  const cm = text.match(closePattern);
+  if (cm) {
+    out.intent = "close";
+    out.verb = cm[1];
+    const target = stripArticles(cm[2] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  if (text === "quit" || text === "q" || text === "give up" || text === "end game") {
+    out.intent = "quit";
+    return true;
+  }
+
   if (text === "yes" || text === "y") {
     out.intent = "yes";
     return true;
@@ -551,6 +595,25 @@ function trySingleToken(tokens: string[], out: ParsedCommand): boolean {
   }
   if (token === "yes" || token === "y") {
     out.intent = "yes";
+    return true;
+  }
+  if (token === "eat" || token === "devour") {
+    out.intent = "eat";
+    out.verb = "eat";
+    return true;
+  }
+  if (token === "rub") {
+    out.intent = "rub";
+    out.verb = "rub";
+    return true;
+  }
+  if (token === "close" || token === "shut" || token === "lock") {
+    out.intent = "close";
+    out.verb = token;
+    return true;
+  }
+  if (token === "quit" || token === "q") {
+    out.intent = "quit";
     return true;
   }
 

@@ -38,6 +38,10 @@ export type Resolution =
   | { type: "yes" }
   | { type: "fill"; targetPhrase?: string }
   | { type: "pour"; targetPhrase?: string }
+  | { type: "eat"; targetPhrase?: string }
+  | { type: "rub"; targetPhrase?: string }
+  | { type: "close"; targetPhrase?: string }
+  | { type: "quit" }
   | { type: "fallback" };
 
 export interface ResolverContext {
@@ -215,6 +219,14 @@ export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution
       return { type: "fill", targetPhrase: parsed.targetPhrase || parsed.itemPhrase };
     case "pour":
       return { type: "pour", targetPhrase: parsed.targetPhrase || parsed.itemPhrase };
+    case "eat":
+      return { type: "eat", targetPhrase: parsed.targetPhrase || parsed.itemPhrase };
+    case "rub":
+      return { type: "rub", targetPhrase: parsed.targetPhrase || parsed.itemPhrase };
+    case "close":
+      return { type: "close", targetPhrase: parsed.targetPhrase };
+    case "quit":
+      return { type: "quit" };
     case "break":
       return { type: "message", text: "Nothing happens." };
 

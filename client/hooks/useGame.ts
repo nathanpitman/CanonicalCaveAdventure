@@ -2168,6 +2168,77 @@ export function useGame() {
           return;
         }
 
+        case "eat": {
+          const eatTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (eatTarget === "food" || eatTarget === "" || eatTarget.includes("food")) {
+            if (gameState.inventory.includes("food")) {
+              addMessage("narration", "Thank you, it was delicious!");
+              setGameState((prev) => ({
+                ...prev,
+                inventory: prev.inventory.filter((id) => id !== "food"),
+              }));
+            } else {
+              addMessage("system", "You have nothing to eat.");
+            }
+          } else if (eatTarget === "bird" || eatTarget.includes("bird")) {
+            addMessage("narration", "I think I just lost my appetite.");
+          } else if (eatTarget === "snake" || eatTarget.includes("snake")) {
+            addMessage("narration", "I think I just lost my appetite.");
+          } else {
+            addMessage("system", "That's not something you can eat.");
+          }
+          decreaseLampLife();
+          return;
+        }
+
+        case "rub": {
+          const rubTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (rubTarget === "lamp" || rubTarget === "lantern" || rubTarget === "" || rubTarget.includes("lamp")) {
+            addMessage("narration", "Rubbing the electric lamp is not particularly rewarding. Anyway, nothing exciting happens.");
+          } else {
+            addMessage("system", "Peculiar. Nothing unexpected happens.");
+          }
+          decreaseLampLife();
+          return;
+        }
+
+        case "close": {
+          const closeTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (closeTarget === "grate" || closeTarget.includes("grate") || closeTarget === "") {
+            if (gameState.sceneId === "belowgrate" || gameState.sceneId === "outsidegrate" || gameState.sceneId === "insidegrate") {
+              if (gameState.inventory.includes("keys")) {
+                if (gameState.flags.grateUnlocked) {
+                  addMessage("narration", "The grate is now locked.");
+                  setGameState((prev) => ({
+                    ...prev,
+                    flags: { ...prev.flags, grateUnlocked: false },
+                  }));
+                } else {
+                  addMessage("system", "It is already locked.");
+                }
+              } else {
+                addMessage("system", "You have no keys!");
+              }
+            } else {
+              addMessage("system", "I don't see a grate here.");
+            }
+          } else {
+            addMessage("system", "I don't know how to close that.");
+          }
+          decreaseLampLife();
+          return;
+        }
+
+        case "quit": {
+          const { score, maxScore } = calculateScore(gameState);
+          const finalScore = score - 4;
+          addMessage("system", `You scored ${finalScore} out of a possible ${maxScore}, using ${gameState.stats.turns} turns.`);
+          addMessage("system", getScoreClass(finalScore));
+          setGameOver("died");
+          hapticFeedback("warning");
+          return;
+        }
+
         case "move":
           if (resolution.correction) addMessage("system", resolution.correction);
           handleMove(resolution.toSceneId);
