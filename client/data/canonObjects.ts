@@ -21,6 +21,7 @@ export const OBJECT_START_LOCATIONS: Record<string, string> = {
   bottle: "building",
   cage: "cobble",
   rod: "debris",
+  rod2: "kinghall",
   bird: "birdchamber",
   nugget: "nuggetroom",
   obj_51: "westfissure",
@@ -40,7 +41,17 @@ export const OBJECT_START_LOCATIONS: Record<string, string> = {
   rabbitfoot: "forest22",
   sapph: "ledge",
   obj_69: "reachdead",
+  axe: "_nowhere",
+  chain: "barrenroom",
+  rug: "secret_canyon_e",
 };
+
+export const SNAKE_LOCATION = "kinghall";
+export const DRAGON_LOCATIONS = ["secret_canyon_e", "secret_canyon_n"];
+export const TROLL_LOCATIONS = ["swchasm", "nechasm"];
+export const BEAR_LOCATION = "barrenroom";
+export const PLANT_LOCATION = "westpit";
+export const CLAM_LOCATION = "shellroom";
 
 export const TREASURE_IDS: string[] = [
   "nugget",

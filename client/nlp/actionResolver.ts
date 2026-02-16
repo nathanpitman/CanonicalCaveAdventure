@@ -30,6 +30,14 @@ export type Resolution =
   | { type: "throw"; itemId?: string; targetPhrase?: string; correction?: string }
   | { type: "feed"; itemPhrase?: string; targetPhrase?: string }
   | { type: "wave"; itemId?: string; correction?: string }
+  | { type: "open"; targetPhrase?: string }
+  | { type: "unlock"; targetPhrase?: string }
+  | { type: "drink"; targetPhrase?: string }
+  | { type: "read"; targetPhrase?: string }
+  | { type: "say"; phrase?: string }
+  | { type: "yes" }
+  | { type: "fill"; targetPhrase?: string }
+  | { type: "pour"; targetPhrase?: string }
   | { type: "fallback" };
 
 export interface ResolverContext {
@@ -190,8 +198,23 @@ export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution
     case "wave":
       return resolveWave(parsed, ctx);
 
+    case "open":
+      return { type: "open", targetPhrase: parsed.targetPhrase };
+    case "unlock":
+      return { type: "unlock", targetPhrase: parsed.targetPhrase };
+    case "drink":
+      return { type: "drink", targetPhrase: parsed.targetPhrase };
+    case "read":
+      return { type: "read", targetPhrase: parsed.targetPhrase };
+    case "say":
+      return { type: "say", phrase: parsed.targetPhrase };
+    case "yes":
+      return { type: "yes" };
+
     case "fill":
+      return { type: "fill", targetPhrase: parsed.targetPhrase || parsed.itemPhrase };
     case "pour":
+      return { type: "pour", targetPhrase: parsed.targetPhrase || parsed.itemPhrase };
     case "break":
       return { type: "message", text: "Nothing happens." };
 

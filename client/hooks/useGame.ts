@@ -224,13 +224,49 @@ export function useGame() {
         }
       }
 
+      if (sceneId === "kinghall" && !gameState.flags.snakeChased) {
+        itemDescs.push("A huge green fierce snake bars the way!");
+      }
+      if ((sceneId === "secret_canyon_e" || sceneId === "secret_canyon_n") && !gameState.flags.dragonDead) {
+        itemDescs.push("A huge green fierce dragon bars the way!");
+        itemDescs.push("The dragon is sprawled out on a Persian rug!!");
+      }
+      if ((sceneId === "secret_canyon_e" || sceneId === "secret_canyon_n") && gameState.flags.dragonDead) {
+        itemDescs.push("The body of a huge green dead dragon is lying off to one side.");
+        itemDescs.push("There is blood on the ground here.");
+      }
+      if ((sceneId === "swchasm" || sceneId === "nechasm") && !gameState.flags.trollGone) {
+        if (!gameState.flags.trollPaid) {
+          itemDescs.push("A burly troll stands by the bridge and insists you throw him a treasure before you may cross.");
+        }
+      }
+      if (sceneId === "barrenroom") {
+        if (!gameState.flags.bearTame) {
+          itemDescs.push("There is a ferocious cave bear eying you from the far end of the room!");
+          itemDescs.push("The bear is locked to the wall with a golden chain!");
+        } else if (!gameState.flags.chainUnlocked) {
+          itemDescs.push("There is a gentle cave bear sitting placidly in one corner.");
+          itemDescs.push("The bear is still locked to the wall with a golden chain.");
+        }
+      }
+      if (sceneId === "westpit") {
+        const plantState = gameState.objectStates["plant"] || 0;
+        if (plantState === 0) {
+          itemDescs.push("There is a tiny little plant in the pit, murmuring \"Water, water, ...\"");
+        } else if (plantState === 1) {
+          itemDescs.push("There is a 12-foot-tall beanstalk stretching up out of the pit, bellowing \"Water!! Water!!\"");
+        } else if (plantState === 2) {
+          itemDescs.push("There is a gigantic beanstalk stretching all the way up to the hole.");
+        }
+      }
+
       if (itemDescs.length > 0) {
         return baseDesc + "\n\n" + itemDescs.join("\n");
       }
 
       return baseDesc;
     },
-    [gameState.inventory, gameState.lamp.lit, gameState.visitCounts, gameState.briefMode, gameState.objectLocations, isLocationDark, getObjectsAtLocation]
+    [gameState.inventory, gameState.lamp.lit, gameState.visitCounts, gameState.briefMode, gameState.objectLocations, gameState.flags, gameState.objectStates, isLocationDark, getObjectsAtLocation]
   );
 
   const getAvailableActions = useCallback((): Action[] => {
@@ -644,6 +680,17 @@ export function useGame() {
         return;
       }
 
+      if (toSceneId === "nechasm" && gameState.sceneId === "swchasm" && !gameState.flags.trollPaid && !gameState.flags.trollGone) {
+        addMessage("narration", "The troll refuses to let you cross.");
+        decreaseLampLife();
+        return;
+      }
+      if (toSceneId === "swchasm" && gameState.sceneId === "nechasm" && !gameState.flags.trollPaid && !gameState.flags.trollGone) {
+        addMessage("narration", "The troll refuses to let you cross.");
+        decreaseLampLife();
+        return;
+      }
+
       if (isCurrentlyDark() && !gameOver) {
         const pitChance = Math.random();
         if (pitChance < 0.35) {
@@ -673,7 +720,7 @@ export function useGame() {
       hapticFeedback("light");
       processDwarves();
     },
-    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves]
+    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves, gameState.sceneId, gameState.flags]
   );
 
   const handleGoBack = useCallback(() => {
@@ -1117,17 +1164,76 @@ export function useGame() {
           checkLampWarning();
           return;
 
-        case "takeItem":
+        case "takeItem": {
           if (resolution.correction) addMessage("system", resolution.correction);
-          handleTakeItem(resolution.itemId, resolution.actionId);
+          const takeId = resolution.itemId;
+          if (takeId === "bird") {
+            if (gameState.inventory.includes("rod")) {
+              addMessage("narration", "The bird was unafraid when you entered, but as you approach it becomes disturbed and you cannot catch it.");
+              decreaseLampLife();
+              return;
+            }
+            if (!gameState.inventory.includes("cage")) {
+              addMessage("narration", "You can catch the bird, but you cannot carry it.");
+              decreaseLampLife();
+              return;
+            }
+            setGameState((prev) => {
+              const newObjLocs = { ...prev.objectLocations };
+              delete newObjLocs["bird"];
+              return {
+                ...prev,
+                inventory: [...prev.inventory, "bird"],
+                objectLocations: newObjLocs,
+                objectStates: { ...prev.objectStates, bird: 1 },
+              };
+            });
+            addMessage("system", "You catch the bird and put it in the cage.");
+            hapticFeedback("medium");
+            decreaseLampLife();
+            return;
+          }
+          if (takeId === "chain") {
+            addMessage("system", "The chain is locked to the wall. You'll need to unlock it first.");
+            decreaseLampLife();
+            return;
+          }
+          handleTakeItem(takeId, resolution.actionId);
           checkLampWarning();
           return;
+        }
 
-        case "dropItem":
+        case "dropItem": {
           if (resolution.correction) addMessage("system", resolution.correction);
-          handleDropItem(resolution.itemId);
+          const dropId = resolution.itemId;
+          if (dropId === "bird" && gameState.sceneId === "kinghall" && !gameState.flags.snakeChased) {
+            setGameState((prev) => ({
+              ...prev,
+              inventory: prev.inventory.filter((id) => id !== "bird"),
+              objectLocations: { ...prev.objectLocations, bird: prev.sceneId },
+              objectStates: { ...prev.objectStates, bird: 0 },
+              flags: { ...prev.flags, snakeChased: true },
+            }));
+            addMessage("narration", "The little bird attacks the green snake, and in an astounding flurry drives the snake away.");
+            hapticFeedback("success");
+            decreaseLampLife();
+            return;
+          }
+          if (dropId === "bird") {
+            setGameState((prev) => ({
+              ...prev,
+              inventory: prev.inventory.filter((id) => id !== "bird"),
+              objectLocations: { ...prev.objectLocations, bird: prev.sceneId },
+              objectStates: { ...prev.objectStates, bird: 0 },
+            }));
+            addMessage("system", "The little bird flies free.");
+            decreaseLampLife();
+            return;
+          }
+          handleDropItem(dropId);
           checkLampWarning();
           return;
+        }
 
         case "score": {
           const result = calculateScore(gameState);
@@ -1153,11 +1259,26 @@ export function useGame() {
           return;
 
         case "attack": {
+          const atkTarget = resolution.targetPhrase?.toLowerCase() || "";
+          const isAtDragon = (gameState.sceneId === "secret_canyon_e" || gameState.sceneId === "secret_canyon_n") && !gameState.flags.dragonDead;
+          if (isAtDragon && (atkTarget === "" || atkTarget === "dragon" || atkTarget.includes("dragon"))) {
+            setGameState((prev) => ({
+              ...prev,
+              pendingPrompt: { type: "hint_question", text: "With what? Your bare hands?" },
+              flags: { ...prev.flags, _dragonPrompt: true },
+            }));
+            addMessage("narration", "With what? Your bare hands?");
+            return;
+          }
           const dwarvesHere = gameState.dwarfState.dwarves.filter(
             (d) => d.alive && d.loc === gameState.sceneId
           );
           if (dwarvesHere.length > 0) {
             addMessage("narration", "With what? Your bare hands?");
+          } else if (gameState.sceneId === "barrenroom" && !gameState.flags.bearTame) {
+            addMessage("narration", "With what? Your bare hands? Against HIS bear hands?");
+          } else if (atkTarget === "snake" || atkTarget.includes("snake")) {
+            addMessage("narration", "Attacking the snake both doesn't work and is very dangerous.");
           } else {
             addMessage("system", "There is nothing here to attack.");
           }
@@ -1167,9 +1288,20 @@ export function useGame() {
 
         case "throw": {
           if (resolution.correction) addMessage("system", resolution.correction);
+          const throwTarget = resolution.targetPhrase?.toLowerCase() || "";
           const throwDwarvesHere = gameState.dwarfState.dwarves.filter(
             (d) => d.alive && d.loc === gameState.sceneId
           );
+          if (resolution.itemId === "axe" && gameState.sceneId === "barrenroom" && !gameState.flags.bearTame) {
+            setGameState((prev) => ({
+              ...prev,
+              objectLocations: { ...prev.objectLocations, axe: prev.sceneId },
+              inventory: prev.inventory.filter((id) => id !== "axe"),
+            }));
+            addMessage("narration", "The axe misses and lands near the bear where you can't easily get to it.");
+            decreaseLampLife();
+            return;
+          }
           if (resolution.itemId === "axe" && throwDwarvesHere.length > 0) {
             const r = Math.random();
             if (r < 0.33) {
@@ -1198,7 +1330,33 @@ export function useGame() {
               }));
               addMessage("narration", "You throw the axe at the dwarf, but it misses and falls to the ground.");
             }
-          } else if (resolution.itemId) {
+            decreaseLampLife();
+            return;
+          }
+          const atTroll = (gameState.sceneId === "swchasm" || gameState.sceneId === "nechasm") && !gameState.flags.trollGone;
+          if (atTroll && resolution.itemId && TREASURE_IDS.includes(resolution.itemId) && (throwTarget === "" || throwTarget === "troll" || throwTarget.includes("troll"))) {
+            setGameState((prev) => ({
+              ...prev,
+              inventory: prev.inventory.filter((id) => id !== resolution.itemId),
+              flags: { ...prev.flags, trollPaid: true },
+            }));
+            addMessage("narration", "The troll catches your treasure and scurries away out of sight.");
+            hapticFeedback("medium");
+            decreaseLampLife();
+            return;
+          }
+          if (resolution.itemId === "bear" && gameState.inventory.includes("bear") && (throwTarget === "troll" || throwTarget.includes("troll"))) {
+            setGameState((prev) => ({
+              ...prev,
+              inventory: prev.inventory.filter((id) => id !== "bear"),
+              flags: { ...prev.flags, trollGone: true },
+            }));
+            addMessage("narration", "The bear lumbers toward the troll, who lets out a startled shriek and scurries away. The bear soon wanders off through the chasm.");
+            hapticFeedback("success");
+            decreaseLampLife();
+            return;
+          }
+          if (resolution.itemId) {
             handleDropItem(resolution.itemId);
           } else {
             addMessage("system", "Throw what?");
@@ -1207,10 +1365,56 @@ export function useGame() {
           return;
         }
 
-        case "feed":
+        case "feed": {
+          const feedItem = resolution.itemPhrase?.toLowerCase() || "";
+          const feedTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (gameState.sceneId === "barrenroom" && !gameState.flags.bearTame) {
+            if (gameState.inventory.includes("food") && (feedItem === "food" || feedItem === "" || feedTarget === "bear" || feedTarget.includes("bear") || feedItem === "bear")) {
+              setGameState((prev) => ({
+                ...prev,
+                inventory: prev.inventory.filter((id) => id !== "food"),
+                flags: { ...prev.flags, bearTame: true },
+                objectStates: { ...prev.objectStates, bear: 1 },
+              }));
+              addMessage("narration", "The bear eagerly wolfs down your food, after which he seems to calm down considerably and even becomes rather friendly.");
+              hapticFeedback("success");
+              decreaseLampLife();
+              return;
+            }
+            addMessage("system", "You don't have anything the bear wants to eat.");
+            decreaseLampLife();
+            return;
+          }
+          if (feedItem === "bird" || feedTarget === "bird" || feedItem.includes("bird")) {
+            addMessage("narration", "It's not hungry (it's merely pstrength and singing).");
+            decreaseLampLife();
+            return;
+          }
+          if (feedTarget === "snake" || feedTarget.includes("snake") || feedItem === "snake") {
+            addMessage("narration", "The snake has now devoured your bird.");
+            if (gameState.inventory.includes("bird")) {
+              setGameState((prev) => ({
+                ...prev,
+                inventory: prev.inventory.filter((id) => id !== "bird"),
+              }));
+            }
+            decreaseLampLife();
+            return;
+          }
+          if (feedTarget === "dragon" || feedTarget.includes("dragon")) {
+            addMessage("narration", "There's nothing here it wants to eat (except perhaps you).");
+            decreaseLampLife();
+            return;
+          }
+          if (feedTarget === "troll" || feedTarget.includes("troll")) {
+            addMessage("narration", "Gluttony is not one of the troll's vices. Avarice, however, is.");
+            decreaseLampLife();
+            return;
+          }
           addMessage("system", "There is nothing here that wants to be fed.");
           decreaseLampLife();
           return;
+        }
 
         case "wave":
           if (resolution.correction) addMessage("system", resolution.correction);
@@ -1233,6 +1437,270 @@ export function useGame() {
           }
           decreaseLampLife();
           return;
+
+        case "open": {
+          const openTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if ((openTarget === "clam" || openTarget.includes("clam") || openTarget === "") && 
+              (gameState.objectLocations["clam"] === gameState.sceneId || gameState.inventory.includes("clam")) &&
+              !gameState.flags.clamOpened) {
+            if (!gameState.inventory.includes("trident") && gameState.objectLocations["trident"] !== gameState.sceneId) {
+              addMessage("narration", "You don't have anything strong enough to open the clam.");
+              decreaseLampLife();
+              return;
+            }
+            setGameState((prev) => {
+              const newObjLocs = { ...prev.objectLocations };
+              delete newObjLocs["clam"];
+              newObjLocs["oyster"] = prev.sceneId;
+              newObjLocs["pearl"] = "cul_de_sac";
+              return {
+                ...prev,
+                inventory: prev.inventory.filter((id) => id !== "clam"),
+                objectLocations: newObjLocs,
+                flags: { ...prev.flags, clamOpened: true },
+              };
+            });
+            addMessage("narration", "A glistening pearl falls out of the clam and rolls away. Interesting. It probably is beyond the Plover Room, in the Cul-de-Sac.");
+            hapticFeedback("success");
+            decreaseLampLife();
+            return;
+          }
+          if ((openTarget === "oyster" || openTarget.includes("oyster")) &&
+              (gameState.objectLocations["oyster"] === gameState.sceneId || gameState.inventory.includes("oyster"))) {
+            addMessage("narration", "The oyster creaks open, revealing nothing inside. It snaps shut again.");
+            decreaseLampLife();
+            return;
+          }
+          if (openTarget === "grate" || openTarget.includes("grate")) {
+            if (gameState.inventory.includes("keys")) {
+              setGameState((prev) => ({
+                ...prev,
+                flags: { ...prev.flags, grateOpen: true },
+              }));
+              addMessage("narration", "The grate is now unlocked and open.");
+              hapticFeedback("medium");
+            } else {
+              addMessage("narration", "You don't have a key that fits.");
+            }
+            decreaseLampLife();
+            return;
+          }
+          if (openTarget === "cage" || openTarget.includes("cage")) {
+            if (gameState.inventory.includes("bird")) {
+              setGameState((prev) => ({
+                ...prev,
+                inventory: prev.inventory.filter((id) => id !== "bird"),
+                objectLocations: { ...prev.objectLocations, bird: prev.sceneId },
+                objectStates: { ...prev.objectStates, bird: 0 },
+              }));
+              addMessage("system", "The little bird flies free.");
+            } else {
+              addMessage("system", "The cage is empty.");
+            }
+            decreaseLampLife();
+            return;
+          }
+          addMessage("system", "I don't know how to open that.");
+          decreaseLampLife();
+          return;
+        }
+
+        case "unlock": {
+          const unlockTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if ((unlockTarget === "chain" || unlockTarget.includes("chain") || unlockTarget === "") && gameState.sceneId === "barrenroom") {
+            if (!gameState.inventory.includes("keys")) {
+              addMessage("system", "You don't have the key.");
+              decreaseLampLife();
+              return;
+            }
+            if (!gameState.flags.bearTame) {
+              addMessage("narration", "There is no way to get past the bear to unlock the chain, which is probably just as well.");
+              decreaseLampLife();
+              return;
+            }
+            setGameState((prev) => ({
+              ...prev,
+              inventory: [...prev.inventory, "chain", "bear"],
+              flags: { ...prev.flags, chainUnlocked: true },
+              objectStates: { ...prev.objectStates, bear: 2 },
+            }));
+            addMessage("narration", "You unlock the chain and set the tame bear free. The bear is now following you around.");
+            hapticFeedback("success");
+            decreaseLampLife();
+            return;
+          }
+          if (unlockTarget === "grate" || unlockTarget.includes("grate")) {
+            if (gameState.inventory.includes("keys")) {
+              setGameState((prev) => ({
+                ...prev,
+                flags: { ...prev.flags, grateOpen: true },
+              }));
+              addMessage("narration", "The grate is now unlocked and open.");
+              hapticFeedback("medium");
+            } else {
+              addMessage("narration", "You don't have a key that fits.");
+            }
+            decreaseLampLife();
+            return;
+          }
+          addMessage("system", "I don't know how to unlock that.");
+          decreaseLampLife();
+          return;
+        }
+
+        case "drink": {
+          const drinkTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (drinkTarget === "blood" || drinkTarget.includes("blood") || drinkTarget.includes("dragon")) {
+            if (gameState.flags.dragonDead && (gameState.sceneId === "secret_canyon_e" || gameState.sceneId === "secret_canyon_n")) {
+              setGameState((prev) => ({
+                ...prev,
+                flags: { ...prev.flags, blooded: true },
+              }));
+              addMessage("narration", "The blood tastes terrible, but you force it down. You feel a strange tingling sensation.");
+              hapticFeedback("medium");
+              decreaseLampLife();
+              return;
+            }
+            addMessage("system", "There is no blood here to drink.");
+            decreaseLampLife();
+            return;
+          }
+          if (drinkTarget === "water" || drinkTarget === "" || drinkTarget.includes("water")) {
+            if (gameState.inventory.includes("bottle") && (gameState.objectStates["bottle"] === undefined || gameState.objectStates["bottle"] === 0)) {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: 2 },
+              }));
+              addMessage("system", "You drink the water. The bottle is now empty.");
+              decreaseLampLife();
+              return;
+            }
+            addMessage("system", "You don't have any water.");
+            decreaseLampLife();
+            return;
+          }
+          addMessage("system", "There is nothing here to drink.");
+          decreaseLampLife();
+          return;
+        }
+
+        case "read": {
+          const readTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (readTarget === "oyster" || readTarget.includes("oyster")) {
+            if (gameState.inventory.includes("oyster") || gameState.objectLocations["oyster"] === gameState.sceneId) {
+              addMessage("narration", "Hmmm, this seems to be a clue: \"There is something strange about this place, such that one of the words I've always known now has a new meaning.\"");
+              decreaseLampLife();
+              return;
+            }
+          }
+          if (readTarget === "magazine" || readTarget.includes("magazine")) {
+            addMessage("narration", "I'm afraid the magazine is written in Dwarvish.");
+            decreaseLampLife();
+            return;
+          }
+          addMessage("system", "There is nothing here to read.");
+          decreaseLampLife();
+          return;
+        }
+
+        case "say": {
+          const phrase = resolution.phrase?.toLowerCase() || "";
+          if (phrase === "xyzzy" || phrase === "plugh" || phrase === "plover") {
+            const magicAction = availableActions.find(
+              (a) => a.type === "move" && a.id === `go_${phrase}`
+            );
+            if (magicAction && magicAction.to) {
+              handleMove(magicAction.to);
+            } else {
+              addMessage("narration", "Nothing happens.");
+            }
+            decreaseLampLife();
+            return;
+          }
+          addMessage("narration", `Okay, "${phrase}".`);
+          decreaseLampLife();
+          return;
+        }
+
+        case "yes": {
+          if (gameState.flags._dragonPrompt && gameState.pendingPrompt) {
+            setGameState((prev) => ({
+              ...prev,
+              flags: { ...prev.flags, dragonDead: true, _dragonPrompt: false },
+              pendingPrompt: null,
+            }));
+            addMessage("narration", "Congratulations! You have just vanquished a dragon with your bare hands! (Strstrength, strstrength.)");
+            addMessage("narration", "The dragon's blood pools on the ground. The rug is now free to take.");
+            hapticFeedback("success");
+            decreaseLampLife();
+            return;
+          }
+          if (gameState.pendingPrompt) {
+            addMessage("system", "OK.");
+            setGameState((prev) => ({ ...prev, pendingPrompt: null }));
+            return;
+          }
+          addMessage("system", "OK.");
+          return;
+        }
+
+        case "fill": {
+          const fillTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (fillTarget === "bottle" || fillTarget.includes("bottle") || fillTarget === "") {
+            addMessage("system", "Your bottle is now full of water.");
+            setGameState((prev) => ({
+              ...prev,
+              objectStates: { ...prev.objectStates, bottle: 0 },
+            }));
+          } else {
+            addMessage("system", "You can't fill that.");
+          }
+          decreaseLampLife();
+          return;
+        }
+
+        case "pour": {
+          const pourTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (gameState.sceneId === "westpit" && (pourTarget === "" || pourTarget === "water" || pourTarget === "plant" || pourTarget.includes("plant") || pourTarget.includes("water"))) {
+            if (!gameState.inventory.includes("bottle")) {
+              addMessage("system", "You don't have any water.");
+              decreaseLampLife();
+              return;
+            }
+            const currentPlantState = gameState.objectStates["plant"] || 0;
+            if (currentPlantState === 0) {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, plant: 1, bottle: 2 },
+              }));
+              addMessage("narration", "The plant spurts into furious growth for a few seconds.\n\nThere is a 12-foot-tall beanstalk stretching up out of the pit, bellowing \"Water!! Water!!\"");
+              hapticFeedback("success");
+            } else if (currentPlantState === 1) {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, plant: 2, bottle: 2 },
+              }));
+              addMessage("narration", "The plant grows explosively, almost filling the bottom of the pit.\n\nThere is a gigantic beanstalk stretching all the way up to the hole.");
+              hapticFeedback("success");
+            } else {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, plant: 0, bottle: 2 },
+              }));
+              addMessage("narration", "The plant shrivels up and disappears.\n\nThe tiny plant is gone. The pit is empty.");
+              hapticFeedback("medium");
+            }
+            decreaseLampLife();
+            return;
+          }
+          addMessage("system", "You pour out the water.");
+          setGameState((prev) => ({
+            ...prev,
+            objectStates: { ...prev.objectStates, bottle: 2 },
+          }));
+          decreaseLampLife();
+          return;
+        }
 
         case "move":
           if (resolution.correction) addMessage("system", resolution.correction);

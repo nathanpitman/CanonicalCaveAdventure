@@ -13,7 +13,7 @@ import {
 
 export interface ParsedCommand {
   raw: string;
-  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "unknown";
+  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "unknown";
   verb?: string;
   itemPhrase?: string;
   targetPhrase?: string;
@@ -381,6 +381,98 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     }
   }
 
+  const waterPattern = /^(water|pour)\s*(.*)$/;
+  const wpm = text.match(waterPattern);
+  if (wpm) {
+    out.intent = "pour";
+    out.verb = "pour";
+    const target = stripArticles(wpm[2] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const fillPattern = /^fill\s*(.*)$/;
+  const flm = text.match(fillPattern);
+  if (flm) {
+    out.intent = "fill";
+    out.verb = "fill";
+    const target = stripArticles(flm[1] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const openPattern = /^(open|pry|crack)\s*(.*)$/;
+  const om = text.match(openPattern);
+  if (om) {
+    out.intent = "open";
+    out.verb = "open";
+    const target = stripArticles(om[2] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const unlockPattern = /^(unlock|unchain|free|release)\s*(.*)$/;
+  const um = text.match(unlockPattern);
+  if (um) {
+    out.intent = "unlock";
+    out.verb = "unlock";
+    const target = stripArticles(um[2] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const drinkPattern = /^(drink|quaff|sip|gulp)\s*(.*)$/;
+  const dm = text.match(drinkPattern);
+  if (dm) {
+    out.intent = "drink";
+    out.verb = "drink";
+    const target = stripArticles(dm[2] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const readPattern = /^read\s*(.*)$/;
+  const rm = text.match(readPattern);
+  if (rm) {
+    out.intent = "read";
+    out.verb = "read";
+    const target = stripArticles(rm[1] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const sayPattern = /^(say|speak|utter)\s+(.+)$/;
+  const sm = text.match(sayPattern);
+  if (sm) {
+    out.intent = "say";
+    out.verb = "say";
+    out.targetPhrase = stripArticles(sm[2]);
+    return true;
+  }
+
+  if (text === "yes" || text === "y") {
+    out.intent = "yes";
+    return true;
+  }
+
   return false;
 }
 
@@ -402,6 +494,41 @@ function trySingleToken(tokens: string[], out: ParsedCommand): boolean {
   if (verbResolved === "use") {
     out.intent = "use";
     out.verb = "use";
+    return true;
+  }
+
+  if (token === "water" || token === "pour") {
+    out.intent = "pour";
+    out.verb = "pour";
+    return true;
+  }
+  if (token === "fill") {
+    out.intent = "fill";
+    out.verb = "fill";
+    return true;
+  }
+  if (token === "open") {
+    out.intent = "open";
+    out.verb = "open";
+    return true;
+  }
+  if (token === "unlock" || token === "unchain") {
+    out.intent = "unlock";
+    out.verb = "unlock";
+    return true;
+  }
+  if (token === "drink") {
+    out.intent = "drink";
+    out.verb = "drink";
+    return true;
+  }
+  if (token === "read") {
+    out.intent = "read";
+    out.verb = "read";
+    return true;
+  }
+  if (token === "yes" || token === "y") {
+    out.intent = "yes";
     return true;
   }
 
