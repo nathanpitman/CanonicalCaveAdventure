@@ -36,12 +36,20 @@ Do not make changes to the `tools/injectPwaMeta.js` file.
 **Feature Specifications:**
 - **Core Gameplay Loop:** Players explore 180+ scenes, managing a turn-based lamp system (330 turns, extendable with batteries), collecting treasures, and interacting with the environment through commands.
 - **Dynamic Environment:** Room descriptions update based on taken items, and the lamp indicator dynamically appears and explains the fuel system.
-- **Canonical Game Mechanics:** Implements Open Adventure's full travel system, including verb tokens, conditional travel (`requiresFlag`), default travel (`go_default`), speak actions for blocked paths, magic words (xyzzy/plugh), and the grate puzzle.
-- **Inventory System:** Supports picking up, dropping, and using items, with a carry limit and special item behaviors (e.g., vase fragility).
+- **Canonical Game Mechanics:** Implements Open Adventure's full travel system, including verb tokens, conditional travel (`requiresFlag`), default travel (`go_default`), speak actions for blocked paths, magic words (xyzzy/plugh/plover), and the grate puzzle.
+- **NPC System:** Dwarf movement AI with knife throwing attacks, pirate treasure theft, bear/chain/food taming, ogre blocking (throw bear to defeat), troll bridge toll.
+- **Object Puzzles:** Bird/cage/snake, bear/chain/food, dragon bare-hands kill, troll bridge, clam/oyster/pearl, plant/beanstalk growth, urn/gemstone/cavity/amber, door oiling.
+- **Bottle/Liquid System:** Water/oil virtual objects, 3 bottle states (water/empty/oil), fill/pour/drink mechanics, location-based fluid availability (FLUID/OILY flags).
+- **Magic Words:** xyzzy, plugh, plover (with special transport), fee/fie/foe/foo sequence (eggs teleport), sesame/abracadabra/shazam/hocus pocus (old worn-out words).
+- **Forced Movement:** Foof intermediate scenes auto-chain to destination (e.g., foof3→y2).
+- **Y2 Hollow Voice:** 25% chance of hearing "PLUGH" when entering Y2.
+- **Vending Machine:** Drop coins at deadend13 to dispense batteries.
+- **Inventory System:** Supports picking up, dropping, and using items, with a carry limit and special item behaviors (e.g., vase fragility). Bottle shows state in inventory.
 - **Death & Reincarnation:** Features a canonical obituary system with limited reincarnations before permanent game over.
 - **Hint System:** Includes a canonical hint system with gating rules and score penalties for usage.
-- **Score Tracking:** Calculates score based on treasure deposited, survival, and exploration, with a 10-tier rating system.
-- **Command Set:** Supports a wide range of commands such as `look`, `inventory`, `take`, `use`, `go`, `go back`, `drop`, `score`, `brief`, `wait`, `attack`, `throw`, `feed`, `wave`.
+- **Score Tracking:** Canonical 430-point scoring: treasures (298), survival (30), exploration (25), cave closing (25), endgame victory (45), magazine bonus (1), not quitting (4), round-out (2). Deductions for hints and turn thresholds. 10-tier rating system.
+- **Cave Closure:** Clock-based closure system triggered when treasures are found. Sepulchral voice warning, grate locks, cave exit blocked.
+- **Command Set:** Supports commands: `look`, `inventory`, `take`, `use`, `go`, `go back`, `drop`, `score`, `brief`, `wait`, `attack`, `throw`, `feed`, `wave`, `fill`, `pour`, `drink`, `read`, `open`, `unlock`, `say`, `fee/fie/foe/foo`.
 
 ## External Dependencies
 
