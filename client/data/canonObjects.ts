@@ -44,7 +44,10 @@ export const OBJECT_START_LOCATIONS: Record<string, string> = {
   axe: "_nowhere",
   chain: "barrenroom",
   rug: "secret_canyon_e",
+  jade: "_nowhere",
 };
+
+export const OGRE_LOCATION = "large";
 
 export const SNAKE_LOCATION = "kinghall";
 export const DRAGON_LOCATIONS = ["secret_canyon_e", "secret_canyon_n"];

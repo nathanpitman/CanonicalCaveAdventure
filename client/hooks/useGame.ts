@@ -740,6 +740,16 @@ export function useGame() {
         return;
       }
 
+      const isPloverAlcovePassage = (gameState.sceneId === "plover" && toSceneId === "alcove") || (gameState.sceneId === "alcove" && toSceneId === "plover");
+      if (isPloverAlcovePassage) {
+        const nonEmeraldItems = gameState.inventory.filter((id) => id !== "emerald");
+        if (nonEmeraldItems.length > 0) {
+          addMessage("narration", "Something you're carrying won't fit through the tunnel with you. You'd best take inventory and drop something.");
+          decreaseLampLife();
+          return;
+        }
+      }
+
       if (isCurrentlyDark() && !gameOver) {
         const pitChance = Math.random();
         if (pitChance < 0.35) {
@@ -749,6 +759,12 @@ export function useGame() {
           return;
         }
       }
+
+      const targetScene = SCENES[toSceneId];
+      const defaultAction = targetScene?.actions?.find(
+        (a: any) => a.type === "move" && a.id === "go_default"
+      );
+      const isForcedScene = toSceneId.startsWith("foof") && defaultAction?.to;
 
       setGameState((prev) => {
         const newVisitCount = (prev.visitCounts[toSceneId] || 0) + 1;
@@ -764,12 +780,25 @@ export function useGame() {
         };
       });
 
+      if (isForcedScene) {
+        addMessage("narration", getSceneDescription(toSceneId));
+        setTimeout(() => {
+          handleMove(defaultAction.to);
+        }, 100);
+        return;
+      }
+
       decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
+
+      if (toSceneId === "y2" && Math.random() < 0.25) {
+        addMessage("narration", "A hollow voice says 'PLUGH'.");
+      }
+
       hapticFeedback("light");
       processDwarves();
     },
-    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves, gameState.sceneId, gameState.flags]
+    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves, gameState.sceneId, gameState.flags, gameState.inventory]
   );
 
   const handleGoBack = useCallback(() => {
@@ -1363,6 +1392,18 @@ export function useGame() {
             decreaseLampLife();
             return;
           }
+          if (dropId === "coins" && gameState.sceneId === "deadend13") {
+            setGameState((prev) => ({
+              ...prev,
+              inventory: prev.inventory.filter((id) => id !== "coins"),
+              objectLocations: { ...prev.objectLocations, battery: "deadend13" },
+              batteryState: "available",
+            }));
+            addMessage("narration", "There are fresh batteries here.");
+            hapticFeedback("success");
+            decreaseLampLife();
+            return;
+          }
           handleDropItem(dropId);
           checkLampWarning();
           return;
@@ -1485,6 +1526,18 @@ export function useGame() {
               flags: { ...prev.flags, trollGone: true },
             }));
             addMessage("narration", "The bear lumbers toward the troll, who lets out a startled shriek and scurries away. The bear soon wanders off through the chasm.");
+            hapticFeedback("success");
+            decreaseLampLife();
+            return;
+          }
+          if (resolution.itemId === "bear" && gameState.inventory.includes("bear") && (throwTarget === "ogre" || throwTarget.includes("ogre") || gameState.sceneId === "large") && !gameState.flags.ogreGone) {
+            setGameState((prev) => ({
+              ...prev,
+              inventory: prev.inventory.filter((id) => id !== "bear"),
+              objectLocations: { ...prev.objectLocations, bear: prev.sceneId, jade: prev.sceneId },
+              flags: { ...prev.flags, ogreGone: true },
+            }));
+            addMessage("narration", "The bear lunges at the ogre, who flees in terror. A jade necklace falls from the ogre's neck as it disappears into the shadows.");
             hapticFeedback("success");
             decreaseLampLife();
             return;
@@ -1749,7 +1802,34 @@ export function useGame() {
 
         case "say": {
           const phrase = resolution.phrase?.toLowerCase() || "";
-          if (phrase === "xyzzy" || phrase === "plugh" || phrase === "plover") {
+
+          if (phrase === "plover") {
+            if (gameState.sceneId === "y2" || gameState.sceneId === "plover") {
+              const destination = gameState.sceneId === "y2" ? "plover" : "y2";
+              const nonEmeraldItems = gameState.inventory.filter((id) => id !== "emerald");
+              if (nonEmeraldItems.length > 0) {
+                setGameState((prev) => {
+                  const newObjLocs = { ...prev.objectLocations };
+                  for (const itemId of nonEmeraldItems) {
+                    newObjLocs[itemId] = prev.sceneId;
+                  }
+                  return {
+                    ...prev,
+                    inventory: prev.inventory.filter((id) => id === "emerald"),
+                    objectLocations: newObjLocs,
+                  };
+                });
+                addMessage("narration", "Your items tumble to the ground as you squeeze through.");
+              }
+              handleMove(destination);
+            } else {
+              addMessage("narration", "Nothing happens.");
+            }
+            decreaseLampLife();
+            return;
+          }
+
+          if (phrase === "xyzzy" || phrase === "plugh") {
             const magicAction = availableActions.find(
               (a) => a.type === "move" && a.id === `go_${phrase}`
             );
@@ -1761,6 +1841,76 @@ export function useGame() {
             decreaseLampLife();
             return;
           }
+
+          const foobarSequence = ["fee", "fie", "foe", "foo"];
+          if (foobarSequence.includes(phrase) || phrase === "fum") {
+            const currentStep = gameState.objectStates["_foobar"] || 0;
+            if (phrase === "fum") {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, _foobar: 0 },
+              }));
+              addMessage("narration", "I don't know how to do that.");
+              decreaseLampLife();
+              return;
+            }
+            const expectedWord = foobarSequence[currentStep];
+            if (phrase === expectedWord) {
+              if (currentStep < 3) {
+                setGameState((prev) => ({
+                  ...prev,
+                  objectStates: { ...prev.objectStates, _foobar: currentStep + 1 },
+                }));
+                addMessage("narration", "OK.");
+                decreaseLampLife();
+                return;
+              } else {
+                const eggsLoc = gameState.objectLocations["eggs"];
+                const eggsInInventory = gameState.inventory.includes("eggs");
+                if (eggsLoc === "giantroom" && !eggsInInventory) {
+                  setGameState((prev) => ({
+                    ...prev,
+                    objectStates: { ...prev.objectStates, _foobar: 0 },
+                  }));
+                  addMessage("narration", "Nothing happens.");
+                  decreaseLampLife();
+                  return;
+                }
+                setGameState((prev) => {
+                  const newInventory = prev.inventory.filter((id) => id !== "eggs");
+                  return {
+                    ...prev,
+                    inventory: newInventory,
+                    objectLocations: { ...prev.objectLocations, eggs: "giantroom" },
+                    objectStates: { ...prev.objectStates, _foobar: 0 },
+                  };
+                });
+                if (gameState.sceneId === "giantroom") {
+                  addMessage("narration", "Done! The golden eggs appear at your feet.");
+                } else {
+                  addMessage("narration", "Done! Somewhere nearby, you hear the rumble of something appearing.");
+                }
+                decreaseLampLife();
+                return;
+              }
+            } else {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, _foobar: 0 },
+              }));
+              addMessage("narration", "I don't know how to do that.");
+              decreaseLampLife();
+              return;
+            }
+          }
+
+          const oldMagicWords = ["sesame", "abracadabra", "shazam", "opencesame", "opensesame", "hocuspocus"];
+          if (oldMagicWords.includes(phrase)) {
+            addMessage("narration", "Good try, but that is an old worn-out magic word.");
+            decreaseLampLife();
+            return;
+          }
+
           addMessage("narration", `Okay, "${phrase}".`);
           decreaseLampLife();
           return;

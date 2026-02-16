@@ -459,6 +459,28 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
+  const foobarWords = ["fee", "fie", "foe", "foo", "fum"];
+  if (tokens.length === 1 && foobarWords.includes(tokens[0])) {
+    out.intent = "say";
+    out.verb = "say";
+    out.targetPhrase = tokens[0];
+    return true;
+  }
+
+  const oldMagicWords = ["sesame", "abracadabra", "shazam", "opensesame"];
+  if (tokens.length === 1 && oldMagicWords.includes(tokens[0])) {
+    out.intent = "say";
+    out.verb = "say";
+    out.targetPhrase = tokens[0];
+    return true;
+  }
+  if (text === "hocus pocus" || text === "open sesame") {
+    out.intent = "say";
+    out.verb = "say";
+    out.targetPhrase = text.replace(/\s+/g, "");
+    return true;
+  }
+
   const sayPattern = /^(say|speak|utter)\s+(.+)$/;
   const sm = text.match(sayPattern);
   if (sm) {
