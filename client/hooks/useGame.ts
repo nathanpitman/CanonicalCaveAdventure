@@ -56,6 +56,7 @@ import {
 } from "@/data/canonObjects";
 import {
   processDwarfTurn,
+  lcgRandom,
   isDeepCave,
   isNoBack,
   CHEST_HIDE_LOC,
@@ -611,7 +612,7 @@ export function useGame() {
     }
   }, [gameState.stats.turns, gameState.thresholdsTriggered, addMessage]);
 
-  const CLOSURE_CLOCK_KEY = "closureClock1";
+  const CLOSURE_CLOCK_KEY = "clock1";
   const CLOSURE_TREASURE_THRESHOLD = 200;
   const CLOSURE_CLOCK_START = 15;
 
@@ -859,7 +860,9 @@ export function useGame() {
       decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
 
-      if (toSceneId === "y2" && Math.random() < 0.25) {
+      const y2Rng = lcgRandom(gameState.rngSeed);
+      setGameState((prev) => ({ ...prev, rngSeed: y2Rng.nextSeed }));
+      if (toSceneId === "y2" && (y2Rng.value % 4) === 0) {
         addMessage("narration", "A hollow voice says 'PLUGH'.");
       }
 
@@ -914,7 +917,7 @@ export function useGame() {
     checkLampWarning();
     processDwarves();
     checkCaveClosure();
-  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure]);
+  }, [gameState.previousSceneId, gameState.sceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure]);
 
   const handleTakeItem = useCallback(
     (itemId: string, actionId: string) => {
@@ -1912,11 +1915,11 @@ export function useGame() {
 
           const foobarSequence = ["fee", "fie", "foe", "foo"];
           if (foobarSequence.includes(phrase) || phrase === "fum") {
-            const currentStep = gameState.objectStates["_foobar"] || 0;
+            const currentStep = gameState.objectStates["foobar"] || 0;
             if (phrase === "fum") {
               setGameState((prev) => ({
                 ...prev,
-                objectStates: { ...prev.objectStates, _foobar: 0 },
+                objectStates: { ...prev.objectStates, foobar: 0 },
               }));
               addMessage("narration", "I don't know how to do that.");
               decreaseLampLife();
@@ -1927,7 +1930,7 @@ export function useGame() {
               if (currentStep < 3) {
                 setGameState((prev) => ({
                   ...prev,
-                  objectStates: { ...prev.objectStates, _foobar: currentStep + 1 },
+                  objectStates: { ...prev.objectStates, foobar: currentStep + 1 },
                 }));
                 addMessage("narration", "OK.");
                 decreaseLampLife();
@@ -1938,7 +1941,7 @@ export function useGame() {
                 if (eggsLoc === "giantroom" && !eggsInInventory) {
                   setGameState((prev) => ({
                     ...prev,
-                    objectStates: { ...prev.objectStates, _foobar: 0 },
+                    objectStates: { ...prev.objectStates, foobar: 0 },
                   }));
                   addMessage("narration", "Nothing happens.");
                   decreaseLampLife();
@@ -1950,7 +1953,7 @@ export function useGame() {
                     ...prev,
                     inventory: newInventory,
                     objectLocations: { ...prev.objectLocations, eggs: "giantroom" },
-                    objectStates: { ...prev.objectStates, _foobar: 0 },
+                    objectStates: { ...prev.objectStates, foobar: 0 },
                   };
                 });
                 if (gameState.sceneId === "giantroom") {
@@ -1964,7 +1967,7 @@ export function useGame() {
             } else {
               setGameState((prev) => ({
                 ...prev,
-                objectStates: { ...prev.objectStates, _foobar: 0 },
+                objectStates: { ...prev.objectStates, foobar: 0 },
               }));
               addMessage("narration", "I don't know how to do that.");
               decreaseLampLife();

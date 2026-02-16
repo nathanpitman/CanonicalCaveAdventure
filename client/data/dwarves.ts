@@ -18,8 +18,6 @@ export const DALTLC = "nugget";
 export const CHEST_HIDE_LOC = "mazeend12";
 export const MESSAGE_HIDE_LOC = "mazeend13";
 
-export const PIT_KILL_PROB = 35;
-
 export interface DwarfState {
   loc: string;
   oldloc: string;
@@ -64,7 +62,7 @@ export function isNoBack(sceneId: string): boolean {
   return !!(scene?.conditions?.["NOBACK"]);
 }
 
-function lcgRandom(seed: number): { value: number; nextSeed: number } {
+export function lcgRandom(seed: number): { value: number; nextSeed: number } {
   const LCG_A = 1093;
   const LCG_C = 221587;
   const LCG_M = 1048576;
@@ -348,6 +346,3 @@ function processPirateTurn(
   return { stolenItems, messages, chestPlaced, seed };
 }
 
-export function getKnifeMessage(): string {
-  return "The dwarves' knives vanish as they strike the walls of the cave.";
-}
