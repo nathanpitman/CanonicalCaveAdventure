@@ -42,14 +42,17 @@ Do not make changes to the `tools/injectPwaMeta.js` file.
 - **Bottle/Liquid System:** Water/oil virtual objects, 3 bottle states (water/empty/oil), fill/pour/drink mechanics, location-based fluid availability (FLUID/OILY flags).
 - **Magic Words:** xyzzy, plugh, plover (with special transport), fee/fie/foe/foo sequence (eggs teleport), sesame/abracadabra/shazam/hocus pocus (old worn-out words).
 - **Forced Movement:** Foof intermediate scenes auto-chain to destination (e.g., foof3→y2).
-- **Y2 Hollow Voice:** 25% chance of hearing "PLUGH" when entering Y2.
+- **Y2 Hollow Voice:** 25% chance of hearing "PLUGH" when entering Y2 (suppressed during closing).
 - **Vending Machine:** Drop coins at deadend13 to dispense batteries.
 - **Inventory System:** Supports picking up, dropping, and using items, with a carry limit and special item behaviors (e.g., vase fragility). Bottle shows state in inventory.
 - **Death & Reincarnation:** Features a canonical obituary system with limited reincarnations before permanent game over.
 - **Hint System:** Includes a canonical hint system with gating rules and score penalties for usage.
 - **Score Tracking:** Canonical 430-point scoring: treasures (298), survival (30), exploration (25), cave closing (25), endgame victory (45), magazine bonus (1), not quitting (4), round-out (2). Deductions for hints and turn thresholds. 10-tier rating system.
-- **Cave Closure:** Clock-based closure system triggered when treasures are found. Sepulchral voice warning, grate locks, cave exit blocked.
-- **Command Set:** Supports commands: `look`, `inventory`, `take`, `use`, `go`, `go back`, `drop`, `score`, `brief`, `wait`, `attack`, `throw`, `feed`, `wave`, `fill`, `pour`, `drink`, `read`, `open`, `unlock`, `close`, `lock`, `say`, `eat`, `rub`, `quit`, `fee/fie/foe/foo`.
+- **Cave Closure:** Tally-based closure system triggered when all treasures are located (tally==0). Two-phase: clock1 (15-turn warning) then clock2 (15-turn panic). When clock1 hits 0: sepulchral voice, grate locked, bridge vanished, all dwarves killed, troll replaced. Exit blocked via ABOVE flag.
+- **Endgame Repository:** When clock2 hits 0: player teleported to "ne" room, inventory destroyed, lamp goes dark. Repository has two rooms (ne/sw) with mirror spanning both. Objects placed: bottle/rod/lamp in ne, rod2/pillow in sw.
+- **Endgame Puzzle (Blast):** `blast` command uses rod2 as "dynamite". Without rod2: "Blasting requires dynamite." With rod2 + mirror intact: defeat (25-30 pts). With rod2 + mirror broken (via `wave rod`): victory (45 pts).
+- **Death During Closing:** Permanent — no resurrection offered. Immediate game over with score display.
+- **Command Set:** Supports commands: `look`, `inventory`, `take`, `use`, `go`, `go back`, `drop`, `score`, `brief`, `wait`, `attack`, `throw`, `feed`, `wave`, `fill`, `pour`, `drink`, `read`, `open`, `unlock`, `close`, `lock`, `say`, `eat`, `rub`, `quit`, `blast`, `fee/fie/foe/foo`.
 - **Canonical Naming:** Game state keys align with Open Adventure source: `clock1` (cave closure timer), `foobar` (fee-fie-foe-foo counter). Functions: `lcgRandom()` exported from dwarves.ts for deterministic RNG.
 - **BACK Command:** Blocked in NOBACK-flagged locations via `isNoBack()` check from dwarves.ts.
 - **Plover Transport (Special 2):** Drops emerald at current location if carried (prevents emerald smuggling via magic word). Other items unaffected.
