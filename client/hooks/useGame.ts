@@ -56,8 +56,8 @@ import {
 } from "@/data/canonObjects";
 import {
   processDwarfTurn,
-  getKnifeMessage,
   isDeepCave,
+  isNoBack,
   CHEST_HIDE_LOC,
   MESSAGE_HIDE_LOC,
 } from "@/data/dwarves";
@@ -848,10 +848,10 @@ export function useGame() {
         };
       });
 
-      if (isForcedScene) {
+      if (isForcedScene && defaultAction?.to) {
         addMessage("narration", getSceneDescription(toSceneId));
         setTimeout(() => {
-          handleMove(defaultAction.to);
+          handleMove(defaultAction.to!);
         }, 100);
         return;
       }
@@ -873,6 +873,11 @@ export function useGame() {
   const handleGoBack = useCallback(() => {
     if (!gameState.previousSceneId) {
       addMessage("system", "You can't go back any further.");
+      return;
+    }
+
+    if (isNoBack(gameState.sceneId)) {
+      addMessage("system", "Sorry, but I no longer seem to remember how you got here.");
       return;
     }
 
@@ -1674,7 +1679,7 @@ export function useGame() {
 
         case "wave":
           if (resolution.correction) addMessage("system", resolution.correction);
-          if (resolution.itemId === "rod" && gameState.sceneId === "fissure_w") {
+          if (resolution.itemId === "rod" && (gameState.sceneId === "westbank" || gameState.sceneId === "eastbank")) {
             if (!gameState.flags.crystalBridge) {
               addMessage("narration", "A crystal bridge now spans the fissure.");
               setGameState((prev) => ({
@@ -1876,20 +1881,13 @@ export function useGame() {
           if (phrase === "plover") {
             if (gameState.sceneId === "y2" || gameState.sceneId === "plover") {
               const destination = gameState.sceneId === "y2" ? "plover" : "y2";
-              const nonEmeraldItems = gameState.inventory.filter((id) => id !== "emerald");
-              if (nonEmeraldItems.length > 0) {
-                setGameState((prev) => {
-                  const newObjLocs = { ...prev.objectLocations };
-                  for (const itemId of nonEmeraldItems) {
-                    newObjLocs[itemId] = prev.sceneId;
-                  }
-                  return {
-                    ...prev,
-                    inventory: prev.inventory.filter((id) => id === "emerald"),
-                    objectLocations: newObjLocs,
-                  };
-                });
-                addMessage("narration", "Your items tumble to the ground as you squeeze through.");
+              if (gameState.inventory.includes("emerald")) {
+                setGameState((prev) => ({
+                  ...prev,
+                  inventory: prev.inventory.filter((id) => id !== "emerald"),
+                  objectLocations: { ...prev.objectLocations, emerald: prev.sceneId },
+                }));
+                addMessage("narration", "The emerald tumbles to the ground as you are transported.");
               }
               handleMove(destination);
             } else {
