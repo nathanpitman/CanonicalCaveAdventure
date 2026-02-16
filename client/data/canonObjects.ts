@@ -186,6 +186,10 @@ export function calculateScore(state: {
   if (state.flags.endgameVictory) {
     breakdown.endgame = 45;
     score += 45;
+  } else if (state.flags.endgameDefeat) {
+    const bonus = (state as any).flags?.endgameDefeatBonus || 25;
+    breakdown.endgame = bonus;
+    score += bonus;
   }
 
   if (state.objectLocations.magazine === "wittsend") {

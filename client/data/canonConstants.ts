@@ -12,3 +12,6 @@ export const URN_LIT = 2;
 
 export const CAVITY_FULL = 0;
 export const CAVITY_EMPTY = 1;
+
+export const CLOCK1_START = 15;
+export const CLOCK2_START = 15;

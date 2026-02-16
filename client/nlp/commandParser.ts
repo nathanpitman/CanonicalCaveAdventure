@@ -13,7 +13,7 @@ import {
 
 export interface ParsedCommand {
   raw: string;
-  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "quit" | "unknown";
+  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "blast" | "quit" | "unknown";
   verb?: string;
   itemPhrase?: string;
   targetPhrase?: string;
@@ -360,6 +360,11 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
 
   if (tokens.length === 1) {
     const t = tokens[0];
+    if (t === "blast" || t === "detonate" || t === "ignite" || t === "blowup") {
+      out.intent = "blast";
+      out.verb = "blast";
+      return true;
+    }
     if (t === "attack" || t === "kill" || t === "fight") {
       out.intent = "attack";
       out.verb = "attack";
@@ -610,6 +615,11 @@ function trySingleToken(tokens: string[], out: ParsedCommand): boolean {
   if (token === "close" || token === "shut" || token === "lock") {
     out.intent = "close";
     out.verb = token;
+    return true;
+  }
+  if (token === "blast" || token === "detonate" || token === "ignite" || token === "blowup") {
+    out.intent = "blast";
+    out.verb = "blast";
     return true;
   }
   if (token === "quit" || token === "q") {

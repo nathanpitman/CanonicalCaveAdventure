@@ -36,6 +36,8 @@ import {
   URN_LIT,
   CAVITY_FULL,
   CAVITY_EMPTY,
+  CLOCK1_START,
+  CLOCK2_START,
 } from "@/data/canonConstants";
 import {
   PROGRESS_MILESTONES,
@@ -487,6 +489,16 @@ export function useGame() {
       addMessage("narration", deathMessage);
     }
 
+    if (gameState.flags.closingReached || gameState.flags.closed) {
+      addMessage("narration", "It looks as though you're dead. Well, seeing as how it's so close to closing time anyway, let's just call it a day.");
+      const { score, maxScore } = calculateScore(gameState);
+      addMessage("system", `You scored ${score} out of a possible ${maxScore}, using ${gameState.stats.turns} turns.`);
+      addMessage("system", getScoreClass(score));
+      setGameOver("died");
+      hapticFeedback("error");
+      return;
+    }
+
     const { numdie, maxDeaths } = gameState.deathState;
     if (numdie >= maxDeaths) {
       addMessage("narration", "You have used all your chances. This time you really are dead.");
@@ -507,7 +519,7 @@ export function useGame() {
       },
     }));
     hapticFeedback("error");
-  }, [gameState.deathState, addMessage, hapticFeedback]);
+  }, [gameState.deathState, gameState.flags, gameState.stats, addMessage, hapticFeedback]);
 
   const handlePromptResponse = useCallback((accepted: boolean) => {
     const prompt = gameState.pendingPrompt;
@@ -612,66 +624,125 @@ export function useGame() {
     }
   }, [gameState.stats.turns, gameState.thresholdsTriggered, addMessage]);
 
-  const CLOSURE_CLOCK_KEY = "clock1";
-  const CLOSURE_TREASURE_THRESHOLD = 200;
-  const CLOSURE_CLOCK_START = 15;
-
   const checkCaveClosure = useCallback(() => {
     if (gameOver) return;
-    if (gameState.flags.closingReached) return;
+    if (gameState.flags.closed) return;
 
-    let treasureScore = 0;
+    if (gameState.flags.closingReached) {
+      const clock2Val = gameState.objectStates["clock2"];
+      if (clock2Val === undefined) {
+        setGameState((prev) => ({
+          ...prev,
+          objectStates: { ...prev.objectStates, clock2: CLOCK2_START },
+        }));
+        return;
+      }
+
+      const newClock2 = clock2Val - 1;
+
+      if (newClock2 <= 0) {
+        addMessage(
+          "narration",
+          "The sepulchral voice intones, \"The cave is now closed.\" As the echoes fade, you hear a blinding blast of light, and find yourself transported to..."
+        );
+
+        setGameState((prev) => ({
+          ...prev,
+          sceneId: "ne",
+          previousSceneId: null,
+          inventory: [],
+          flags: {
+            ...prev.flags,
+            closed: true,
+            endgameMirrorBroken: false,
+          },
+          objectStates: { ...prev.objectStates, clock2: -1 },
+          objectLocations: {
+            ...prev.objectLocations,
+            bottle: "ne",
+            rod: "ne",
+            lamp: "ne",
+            rod2: "sw",
+            pillow: "sw",
+          },
+          lamp: { ...prev.lamp, lit: false },
+        }));
+
+        setTimeout(() => {
+          addMessage("narration", SCENES["ne"]?.description.long || "You are at the northeast end of an immense room.");
+        }, 500);
+        hapticFeedback("warning");
+        return;
+      }
+
+      setGameState((prev) => ({
+        ...prev,
+        objectStates: { ...prev.objectStates, clock2: newClock2 },
+      }));
+      return;
+    }
+
+    let tally = 0;
     for (const tid of TREASURE_IDS) {
       const loc = gameState.objectLocations[tid];
       const inInventory = gameState.inventory.includes(tid);
-      if (loc || inInventory) {
-        treasureScore += 2;
+      if (!loc && !inInventory) {
+        tally++;
       }
     }
 
-    const clockVal = gameState.objectStates[CLOSURE_CLOCK_KEY];
+    const clock1Val = gameState.objectStates["clock1"];
 
-    if (treasureScore < CLOSURE_TREASURE_THRESHOLD) return;
+    if (tally > 0) return;
 
-    if (clockVal === undefined) {
+    if (clock1Val === undefined) {
       setGameState((prev) => ({
         ...prev,
-        objectStates: {
-          ...prev.objectStates,
-          [CLOSURE_CLOCK_KEY]: CLOSURE_CLOCK_START,
-        },
+        objectStates: { ...prev.objectStates, clock1: CLOCK1_START },
       }));
       return;
     }
 
     if (!isDeepCave(gameState.sceneId) || gameState.sceneId === "y2") return;
 
-    const newClock = clockVal - 1;
+    const newClock1 = clock1Val - 1;
 
-    if (newClock <= 0) {
+    if (newClock1 <= 0) {
       addMessage(
         "narration",
         "A sepulchral voice reverberating through the cave says, \"Cave closing soon. All adventurers exit immediately through main office.\""
       );
-      setGameState((prev) => ({
-        ...prev,
-        flags: { ...prev.flags, closingReached: true },
-        objectStates: {
-          ...prev.objectStates,
-          [CLOSURE_CLOCK_KEY]: -1,
-        },
-      }));
+      setGameState((prev) => {
+        const newDwarves = prev.dwarfState.dwarves.map((d) => ({
+          ...d,
+          alive: false,
+          loc: "_nowhere",
+        }));
+        return {
+          ...prev,
+          flags: {
+            ...prev.flags,
+            closingReached: true,
+            grateOpen: false,
+            crystalBridge: false,
+            trollGone: true,
+          },
+          objectStates: { ...prev.objectStates, clock1: -1 },
+          dwarfState: {
+            ...prev.dwarfState,
+            dwarves: newDwarves,
+            knfloc: null,
+          },
+        };
+      });
       hapticFeedback("warning");
     } else {
       setGameState((prev) => ({
         ...prev,
-        objectStates: {
-          ...prev.objectStates,
-          [CLOSURE_CLOCK_KEY]: newClock,
-        },
+        objectStates: { ...prev.objectStates, clock1: newClock1 },
       }));
     }
-  }, [gameState.flags.closingReached, gameState.objectStates, gameState.objectLocations, gameState.inventory, gameState.sceneId, gameOver, addMessage, hapticFeedback]);
+  }, [gameState.flags.closingReached, gameState.flags.closed, gameState.objectStates, gameState.objectLocations, gameState.inventory, gameState.sceneId, gameOver, addMessage, hapticFeedback]);
 
   const checkLampWarning = useCallback(() => {
     const { lamp, batteryState } = gameState;
@@ -725,6 +796,7 @@ export function useGame() {
 
   const processDwarves = useCallback(() => {
     if (gameOver) return;
+    if (gameState.flags.closingReached || gameState.flags.closed) return;
 
     const result = processDwarfTurn(
       gameState.dwarfState,
@@ -782,7 +854,7 @@ export function useGame() {
     if (result.playerDied) {
       triggerDeath();
     }
-  }, [gameState.dwarfState, gameState.sceneId, gameState.inventory, gameState.objectLocations, gameState.lamp.lit, gameState.rngSeed, gameOver, addMessage, triggerDeath]);
+  }, [gameState.dwarfState, gameState.sceneId, gameState.inventory, gameState.objectLocations, gameState.lamp.lit, gameState.rngSeed, gameState.flags, gameOver, addMessage, triggerDeath]);
 
   const handleMove = useCallback(
     (toSceneId: string) => {
@@ -792,7 +864,12 @@ export function useGame() {
         return;
       }
 
-      if (gameState.flags.closingReached && newScene.conditions?.ABOVE) {
+      if (gameState.flags.closed && toSceneId !== "ne" && toSceneId !== "sw") {
+        addMessage("system", "There is no way to go that direction.");
+        return;
+      }
+
+      if (gameState.flags.closingReached && !gameState.flags.closed && newScene.conditions?.ABOVE) {
         addMessage("narration", "The cave is now closed.");
         decreaseLampLife();
         return;
@@ -862,7 +939,7 @@ export function useGame() {
 
       const y2Rng = lcgRandom(gameState.rngSeed);
       setGameState((prev) => ({ ...prev, rngSeed: y2Rng.nextSeed }));
-      if (toSceneId === "y2" && (y2Rng.value % 4) === 0) {
+      if (toSceneId === "y2" && (y2Rng.value % 4) === 0 && !gameState.flags.closingReached) {
         addMessage("narration", "A hollow voice says 'PLUGH'.");
       }
 
@@ -1683,6 +1760,11 @@ export function useGame() {
         case "wave":
           if (resolution.correction) addMessage("system", resolution.correction);
           if (resolution.itemId === "rod" && (gameState.sceneId === "westbank" || gameState.sceneId === "eastbank")) {
+            if (gameState.flags.closingReached) {
+              addMessage("narration", "The cave is closing. The bridge is gone for good.");
+              decreaseLampLife();
+              return;
+            }
             if (!gameState.flags.crystalBridge) {
               addMessage("narration", "A crystal bridge now spans the fissure.");
               setGameState((prev) => ({
@@ -1696,11 +1778,70 @@ export function useGame() {
                 flags: { ...prev.flags, crystalBridge: false },
               }));
             }
+          } else if (resolution.itemId === "rod" && gameState.flags.closed && (gameState.sceneId === "ne" || gameState.sceneId === "sw")) {
+            if (!gameState.flags.endgameMirrorBroken) {
+              addMessage("narration", "You strike the mirror a resounding blow, whereupon it shatters into a myriad tiny fragments.");
+              setGameState((prev) => ({
+                ...prev,
+                flags: { ...prev.flags, endgameMirrorBroken: true },
+              }));
+              hapticFeedback("warning");
+            } else {
+              addMessage("system", "Haven't you already done enough damage?");
+            }
           } else {
             addMessage("system", "Nothing happens.");
           }
           decreaseLampLife();
           return;
+
+        case "blast": {
+          if (!gameState.flags.closed) {
+            addMessage("system", "Blasting requires dynamite.");
+            decreaseLampLife();
+            return;
+          }
+          if (!gameState.inventory.includes("rod2") && gameState.objectLocations["rod2"] !== gameState.sceneId) {
+            addMessage("system", "Blasting requires dynamite.");
+            decreaseLampLife();
+            return;
+          }
+          if (gameState.flags.endgameMirrorBroken) {
+            addMessage("narration", "There is a loud explosion, and a twenty-foot hole appears in the far wall, burying the snakes in the rubble. A river of molten lava pours in through the hole, destroying everything in its path, including you!");
+            addMessage("narration", "");
+            addMessage("narration", "It appears that the last combatant has perished.");
+            const { score, maxScore } = calculateScore({
+              ...gameState,
+              flags: { ...gameState.flags, endgameVictory: true },
+            });
+            addMessage("system", `You scored ${score} out of a possible ${maxScore}, using ${gameState.stats.turns} turns.`);
+            addMessage("system", getScoreClass(score));
+            setGameState((prev) => ({
+              ...prev,
+              flags: { ...prev.flags, endgameVictory: true },
+            }));
+            setGameOver("escaped");
+            hapticFeedback("success");
+          } else {
+            addMessage("narration", "There is a loud explosion, and a twenty-foot hole appears in the far wall, burying the dwarves in the rubble. You march through the hole and find yourself in the main office, where a cheering band of friendly elves carry the conquering adventurer off into the sunset.");
+            const bonusPoints = gameState.sceneId === "ne" ? 25 : 30;
+            const { score, maxScore } = calculateScore({
+              ...gameState,
+              flags: {
+                ...gameState.flags,
+                endgameVictory: false,
+                endgameDefeat: true,
+                endgameDefeatBonus: bonusPoints,
+              },
+            });
+            const finalScore = score + bonusPoints;
+            addMessage("system", `You scored ${finalScore} out of a possible ${maxScore}, using ${gameState.stats.turns} turns.`);
+            addMessage("system", getScoreClass(finalScore));
+            setGameOver("escaped");
+            hapticFeedback("warning");
+          }
+          return;
+        }
 
         case "open": {
           const openTarget = resolution.targetPhrase?.toLowerCase() || "";
@@ -1736,6 +1877,11 @@ export function useGame() {
             return;
           }
           if (openTarget === "grate" || openTarget.includes("grate")) {
+            if (gameState.flags.closingReached || gameState.flags.closed) {
+              addMessage("narration", "The cave is now closed. The grate is locked for good.");
+              decreaseLampLife();
+              return;
+            }
             if (gameState.inventory.includes("keys")) {
               setGameState((prev) => ({
                 ...prev,
@@ -1794,6 +1940,11 @@ export function useGame() {
             return;
           }
           if (unlockTarget === "grate" || unlockTarget.includes("grate")) {
+            if (gameState.flags.closingReached || gameState.flags.closed) {
+              addMessage("narration", "The cave is now closed. The grate is locked for good.");
+              decreaseLampLife();
+              return;
+            }
             if (gameState.inventory.includes("keys")) {
               setGameState((prev) => ({
                 ...prev,
@@ -2210,11 +2361,11 @@ export function useGame() {
           if (closeTarget === "grate" || closeTarget.includes("grate") || closeTarget === "") {
             if (gameState.sceneId === "belowgrate" || gameState.sceneId === "outsidegrate" || gameState.sceneId === "insidegrate") {
               if (gameState.inventory.includes("keys")) {
-                if (gameState.flags.grateUnlocked) {
+                if (gameState.flags.grateOpen) {
                   addMessage("narration", "The grate is now locked.");
                   setGameState((prev) => ({
                     ...prev,
-                    flags: { ...prev.flags, grateUnlocked: false },
+                    flags: { ...prev.flags, grateOpen: false },
                   }));
                 } else {
                   addMessage("system", "It is already locked.");

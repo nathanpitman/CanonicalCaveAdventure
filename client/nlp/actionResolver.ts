@@ -42,6 +42,7 @@ export type Resolution =
   | { type: "rub"; targetPhrase?: string }
   | { type: "close"; targetPhrase?: string }
   | { type: "quit" }
+  | { type: "blast" }
   | { type: "fallback" };
 
 export interface ResolverContext {
@@ -227,6 +228,8 @@ export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution
       return { type: "close", targetPhrase: parsed.targetPhrase };
     case "quit":
       return { type: "quit" };
+    case "blast":
+      return { type: "blast" };
     case "break":
       return { type: "message", text: "Nothing happens." };
 
