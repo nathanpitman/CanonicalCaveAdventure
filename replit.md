@@ -49,7 +49,11 @@ Do not make changes to the `tools/injectPwaMeta.js` file.
 - **Hint System:** Includes a canonical hint system with gating rules and score penalties for usage.
 - **Score Tracking:** Canonical 430-point scoring: treasures (298), survival (30), exploration (25), cave closing (25), endgame victory (45), magazine bonus (1), not quitting (4), round-out (2). Deductions for hints and turn thresholds. 10-tier rating system.
 - **Cave Closure:** Clock-based closure system triggered when treasures are found. Sepulchral voice warning, grate locks, cave exit blocked.
-- **Command Set:** Supports commands: `look`, `inventory`, `take`, `use`, `go`, `go back`, `drop`, `score`, `brief`, `wait`, `attack`, `throw`, `feed`, `wave`, `fill`, `pour`, `drink`, `read`, `open`, `unlock`, `say`, `fee/fie/foe/foo`.
+- **Command Set:** Supports commands: `look`, `inventory`, `take`, `use`, `go`, `go back`, `drop`, `score`, `brief`, `wait`, `attack`, `throw`, `feed`, `wave`, `fill`, `pour`, `drink`, `read`, `open`, `unlock`, `close`, `lock`, `say`, `eat`, `rub`, `quit`, `fee/fie/foe/foo`.
+- **Canonical Naming:** Game state keys align with Open Adventure source: `clock1` (cave closure timer), `foobar` (fee-fie-foe-foo counter). Functions: `lcgRandom()` exported from dwarves.ts for deterministic RNG.
+- **BACK Command:** Blocked in NOBACK-flagged locations via `isNoBack()` check from dwarves.ts.
+- **Plover Transport (Special 2):** Drops emerald at current location if carried (prevents emerald smuggling via magic word). Other items unaffected.
+- **Wave Rod:** Works at both eastbank and westbank fissure scenes (not just one side).
 
 ## External Dependencies
 
