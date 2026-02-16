@@ -13,7 +13,7 @@ import {
 
 export interface ParsedCommand {
   raw: string;
-  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "unknown";
+  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "unknown";
   verb?: string;
   itemPhrase?: string;
   targetPhrase?: string;
@@ -45,9 +45,11 @@ export function parseInput(raw: string): ParsedCommand {
   if (tryMeta(cleaned, tokens, base)) return base;
   if (tryBack(cleaned, base)) return base;
   if (tryMagicWord(cleaned, tokens, base)) return base;
+  if (tryNewVerbs(cleaned, tokens, base)) return base;
   if (tryStructuredUse(cleaned, base)) return base;
   if (tryMovement(cleaned, tokens, base)) return base;
   if (tryTake(cleaned, base)) return base;
+  if (tryDrop(cleaned, base)) return base;
   if (trySimpleUse(cleaned, base)) return base;
   if (trySingleToken(tokens, base)) return base;
 
@@ -270,6 +272,115 @@ function trySimpleUse(text: string, out: ParsedCommand): boolean {
       return true;
     }
   }
+  return false;
+}
+
+function tryDrop(text: string, out: ParsedCommand): boolean {
+  const dropPattern = /^(drop|put down|discard|release|dump|leave|set down)\s+(.+)$/;
+  const m = text.match(dropPattern);
+  if (m) {
+    const itemRaw = stripArticles(m[2]);
+    if (itemRaw) {
+      out.intent = "drop";
+      out.verb = "drop";
+      out.itemPhrase = itemRaw;
+      out.itemToken = resolveItemId(itemRaw) || undefined;
+      return true;
+    }
+  }
+  return false;
+}
+
+function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolean {
+  if (text === "score" || text === "what is my score" || text === "show score") {
+    out.intent = "score";
+    return true;
+  }
+  if (text === "brief") {
+    out.intent = "brief";
+    return true;
+  }
+  if (text === "wait" || text === "z" || text === "nothing" || text === "do nothing") {
+    out.intent = "wait";
+    return true;
+  }
+
+  const attackPattern = /^(attack|kill|fight|hit|strike|slay)\s*(.*)$/;
+  const am = text.match(attackPattern);
+  if (am) {
+    out.intent = "attack";
+    out.verb = "attack";
+    const target = stripArticles(am[2] || "");
+    if (target) {
+      out.targetPhrase = target;
+      out.targetToken = resolveItemId(target) || undefined;
+    }
+    return true;
+  }
+
+  const throwPattern = /^(throw|toss)\s+(.+?)(?:\s+(at|to|toward|towards|across)\s+(.+))?$/;
+  const tm = text.match(throwPattern);
+  if (tm) {
+    const itemRaw = stripArticles(tm[2]);
+    out.intent = "throw";
+    out.verb = "throw";
+    out.itemPhrase = itemRaw;
+    out.itemToken = resolveItemId(itemRaw) || undefined;
+    if (tm[4]) {
+      const targetRaw = stripArticles(tm[4]);
+      out.targetPhrase = targetRaw;
+      out.targetToken = resolveItemId(targetRaw) || undefined;
+    }
+    return true;
+  }
+
+  const feedPattern = /^feed\s+(.+?)(?:\s+to\s+(.+))?$/;
+  const fm = text.match(feedPattern);
+  if (fm) {
+    out.intent = "feed";
+    out.verb = "feed";
+    out.itemPhrase = stripArticles(fm[1]);
+    out.itemToken = resolveItemId(fm[1]) || undefined;
+    if (fm[2]) {
+      out.targetPhrase = stripArticles(fm[2]);
+      out.targetToken = resolveItemId(fm[2]) || undefined;
+    }
+    return true;
+  }
+
+  const wavePattern = /^(wave|shake|swing)\s+(.+)$/;
+  const wm = text.match(wavePattern);
+  if (wm) {
+    out.intent = "wave";
+    out.verb = "wave";
+    out.itemPhrase = stripArticles(wm[2]);
+    out.itemToken = resolveItemId(wm[2]) || undefined;
+    return true;
+  }
+
+  if (tokens.length === 1) {
+    const t = tokens[0];
+    if (t === "attack" || t === "kill" || t === "fight") {
+      out.intent = "attack";
+      out.verb = "attack";
+      return true;
+    }
+    if (t === "drop" || t === "discard" || t === "dump") {
+      out.intent = "drop";
+      out.verb = "drop";
+      return true;
+    }
+    if (t === "throw" || t === "toss") {
+      out.intent = "throw";
+      out.verb = "throw";
+      return true;
+    }
+    if (t === "score") {
+      out.intent = "score";
+      return true;
+    }
+  }
+
   return false;
 }
 

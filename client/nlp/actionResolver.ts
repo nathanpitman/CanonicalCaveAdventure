@@ -12,6 +12,7 @@ export type Resolution =
   | { type: "action"; action: Action; correction?: string }
   | { type: "useItem"; itemId: string; correction?: string }
   | { type: "takeItem"; itemId: string; actionId: string; correction?: string }
+  | { type: "dropItem"; itemId: string; correction?: string }
   | { type: "move"; toSceneId: string; correction?: string }
   | { type: "direction"; direction: string; correction?: string }
   | { type: "message"; text: string }
@@ -22,6 +23,13 @@ export type Resolution =
   | { type: "new" }
   | { type: "lamp_on" }
   | { type: "lamp_off" }
+  | { type: "score" }
+  | { type: "brief" }
+  | { type: "wait" }
+  | { type: "attack"; targetPhrase?: string }
+  | { type: "throw"; itemId?: string; targetPhrase?: string; correction?: string }
+  | { type: "feed"; itemPhrase?: string; targetPhrase?: string }
+  | { type: "wave"; itemId?: string; correction?: string }
   | { type: "fallback" };
 
 export interface ResolverContext {
@@ -29,6 +37,8 @@ export interface ResolverContext {
   inventory: string[];
   items: Record<string, Item>;
   scenes: Record<string, Scene>;
+  objectLocations?: Record<string, string>;
+  currentScene?: string;
 }
 
 function buildInventoryCandidates(ctx: ResolverContext): FuzzyCandidate[] {
@@ -157,7 +167,33 @@ export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution
       return resolveTake(parsed, ctx);
 
     case "drop":
-      return { type: "message", text: "You can't drop items in this adventure." };
+      return resolveDrop(parsed, ctx);
+
+    case "score":
+      return { type: "score" };
+
+    case "brief":
+      return { type: "brief" };
+
+    case "wait":
+      return { type: "wait" };
+
+    case "attack":
+      return { type: "attack", targetPhrase: parsed.targetPhrase };
+
+    case "throw":
+      return resolveThrow(parsed, ctx);
+
+    case "feed":
+      return { type: "feed", itemPhrase: parsed.itemPhrase, targetPhrase: parsed.targetPhrase };
+
+    case "wave":
+      return resolveWave(parsed, ctx);
+
+    case "fill":
+    case "pour":
+    case "break":
+      return { type: "message", text: "Nothing happens." };
 
     case "unknown":
       return { type: "fallback" };
@@ -346,6 +382,15 @@ function resolveTake(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
       name: items[a.addsItem!]?.name,
     }));
 
+  if (ctx.objectLocations && ctx.currentScene) {
+    const seen = new Set(takeCandidates.map(c => c.id));
+    for (const [objId, loc] of Object.entries(ctx.objectLocations)) {
+      if (loc === ctx.currentScene && !ctx.inventory.includes(objId) && !seen.has(objId)) {
+        takeCandidates.push({ id: objId, name: items[objId]?.name });
+      }
+    }
+  }
+
   if (takeCandidates.length === 0) {
     return { type: "message", text: "You don't see that here." };
   }
@@ -354,11 +399,16 @@ function resolveTake(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
 
   if ((fuzzy.confidence === "exact" || fuzzy.confidence === "corrected") && fuzzy.matchId) {
     const matchedAction = availableActions.find(a => a.addsItem === fuzzy.matchId);
+    const note = fuzzy.confidence === "corrected" && fuzzy.correctedFrom
+      ? correctionNote(fuzzy.correctedFrom, fuzzy.suggestion || fuzzy.matchId)
+      : undefined;
+
     if (matchedAction && matchedAction.addsItem) {
-      const note = fuzzy.confidence === "corrected" && fuzzy.correctedFrom
-        ? correctionNote(fuzzy.correctedFrom, fuzzy.suggestion || fuzzy.matchId)
-        : undefined;
       return { type: "takeItem", itemId: matchedAction.addsItem, actionId: matchedAction.id, correction: note };
+    }
+
+    if (fuzzy.matchId && items[fuzzy.matchId]) {
+      return { type: "takeItem", itemId: fuzzy.matchId, actionId: `take_${fuzzy.matchId}`, correction: note };
     }
   }
 
@@ -367,4 +417,65 @@ function resolveTake(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
   }
 
   return { type: "message", text: "You don't see that here." };
+}
+
+function resolveDrop(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
+  const itemPhrase = parsed.itemPhrase || parsed.itemToken;
+
+  if (!itemPhrase) {
+    return { type: "message", text: "Drop what?" };
+  }
+
+  const inventoryCandidates = buildInventoryCandidates(ctx);
+
+  if (inventoryCandidates.length === 0) {
+    return { type: "message", text: "You aren't carrying anything." };
+  }
+
+  const itemResult = applyFuzzyItem(itemPhrase, inventoryCandidates, "You aren't carrying it!");
+
+  if ("message" in itemResult) {
+    return { type: "message", text: itemResult.message };
+  }
+
+  return { type: "dropItem", itemId: itemResult.itemId, correction: itemResult.correction };
+}
+
+function resolveThrow(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
+  const itemPhrase = parsed.itemPhrase || parsed.itemToken;
+
+  if (!itemPhrase) {
+    return { type: "message", text: "Throw what?" };
+  }
+
+  const inventoryCandidates = buildInventoryCandidates(ctx);
+  const itemResult = applyFuzzyItem(itemPhrase, inventoryCandidates, "You aren't carrying it!");
+
+  if ("message" in itemResult) {
+    return { type: "message", text: itemResult.message };
+  }
+
+  return {
+    type: "throw",
+    itemId: itemResult.itemId,
+    targetPhrase: parsed.targetPhrase,
+    correction: itemResult.correction,
+  };
+}
+
+function resolveWave(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
+  const itemPhrase = parsed.itemPhrase || parsed.itemToken;
+
+  if (!itemPhrase) {
+    return { type: "message", text: "Wave what?" };
+  }
+
+  const inventoryCandidates = buildInventoryCandidates(ctx);
+  const itemResult = applyFuzzyItem(itemPhrase, inventoryCandidates, "You aren't carrying it!");
+
+  if ("message" in itemResult) {
+    return { type: "message", text: itemResult.message };
+  }
+
+  return { type: "wave", itemId: itemResult.itemId, correction: itemResult.correction };
 }

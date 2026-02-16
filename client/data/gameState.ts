@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { START_SCENE_ID } from "./story";
 import { INITIAL_LAMP_LIMIT } from "./canonConstants";
+import { buildInitialObjectLocations } from "./canonObjects";
 
 export interface Message {
   id: string;
@@ -21,6 +22,8 @@ export interface GameState {
   previousSceneId: string | null;
   visitHistory: string[];
   inventory: string[];
+  objectLocations: Record<string, string>;
+  objectStates: Record<string, number>;
   flags: Record<string, boolean>;
   stats: {
     turns: number;
@@ -44,6 +47,8 @@ export interface GameState {
   };
   thresholdsTriggered: number[];
   pendingPrompt: PendingPrompt | null;
+  visitCounts: Record<string, number>;
+  briefMode: boolean;
 }
 
 export interface SaveData {
@@ -59,6 +64,8 @@ export const initialGameState: GameState = {
   previousSceneId: null,
   visitHistory: [START_SCENE_ID],
   inventory: [],
+  objectLocations: buildInitialObjectLocations(),
+  objectStates: {},
   flags: {
     grateOpen: false,
   },
@@ -84,6 +91,8 @@ export const initialGameState: GameState = {
   },
   thresholdsTriggered: [],
   pendingPrompt: null,
+  visitCounts: { [START_SCENE_ID]: 1 },
+  briefMode: false,
 };
 
 export async function saveGame(

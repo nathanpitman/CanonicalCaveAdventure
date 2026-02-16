@@ -2,250 +2,52 @@
 
 ## Overview
 
-Canonical is a mobile-first text adventure game implementing Colossal Cave Adventure (Open Adventure). Players start at the brick building on the surface and explore the cave network, managing their lamp light and collecting treasures.
+Canonical is a mobile-first text adventure game that implements the classic Colossal Cave Adventure (Open Adventure). The project's vision is to deliver a faithful and engaging mobile adaptation of this seminal text adventure, allowing players to explore a vast cave network, manage resources like lamp light, and collect treasures. It aims to provide a rich, narrative-driven experience with natural language interaction, leveraging modern mobile technologies for broad accessibility.
 
-## Tech Stack
+## User Preferences
 
-- **Frontend**: React Native with Expo
-- **Backend**: Express.js (serves the landing page and API)
-- **Storage**: AsyncStorage for local game saves
-- **State Management**: React hooks with custom useGame hook
+I want the agent to use a clear, concise communication style.
+I prefer an iterative development approach, with frequent small updates.
+Please ask for confirmation before making any significant architectural changes or adding new external dependencies.
+Ensure that the core game logic and narrative content remain faithful to the original Colossal Cave Adventure.
+Do not make changes to the `public/` folder unless explicitly instructed.
+Do not make changes to the `tools/injectPwaMeta.js` file.
 
-## Project Structure
+## System Architecture
 
-```
-client/
-├── components/       # Reusable UI components
-│   ├── ActionButton.tsx      # Quick action buttons
-│   ├── CommandInput.tsx      # Slide-up command panel with Help/Restart
-│   ├── GameHeader.tsx        # Header: left-aligned title + right-aligned torch indicator
-│   ├── ProgressChaptersBar.tsx # YouTube-chapters-style segmented progress bar
-│   ├── GameOverModal.tsx     # Win/lose screen
-│   ├── HelpModal.tsx         # Help/commands reference
-│   ├── TorchIndicator.tsx   # Torch icon + absolute remaining turns display
-│   ├── TorchIcon.tsx        # Inline SVG torch silhouette (lit/unlit states)
-│   ├── MessageBubble.tsx     # Narrative text bubbles
-│   └── ...
-├── data/
-│   ├── story.ts              # All scenes, items, and game content
-│   ├── gameState.ts          # Game state types and AsyncStorage
-│   ├── canonConstants.ts     # INITIAL_LAMP_LIMIT, WARN_TIME, BATTERY_LIFE_BONUS
-│   ├── progressMilestones.ts # 14 milestone definitions + trigger mappings
-│   └── lexicon.ts            # Vocabulary maps only (synonyms, directions, prepositions)
-├── nlp/
-│   ├── commandParser.ts      # parseInput(): raw string -> ParsedCommand struct
-│   └── actionResolver.ts     # resolve(): ParsedCommand + context -> Resolution
-├── hooks/
-│   └── useGame.ts            # Main game logic hook (uses NLP layer)
-├── screens/
-│   ├── GameScreen.tsx        # Main game screen
-│   └── InventoryModal.tsx    # Inventory view
-├── navigation/
-│   └── RootStackNavigator.tsx
-└── constants/
-    └── theme.ts              # Dark/light theme colors
+**UI/UX Decisions:**
+- **Mobile-First Design:** Optimized for small screens with a clean, chat-like narrative feed.
+- **Adaptive Theming:** Supports automatic system dark/light mode, dynamically updating UI elements and `theme-color` meta tags.
+  - Dark Mode: Cave aesthetic with #FF9500 accent, #0A0A0A background, #1A1612 surface.
+  - Light Mode: Warm parchment with #D97E00 accent, #F5F0E8 background, #FFFFFF surface.
+- **Interactive Elements:** Features quick action buttons, a slide-up command panel with Help/Restart, and a YouTube-chapters-style segmented progress bar for milestones.
+- **Narrative Presentation:** Story unfolds through styled message bubbles, enhancing the immersive text adventure experience.
 
-server/
-├── index.ts          # Express server
-├── routes.ts         # API routes
-└── storage.ts        # Storage utilities
-```
+**Technical Implementations & Design Patterns:**
+- **Frontend Framework:** React Native with Expo for cross-platform mobile and web deployment.
+- **Backend (Development Only):** Express.js for serving the landing page and API during development. The final web deployment is static.
+- **State Management:** Utilizes React hooks with a custom `useGame` hook to encapsulate core game logic and state.
+- **Natural Language Processing (NLP):** A dedicated NLP layer (`commandParser.ts`, `actionResolver.ts`) handles user input, transforming raw strings into game actions, supporting complex phrases and typo tolerance (Damerau-Levenshtein distance).
+- **Game Content Management:** All scenes, items, and game content are structured in `data/story.ts`, imported from a canonical adventure YAML file.
+- **Persistent State:** Game progress is automatically saved locally using AsyncStorage after every state change.
+- **Modular Component Design:** UI elements are broken down into reusable components (e.g., `ActionButton`, `MessageBubble`, `TorchIndicator`).
+- **PWA Support:** Configured for Progressive Web App (PWA) capabilities, including manifest, icons, and Apple meta tags for "Add to Home Screen" on iOS.
 
-## Game Features
+**Feature Specifications:**
+- **Core Gameplay Loop:** Players explore 180+ scenes, managing a turn-based lamp system (330 turns, extendable with batteries), collecting treasures, and interacting with the environment through commands.
+- **Dynamic Environment:** Room descriptions update based on taken items, and the lamp indicator dynamically appears and explains the fuel system.
+- **Canonical Game Mechanics:** Implements Open Adventure's full travel system, including verb tokens, conditional travel (`requiresFlag`), default travel (`go_default`), speak actions for blocked paths, magic words (xyzzy/plugh), and the grate puzzle.
+- **Inventory System:** Supports picking up, dropping, and using items, with a carry limit and special item behaviors (e.g., vase fragility).
+- **Death & Reincarnation:** Features a canonical obituary system with limited reincarnations before permanent game over.
+- **Hint System:** Includes a canonical hint system with gating rules and score penalties for usage.
+- **Score Tracking:** Calculates score based on treasure deposited, survival, and exploration, with a 10-tier rating system.
+- **Command Set:** Supports a wide range of commands such as `look`, `inventory`, `take`, `use`, `go`, `go back`, `drop`, `score`, `brief`, `wait`, `attack`, `throw`, `feed`, `wave`.
 
-- **Chat-like narrative feed**: Story unfolds through styled message bubbles
-- **Quick action buttons**: Contextual actions for each scene
-- **Natural language commands**: Type phrases like "pick up the lamp", "head east", "what do i have"
-- **Canon lamp system**: Turn-based lamp life (330 turns); find batteries to extend
-- **Autosave**: Game automatically saves after every state change
-- **Dynamic descriptions**: Room descriptions update when items are taken
-- **Go back command**: Return to previous room with "go back" or "back"
-- **180+ explorable scenes**: Includes classic Colossal Cave Adventure content imported from Open Adventure
+## External Dependencies
 
-## Commands
-
-- `look` - Examine surroundings
-- `inventory` / `inv` / `what do i have` - Check items
-- `take <item>` / `pick up <item>` / `grab <item>` - Pick up an item
-- `use <item>` - Use an item
-- `go <direction>` / `head <direction>` - Move (north/south/east/west/up/down/in/out/ne/nw/se/sw)
-- `go back` / `back` / `return` - Return to previous room
-- `help` - Show all commands
-
-## Design
-
-- **Theme**: Automatic system dark/light mode (follows OS prefers-color-scheme)
-- **Dark mode**: Cave aesthetic — #FF9500 amber accent, #0A0A0A background, #1A1612 surface
-- **Light mode**: Warm parchment — #D97E00 amber accent, #F5F0E8 background, #FFFFFF surface
-- **Theme switching**: Live — updates immediately when OS theme changes
-- **Safari integration**: theme-color meta tag updates dynamically per theme, color-scheme set on root
-
-## Running the App
-
-- Frontend runs on port 8081 (Expo dev server)
-- Backend runs on port 5000 (Express, development only)
-- Test in browser or scan QR code with Expo Go
-
-## Static Web Deployment (GitHub Pages)
-
-The game runs entirely client-side and can be hosted as a static site:
-- Build: `npx expo export --platform web` (outputs to `dist/`)
-- Base path: `/CanonicalCaveAdventure` (set in `experiments.baseUrl`)
-- Deployed via GitHub Actions workflow (`.github/workflows/deploy.yml`)
-- SPA fallback: 404.html copies index.html for client-side routing
-- No server dependency at runtime — all game content is bundled in the client
-
-## Canonical Travel Mechanics
-
-The game implements Open Adventure's full travel system:
-
-- **Verb tokens**: Single-word commands like "enter", "depression", "xyzzy" work as movement verbs
-- **Conditional travel**: Actions with `requiresFlag` only appear when game flags are set (e.g., grateOpen)
-- **Default travel**: Scenes with `go_default` auto-continue for unrecognized commands (e.g., foof1→debris)
-- **Speak actions**: Message-only events for blocked paths (e.g., locked grate message)
-- **Magic words**: xyzzy/plugh only work inside the building (canonical behavior)
-- **Grate puzzle**: Use keys at grate to unlock, then "enter" to pass through
-
-## UI Layer Separation
-
-The game separates canon action availability from UI suggestions:
-
-- **getAvailableActions()**: All canonical actions for typed commands
-- **getShortcutActions()**: Filtered actions for UI pills only
-  - Compass directions always shown
-  - Magic words only shown if mentioned in scene text
-  - TAKE pills only shown for items present and not taken
-  - Speak/message actions hidden from pills (uiHint: "hidden")
-
-## PWA / Home Screen Support
-
-- Icons generated at 192x192, 512x512 (manifest), 180x180 (apple-touch-icon), 32x32 (favicon) in `public/`
-- `public/manifest.json` defines PWA metadata with GitHub Pages base path
-- `tools/injectPwaMeta.js` post-export script injects Apple meta tags into dist/index.html
-- Deploy workflow runs inject script before SPA fallback copy
-- All icon/manifest paths use `/CanonicalCaveAdventure/` base path for GitHub Pages
-
-## Recent Changes
-
-- Refactored command parsing into dedicated NLP layer
-  - client/data/lexicon.ts simplified to vocabulary maps only (no parsing logic)
-  - client/nlp/commandParser.ts: parseInput() tokenizes and classifies raw input into ParsedCommand
-  - client/nlp/actionResolver.ts: resolve() maps ParsedCommand + game context to Resolution
-  - useGame.ts updated to use parseInput() + resolve() pipeline
-  - Supports: "use keys to unlock grate", "unlock grate with keys", "enter building", "go to building"
-  - Fallback to old single-token and default-travel logic for unresolved commands
-  - All existing commands preserved (additive only, no regressions)
-- Implemented canonical hint system with 10 gating rules
-  - Per-location hint eligibility via scene.hints[] (55 locations mapped)
-  - Turn-counting per hint number; two-stage prompt (question -> answer)
-  - 10 hard-coded gating rules in isHintEligible() (grate, bird, snake, maze, etc.)
-  - Score penalty applied when hint is accepted
-  - PendingPromptModal component for yes/no prompts
-- Implemented canonical obituary/death/reincarnation system
-  - 3 obituary entries from YAML with query/yesResponse text
-  - Death triggers obituary prompt instead of immediate game over
-  - Reincarnation: drops inventory, respawns at building, increments numdie
-  - Maximum 3 deaths before permanent game over
-  - triggerDeath() replaces direct setGameOver("died") for lamp death
-- Implemented turn thresholds with score deductions
-  - 4 thresholds from YAML (350, 500, 1000, 2500 turns)
-  - Warning message displayed and score deducted once per threshold
-  - Tracked in thresholdsTriggered[] to prevent re-triggering
-- Added score tracking to game state (stats.score)
-- GameState extended with hintState, deathState, thresholdsTriggered, pendingPrompt
-- Save migration handles all new state fields gracefully
-- Aligned YAML importer with canonical adventure.yaml structure
-  - Scene descriptions now use structured format: { long, short, maptag? } matching YAML
-  - Removed redundant descriptionWithoutItems field from types and output
-  - Added sound, conditions fields to Scene type (preserved from YAML)
-  - Added HintEntry type and HINTS export with all 10 canonical hints
-  - Improved text normalisation: handles \r\n, multi-newline paragraphs, collapses spaces
-  - All consumers (useGame.ts) updated to use description.long
-  - generatedStory.ts regenerated with full schema alignment
-- Added YouTube-chapters-style progress bar to header
-  - 14-segment thin bar at top of title bar showing milestone progress
-  - Milestones tracked monotonically in game state (never decrease)
-  - Persisted via AsyncStorage alongside game saves
-  - Pulse animation on newly completed segments
-  - Milestones triggered by scene visits, item pickups, flag changes
-  - ProgressChaptersBar component with accessibility support
-  - progressMilestones.ts defines milestone IDs and trigger mappings
-- Removed minimap feature entirely
-  - Deleted Minimap, MinimapDropdown, MinimapDrawer components
-  - Header is now a non-interactive location title indicator
-  - No landscape sidebar or portrait dropdown
-  - visitHistory still tracked in game state for potential future use
-- Added automatic system dark/light mode
-  - Follows OS prefers-color-scheme, updates live
-  - Dynamic theme-color meta tag per theme
-  - color-scheme set on document root for keyboard appearance
-- Added PWA support for iOS Add to Home Screen
-  - manifest.json with proper icons, start_url, standalone display
-  - Apple-touch-icon and iOS web app meta tags
-  - Post-export injection script for HTML head tags
-  - Updated GitHub Actions workflow to run injection
-- Implemented strict Damerau-Levenshtein typo tolerance system
-  - editDistanceAtMost2() with transpose support, early exit at >2
-  - Distance 1 + len>=4 + unique: auto-correct and execute with "(interpreting 'X' as 'Y')" note
-  - Distance 1 + len<4: "Did you mean '...'?" suggestion only
-  - Distance 2 + unique: "Did you mean '...'?" suggestion only
-  - Ambiguous ties: no suggestion, show normal failure
-  - All matching restricted to scene-valid candidates only (inventory/actions/directions)
-  - No hardcoded synonyms; singular/plural handled via expandForms() (key↔keys, lamp↔lamps)
-  - FuzzyResult confidence levels: exact, corrected, suggestion, none
-- Upgraded command parser for forgiving natural language item interactions
-  - Structured item/target/verb parsing in lexicon.ts (tryStructuredParse)
-  - Supports "use X to Y Z", "Y Z with X", "use X on Z" patterns
-  - Generalized routing in useGame.ts: inventory check -> useEffect -> action match
-  - Works for ALL items generically, not hardcoded to specific items
-- Added canon compatibility documentation (CANON_COMPATIBILITY.md)
-- Enhanced natural language parser with magic word phrases
-  - "say xyzzy", "cast plugh", "speak xyzzy" patterns supported
-- Added uiHint field to Action schema for shortcut control
-- Improved getShortcutActions filtering
-  - Hides speak/message-only actions from pills
-  - Filters TAKE pills for present items only
-- Implemented canonical Open Adventure travel mechanics
-  - Verb tokens for single-word movement commands
-  - Conditional travel with requiresFlag filtering
-  - Default travel for auto-continuation scenes
-  - Speak actions for blocked paths
-  - Magic words xyzzy/plugh inside building only
-  - Grate puzzle with grateOpen flag
-- Reverted to canonical Open Adventure start
-  - Player starts at the brick building on the surface ("start" scene)
-  - Removed custom ASCENT mode patches (chasm_base, rescue gate, etc.)
-  - Win condition based on story actions with "escaped" flag only
-  - Renamed from "Ascent" to "Descent" to "Canonical" across all UI
-- Imported Open Adventure (Colossal Cave) content
-  - 184 scenes and 28 items from adventure.yaml
-  - Created import script at tools/importOpenAdventure.ts
-  - Extended movement system for 12+ directions
-- Header shows "Canonical / scene title" as non-interactive location indicator
-  - Lamp indicator only appears after picking up lamp
-  - Lamp indicator has info popover explaining fuel system
-- Action pills in command panel
-  - Hidden in collapsed state, fade in when expanded
-  - Press state shows reversed/inverted colors
-  - Gradient fade on right edge when scrolling
-- Transformed command input into slide-up panel
-  - Drag up to reveal Help and Restart Story options
-- Added "go back" command to return to previous room
-- Implemented autosave (replaces manual save/load)
-- Added natural language command parsing
-- Dynamic room descriptions that update when items are taken
-- Initial MVP implementation with all 6 scenes
-- Lamp fuel indicator with pulse animation when low
-- Game over screen for escape success
-- Implemented canonical lamp/darkness system with full Open Adventure parity
-  - 144 DEEP locations suppress descriptions when lamp is off (PITCH_DARK message)
-  - 37 LIT locations always visible regardless of lamp state
-  - Lamp on/off toggle with 15+ command variations (lamp/lantern/torch on/off, light/extinguish, etc.)
-  - Movement-in-darkness death: 35% pit chance in dark locations (handleMove and handleGoBack)
-  - Multi-stage canonical battery warnings (LAMP_DIM, GET_BATTERIES, REPLACE_BATTERIES, MISSING_BATTERIES, LAMP_OUT)
-  - All 8 lamp messages extracted verbatim from adventure.yaml
-  - Auto battery replacement when lamp dims with batteries in inventory
-  - Battery drains only when lamp is ON (per turn-consuming actions)
-  - TorchIndicator shows lit/unlit torch icon + absolute remaining turns
-  - Persistent tooltip (no bounce), dismiss on click-outside/Escape
-  - isCurrentlyDark() exported from useGame hook for UI consumers
+- **React Native:** Frontend framework.
+- **Expo:** Development platform and build tool for React Native.
+- **Express.js:** Web application framework for the development backend.
+- **AsyncStorage:** Local persistent storage for game saves on the client.
+- **GitHub Pages:** Static site hosting for the client-side game, deployed via GitHub Actions.
+- **Open Adventure (Colossal Cave Adventure) Content:** The game's narrative, scenes, and items are imported from the canonical `adventure.yaml` structure.

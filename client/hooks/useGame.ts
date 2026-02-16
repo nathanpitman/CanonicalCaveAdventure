@@ -34,6 +34,14 @@ import {
   MAZE_SCENE_IDS,
   MilestoneId,
 } from "@/data/progressMilestones";
+import {
+  INVLIMIT,
+  TREASURE_IDS,
+  TREASURE_DEPOSIT_LOCATION,
+  IMMOVABLE_OBJECTS,
+  calculateScore,
+  getScoreClass,
+} from "@/data/canonObjects";
 
 export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -171,8 +179,18 @@ export function useGame() {
     return isLocationDark(gameState.sceneId) && !gameState.lamp.lit;
   }, [gameState.sceneId, gameState.lamp.lit, isLocationDark]);
 
+  const getObjectsAtLocation = useCallback((sceneId: string): string[] => {
+    const result: string[] = [];
+    for (const [objId, loc] of Object.entries(gameState.objectLocations)) {
+      if (loc === sceneId && !gameState.inventory.includes(objId)) {
+        result.push(objId);
+      }
+    }
+    return result;
+  }, [gameState.objectLocations, gameState.inventory]);
+
   const getSceneDescription = useCallback(
-    (sceneId: string) => {
+    (sceneId: string, forceLong?: boolean) => {
       const scene = SCENES[sceneId];
       if (!scene) return "";
 
@@ -180,24 +198,25 @@ export function useGame() {
         return LAMP_MESSAGES.PITCH_DARK;
       }
 
-      if (!scene.itemDescriptions || !scene.items) {
-        return scene.description.long;
+      const visitCount = gameState.visitCounts[sceneId] || 0;
+      const useLong = forceLong || visitCount <= 1 || !gameState.briefMode;
+      const baseDesc = (useLong || !scene.description.short)
+        ? scene.description.long
+        : scene.description.short;
+
+      const objectsHere = getObjectsAtLocation(sceneId);
+      const itemDescs: string[] = [];
+      for (const objId of objectsHere) {
+        const desc = scene.itemDescriptions?.[objId];
+        if (desc) {
+          itemDescs.push(desc);
+        } else {
+          const item = ITEMS[objId];
+          if (item) {
+            itemDescs.push(item.description);
+          }
+        }
       }
-
-      const takenItems = gameState.inventory;
-      const remainingItems = scene.items.filter(
-        (itemId) => !takenItems.includes(itemId)
-      );
-
-      const baseDesc = scene.description.long;
-
-      if (remainingItems.length === 0) {
-        return baseDesc;
-      }
-
-      const itemDescs = remainingItems
-        .map((itemId) => scene.itemDescriptions?.[itemId])
-        .filter(Boolean);
 
       if (itemDescs.length > 0) {
         return baseDesc + "\n\n" + itemDescs.join("\n");
@@ -205,7 +224,7 @@ export function useGame() {
 
       return baseDesc;
     },
-    [gameState.inventory, gameState.lamp.lit, isLocationDark]
+    [gameState.inventory, gameState.lamp.lit, gameState.visitCounts, gameState.briefMode, gameState.objectLocations, isLocationDark, getObjectsAtLocation]
   );
 
   const getAvailableActions = useCallback((): Action[] => {
@@ -568,12 +587,19 @@ export function useGame() {
         }
       }
 
-      setGameState((prev) => ({
-        ...prev,
-        previousSceneId: prev.sceneId,
-        sceneId: toSceneId,
-        visitHistory: [...(prev.visitHistory || [prev.sceneId]), toSceneId],
-      }));
+      setGameState((prev) => {
+        const newVisitCount = (prev.visitCounts[toSceneId] || 0) + 1;
+        return {
+          ...prev,
+          previousSceneId: prev.sceneId,
+          sceneId: toSceneId,
+          visitHistory: [...(prev.visitHistory || [prev.sceneId]), toSceneId],
+          visitCounts: {
+            ...prev.visitCounts,
+            [toSceneId]: newVisitCount,
+          },
+        };
+      });
 
       decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
@@ -626,10 +652,24 @@ export function useGame() {
       const item = ITEMS[itemId];
       if (!item) return;
 
+      if (gameState.inventory.length >= INVLIMIT) {
+        addMessage("system", "You're carrying too many things already.");
+        return;
+      }
+
+      if (IMMOVABLE_OBJECTS.has(itemId)) {
+        addMessage("system", "You can't take that.");
+        return;
+      }
+
       setGameState((prev) => {
-        const newState = {
+        const newObjectLocations = { ...prev.objectLocations };
+        delete newObjectLocations[itemId];
+
+        const newState: GameState = {
           ...prev,
           inventory: [...prev.inventory, itemId],
+          objectLocations: newObjectLocations,
           removedActions: {
             ...prev.removedActions,
             [prev.sceneId]: [...(prev.removedActions[prev.sceneId] || []), actionId],
@@ -654,7 +694,61 @@ export function useGame() {
       }
       hapticFeedback("medium");
     },
-    [addMessage, decreaseLampLife, hapticFeedback]
+    [gameState.inventory.length, addMessage, decreaseLampLife, hapticFeedback]
+  );
+
+  const handleDropItem = useCallback(
+    (itemId: string) => {
+      const item = ITEMS[itemId];
+      if (!item) {
+        addMessage("system", "You aren't carrying it!");
+        return;
+      }
+
+      if (!gameState.inventory.includes(itemId)) {
+        addMessage("system", "You aren't carrying it!");
+        return;
+      }
+
+      const currentScene = gameState.sceneId;
+      const isTreasure = TREASURE_IDS.includes(itemId);
+      const atBuilding = currentScene === TREASURE_DEPOSIT_LOCATION;
+
+      if (itemId === "vase" && currentScene !== "softroom") {
+        const hasPillow = gameState.objectLocations["pillow"] === currentScene || gameState.inventory.includes("pillow");
+        if (!hasPillow) {
+          addMessage("narration", "The ming vase drops with a delicate crash.");
+          setGameState((prev) => ({
+            ...prev,
+            inventory: prev.inventory.filter((id) => id !== itemId),
+            objectStates: { ...prev.objectStates, vase: 1 },
+          }));
+          decreaseLampLife();
+          hapticFeedback("error");
+          return;
+        }
+      }
+
+      setGameState((prev) => ({
+        ...prev,
+        inventory: prev.inventory.filter((id) => id !== itemId),
+        objectLocations: {
+          ...prev.objectLocations,
+          [itemId]: currentScene,
+        },
+      }));
+
+      if (isTreasure && atBuilding) {
+        addMessage("system", `You drop the ${item.name} in the building. It is now safely stored.`);
+        hapticFeedback("success");
+      } else {
+        addMessage("system", `You drop the ${item.name}.`);
+        hapticFeedback("light");
+      }
+
+      decreaseLampLife();
+    },
+    [gameState.inventory, gameState.sceneId, gameState.objectLocations, addMessage, decreaseLampLife, hapticFeedback]
   );
 
   const handleUseItem = useCallback(
@@ -860,6 +954,8 @@ export function useGame() {
         inventory: gameState.inventory,
         items: ITEMS,
         scenes: SCENES,
+        objectLocations: gameState.objectLocations,
+        currentScene: gameState.sceneId,
       });
 
       if (__DEV__) {
@@ -958,6 +1054,73 @@ export function useGame() {
           checkLampWarning();
           return;
 
+        case "dropItem":
+          if (resolution.correction) addMessage("system", resolution.correction);
+          handleDropItem(resolution.itemId);
+          checkLampWarning();
+          return;
+
+        case "score": {
+          const result = calculateScore(gameState);
+          const cls = getScoreClass(result.score);
+          addMessage("system", `You have scored ${result.score} out of a possible ${result.maxScore}, in ${gameState.stats.turns} turns.\n${cls}`);
+          return;
+        }
+
+        case "brief":
+          setGameState((prev) => ({
+            ...prev,
+            briefMode: !prev.briefMode,
+          }));
+          addMessage("system", gameState.briefMode
+            ? "Descriptions will now be long."
+            : "Descriptions will now be brief.");
+          return;
+
+        case "wait":
+          addMessage("narration", "Time passes...");
+          decreaseLampLife();
+          checkLampWarning();
+          return;
+
+        case "attack":
+          addMessage("system", "There is nothing here to attack.");
+          decreaseLampLife();
+          return;
+
+        case "throw":
+          if (resolution.correction) addMessage("system", resolution.correction);
+          handleDropItem(resolution.itemId);
+          checkLampWarning();
+          return;
+
+        case "feed":
+          addMessage("system", "There is nothing here that wants to be fed.");
+          decreaseLampLife();
+          return;
+
+        case "wave":
+          if (resolution.correction) addMessage("system", resolution.correction);
+          if (resolution.itemId === "rod" && gameState.sceneId === "fissure_w") {
+            if (!gameState.flags.crystalBridge) {
+              addMessage("narration", "A crystal bridge now spans the fissure.");
+              setGameState((prev) => ({
+                ...prev,
+                flags: { ...prev.flags, crystalBridge: true },
+              }));
+            } else {
+              addMessage("narration", "The crystal bridge has vanished!");
+              setGameState((prev) => ({
+                ...prev,
+                flags: { ...prev.flags, crystalBridge: false },
+              }));
+            }
+          } else {
+            addMessage("system", "Nothing happens.");
+          }
+          decreaseLampLife();
+          return;
+
         case "move":
           if (resolution.correction) addMessage("system", resolution.correction);
           handleMove(resolution.toSceneId);
@@ -1024,6 +1187,7 @@ export function useGame() {
       getCurrentScene,
       getAvailableActions,
       handleTakeItem,
+      handleDropItem,
       handleUseItem,
       handleAction,
       handleMove,
@@ -1063,6 +1227,10 @@ export function useGame() {
           deathState: saveData.gameState.deathState || initialGameState.deathState,
           thresholdsTriggered: saveData.gameState.thresholdsTriggered || [],
           pendingPrompt: saveData.gameState.pendingPrompt || null,
+          objectLocations: saveData.gameState.objectLocations || initialGameState.objectLocations,
+          objectStates: saveData.gameState.objectStates || {},
+          visitCounts: saveData.gameState.visitCounts || { [saveData.gameState.sceneId]: 1 },
+          briefMode: saveData.gameState.briefMode ?? false,
         };
         setGameState(migratedState);
         setMessages(saveData.messages);
