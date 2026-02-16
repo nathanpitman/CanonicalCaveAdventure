@@ -120,6 +120,19 @@ export function buildInitialObjectLocations(): Record<string, string> {
   return locations;
 }
 
+export const HINT_PENALTIES: Record<number, number> = {
+  0: 2,
+  1: 2,
+  2: 2,
+  3: 4,
+  4: 5,
+  5: 3,
+  6: 2,
+  7: 2,
+  8: 2,
+  9: 4,
+};
+
 export function calculateScore(state: {
   objectLocations: Record<string, string>;
   inventory: string[];
@@ -129,6 +142,7 @@ export function calculateScore(state: {
   stats: { turns: number };
   thresholdsTriggered: number[];
   milestonesCompleted: string[];
+  dwarfState?: { dflag: number };
 }): { score: number; maxScore: number; breakdown: Record<string, number> } {
   const breakdown: Record<string, number> = {};
   let score = 0;
@@ -149,22 +163,64 @@ export function calculateScore(state: {
   breakdown.treasures = treasurePoints;
   score += treasurePoints;
 
-  const survivalBonus = (state.deathState.maxDeaths - state.deathState.numdie) * 10;
-  breakdown.survival = survivalBonus;
-  score += survivalBonus;
-
-  if (state.flags.reachedDeep) {
+  const dflag = state.dwarfState?.dflag ?? 0;
+  if (dflag > 0 || state.flags.reachedDeep) {
     breakdown.exploration = 25;
     score += 25;
   }
+
+  const survivalBonus = (state.deathState.maxDeaths - state.deathState.numdie) * 10;
+  breakdown.survival = survivalBonus;
+  score += survivalBonus;
 
   if (!state.flags.gameQuit) {
     breakdown.completion = 4;
     score += 4;
   }
 
+  if (state.flags.closingReached) {
+    breakdown.closing = 25;
+    score += 25;
+  }
+
+  if (state.flags.endgameVictory) {
+    breakdown.endgame = 45;
+    score += 45;
+  }
+
+  if (state.objectLocations.magazine === "wittsend") {
+    breakdown.magazine = 1;
+    score += 1;
+  }
+
   breakdown.roundout = 2;
   score += 2;
+
+  let hintDeductions = 0;
+  for (const hintNum of state.hintState.hintsGiven) {
+    hintDeductions += HINT_PENALTIES[hintNum] ?? 0;
+  }
+  if (hintDeductions > 0) {
+    breakdown.hintPenalty = -hintDeductions;
+    score -= hintDeductions;
+  }
+
+  let turnDeductions = 0;
+  const turnThresholds = [
+    { threshold: 350, loss: 2 },
+    { threshold: 500, loss: 3 },
+    { threshold: 1000, loss: 5 },
+    { threshold: 2500, loss: 10 },
+  ];
+  for (const t of turnThresholds) {
+    if (state.stats.turns >= t.threshold) {
+      turnDeductions += t.loss;
+    }
+  }
+  if (turnDeductions > 0) {
+    breakdown.turnPenalty = -turnDeductions;
+    score -= turnDeductions;
+  }
 
   return { score, maxScore: 430, breakdown };
 }

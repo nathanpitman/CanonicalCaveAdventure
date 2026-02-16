@@ -57,6 +57,7 @@ import {
 import {
   processDwarfTurn,
   getKnifeMessage,
+  isDeepCave,
   CHEST_HIDE_LOC,
   MESSAGE_HIDE_LOC,
 } from "@/data/dwarves";
@@ -610,6 +611,67 @@ export function useGame() {
     }
   }, [gameState.stats.turns, gameState.thresholdsTriggered, addMessage]);
 
+  const CLOSURE_CLOCK_KEY = "closureClock1";
+  const CLOSURE_TREASURE_THRESHOLD = 200;
+  const CLOSURE_CLOCK_START = 15;
+
+  const checkCaveClosure = useCallback(() => {
+    if (gameOver) return;
+    if (gameState.flags.closingReached) return;
+
+    let treasureScore = 0;
+    for (const tid of TREASURE_IDS) {
+      const loc = gameState.objectLocations[tid];
+      const inInventory = gameState.inventory.includes(tid);
+      if (loc || inInventory) {
+        treasureScore += 2;
+      }
+    }
+
+    const clockVal = gameState.objectStates[CLOSURE_CLOCK_KEY];
+
+    if (treasureScore < CLOSURE_TREASURE_THRESHOLD) return;
+
+    if (clockVal === undefined) {
+      setGameState((prev) => ({
+        ...prev,
+        objectStates: {
+          ...prev.objectStates,
+          [CLOSURE_CLOCK_KEY]: CLOSURE_CLOCK_START,
+        },
+      }));
+      return;
+    }
+
+    if (!isDeepCave(gameState.sceneId) || gameState.sceneId === "y2") return;
+
+    const newClock = clockVal - 1;
+
+    if (newClock <= 0) {
+      addMessage(
+        "narration",
+        "A sepulchral voice reverberating through the cave says, \"Cave closing soon. All adventurers exit immediately through main office.\""
+      );
+      setGameState((prev) => ({
+        ...prev,
+        flags: { ...prev.flags, closingReached: true },
+        objectStates: {
+          ...prev.objectStates,
+          [CLOSURE_CLOCK_KEY]: -1,
+        },
+      }));
+      hapticFeedback("warning");
+    } else {
+      setGameState((prev) => ({
+        ...prev,
+        objectStates: {
+          ...prev.objectStates,
+          [CLOSURE_CLOCK_KEY]: newClock,
+        },
+      }));
+    }
+  }, [gameState.flags.closingReached, gameState.objectStates, gameState.objectLocations, gameState.inventory, gameState.sceneId, gameOver, addMessage, hapticFeedback]);
+
   const checkLampWarning = useCallback(() => {
     const { lamp, batteryState } = gameState;
     if (!lamp.lit) return;
@@ -729,6 +791,12 @@ export function useGame() {
         return;
       }
 
+      if (gameState.flags.closingReached && newScene.conditions?.ABOVE) {
+        addMessage("narration", "The cave is now closed.");
+        decreaseLampLife();
+        return;
+      }
+
       if (toSceneId === "nechasm" && gameState.sceneId === "swchasm" && !gameState.flags.trollPaid && !gameState.flags.trollGone) {
         addMessage("narration", "The troll refuses to let you cross.");
         decreaseLampLife();
@@ -797,8 +865,9 @@ export function useGame() {
 
       hapticFeedback("light");
       processDwarves();
+      checkCaveClosure();
     },
-    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves, gameState.sceneId, gameState.flags, gameState.inventory]
+    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure, gameState.sceneId, gameState.flags, gameState.inventory]
   );
 
   const handleGoBack = useCallback(() => {
@@ -839,7 +908,8 @@ export function useGame() {
     hapticFeedback("light");
     checkLampWarning();
     processDwarves();
-  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath, processDwarves]);
+    checkCaveClosure();
+  }, [gameState.previousSceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure]);
 
   const handleTakeItem = useCallback(
     (itemId: string, actionId: string) => {
