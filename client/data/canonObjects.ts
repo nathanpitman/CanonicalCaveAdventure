@@ -52,6 +52,8 @@ export const TROLL_LOCATIONS = ["swchasm", "nechasm"];
 export const BEAR_LOCATION = "barrenroom";
 export const PLANT_LOCATION = "westpit";
 export const CLAM_LOCATION = "shellroom";
+export const URN_LOCATION = "cliff";
+export const CAVITY_LOCATION = "cliff";
 
 export const TREASURE_IDS: string[] = [
   "nugget",

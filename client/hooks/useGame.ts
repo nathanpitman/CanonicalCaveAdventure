@@ -25,7 +25,18 @@ import {
 } from "@/data/story";
 import { parseInput } from "@/nlp/commandParser";
 import { resolve } from "@/nlp/actionResolver";
-import { WARN_TIME, BATTERY_LIFE_BONUS } from "@/data/canonConstants";
+import {
+  WARN_TIME,
+  BATTERY_LIFE_BONUS,
+  BOTTLE_WATER,
+  BOTTLE_EMPTY,
+  BOTTLE_OIL,
+  URN_EMPTY,
+  URN_DARK,
+  URN_LIT,
+  CAVITY_FULL,
+  CAVITY_EMPTY,
+} from "@/data/canonConstants";
 import {
   PROGRESS_MILESTONES,
   MILESTONE_SCENE_TRIGGERS,
@@ -39,6 +50,7 @@ import {
   TREASURE_IDS,
   TREASURE_DEPOSIT_LOCATION,
   IMMOVABLE_OBJECTS,
+  URN_LOCATION,
   calculateScore,
   getScoreClass,
 } from "@/data/canonObjects";
@@ -195,6 +207,27 @@ export function useGame() {
     return result;
   }, [gameState.objectLocations, gameState.inventory]);
 
+  const getBottleState = useCallback((): number => {
+    return gameState.objectStates["bottle"] ?? BOTTLE_WATER;
+  }, [gameState.objectStates]);
+
+  const getLiquidAtLocation = useCallback((sceneId: string): "water" | "oil" | null => {
+    const scene = SCENES[sceneId];
+    if (!scene?.conditions?.FLUID) return null;
+    return scene.conditions.OILY ? "oil" : "water";
+  }, []);
+
+  const getBottleLiquid = useCallback((): "water" | "oil" | null => {
+    const state = getBottleState();
+    if (state === BOTTLE_WATER) return "water";
+    if (state === BOTTLE_OIL) return "oil";
+    return null;
+  }, [getBottleState]);
+
+  const hasBottle = useCallback((): boolean => {
+    return gameState.inventory.includes("bottle");
+  }, [gameState.inventory]);
+
   const getSceneDescription = useCallback(
     (sceneId: string, forceLong?: boolean) => {
       const scene = SCENES[sceneId];
@@ -257,6 +290,22 @@ export function useGame() {
           itemDescs.push("There is a 12-foot-tall beanstalk stretching up out of the pit, bellowing \"Water!! Water!!\"");
         } else if (plantState === 2) {
           itemDescs.push("There is a gigantic beanstalk stretching all the way up to the hole.");
+        }
+      }
+      if (sceneId === URN_LOCATION) {
+        const urnState = gameState.objectStates["urn"] ?? URN_EMPTY;
+        if (urnState === URN_EMPTY) {
+          itemDescs.push("There is a large stone-carved urn here, empty.");
+        } else if (urnState === URN_DARK) {
+          itemDescs.push("There is a large stone-carved urn here, full of oil.");
+        } else if (urnState === URN_LIT) {
+          itemDescs.push("There is a large stone-carved urn here, lit with a brilliant flame.");
+        }
+        const cavityState = gameState.objectStates["cavity"] ?? CAVITY_FULL;
+        if (cavityState === CAVITY_FULL && gameState.objectLocations["amber"] === sceneId) {
+          itemDescs.push("There is an amber gemstone resting in a small cavity in the wall!");
+        } else if (cavityState === CAVITY_EMPTY) {
+          itemDescs.push("There is an empty cavity in the wall.");
         }
       }
 
@@ -1090,7 +1139,15 @@ export function useGame() {
             addMessage("system", "Your pockets are empty.");
           } else {
             const items = gameState.inventory
-              .map((id) => ITEMS[id]?.name || id)
+              .map((id) => {
+                if (id === "bottle") {
+                  const bState = gameState.objectStates["bottle"] ?? BOTTLE_WATER;
+                  if (bState === BOTTLE_WATER) return "Small bottle (water)";
+                  if (bState === BOTTLE_OIL) return "Small bottle (oil)";
+                  return "Small bottle (empty)";
+                }
+                return ITEMS[id]?.name || id;
+              })
               .join(", ");
             addMessage("system", `You are carrying: ${items}`);
           }
@@ -1158,15 +1215,91 @@ export function useGame() {
           checkLampWarning();
           return;
 
-        case "useItem":
+        case "useItem": {
           if (resolution.correction) addMessage("system", resolution.correction);
-          handleUseItem(resolution.itemId);
+          const useId = resolution.itemId;
+          if (useId === "urn" && gameState.sceneId === URN_LOCATION) {
+            const urnState = gameState.objectStates["urn"] ?? URN_EMPTY;
+            if (urnState === URN_EMPTY) {
+              addMessage("system", "The urn is empty. There is nothing to light.");
+            } else if (urnState === URN_DARK) {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, urn: URN_LIT },
+                objectLocations: { ...prev.objectLocations, amber: URN_LOCATION },
+              }));
+              addMessage("narration", "The oil in the urn catches fire and burns with a bright flame! In the wall above the urn, a small cavity is revealed, containing an amber gemstone!");
+              hapticFeedback("success");
+            } else {
+              addMessage("system", "The urn is already lit.");
+            }
+            decreaseLampLife();
+            return;
+          }
+          handleUseItem(useId);
           checkLampWarning();
           return;
+        }
 
         case "takeItem": {
           if (resolution.correction) addMessage("system", resolution.correction);
           const takeId = resolution.itemId;
+          if (takeId === "water" || takeId === "oil") {
+            if (!hasBottle()) {
+              addMessage("system", "You have nothing in which to carry it.");
+              decreaseLampLife();
+              return;
+            }
+            if (getBottleState() !== BOTTLE_EMPTY) {
+              addMessage("system", "Your bottle is already full.");
+              decreaseLampLife();
+              return;
+            }
+            const liquidHere = getLiquidAtLocation(gameState.sceneId);
+            if (takeId === "water" && liquidHere === "water") {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_WATER },
+              }));
+              addMessage("system", "Your bottle is now full of water.");
+            } else if (takeId === "oil" && liquidHere === "oil") {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_OIL },
+              }));
+              addMessage("system", "Your bottle is now full of oil.");
+            } else {
+              addMessage("system", `There is no ${takeId} here.`);
+            }
+            decreaseLampLife();
+            return;
+          }
+          if (takeId === "amber") {
+            if (gameState.sceneId === URN_LOCATION) {
+              const cavityState = gameState.objectStates["cavity"] ?? CAVITY_FULL;
+              if (cavityState === CAVITY_FULL && gameState.objectLocations["amber"] === URN_LOCATION) {
+                if (gameState.inventory.length >= INVLIMIT) {
+                  addMessage("system", "You can't carry anything more. You'll have to drop something first.");
+                  decreaseLampLife();
+                  return;
+                }
+                setGameState((prev) => {
+                  const newObjLocs = { ...prev.objectLocations };
+                  delete newObjLocs["amber"];
+                  return {
+                    ...prev,
+                    inventory: [...prev.inventory, "amber"],
+                    objectLocations: newObjLocs,
+                    objectStates: { ...prev.objectStates, cavity: CAVITY_EMPTY },
+                  };
+                });
+                addMessage("system", "You take the amber gemstone from the cavity.");
+                hapticFeedback("medium");
+                decreaseLampLife();
+                return;
+              }
+            }
+          }
           if (takeId === "bird") {
             if (gameState.inventory.includes("rod")) {
               addMessage("narration", "The bird was unafraid when you entered, but as you approach it becomes disturbed and you cannot catch it.");
@@ -1565,13 +1698,24 @@ export function useGame() {
             decreaseLampLife();
             return;
           }
+          if (drinkTarget === "oil" || drinkTarget.includes("oil")) {
+            addMessage("system", "The oil tastes vile. You spit it out.");
+            decreaseLampLife();
+            return;
+          }
           if (drinkTarget === "water" || drinkTarget === "" || drinkTarget.includes("water")) {
-            if (gameState.inventory.includes("bottle") && (gameState.objectStates["bottle"] === undefined || gameState.objectStates["bottle"] === 0)) {
+            if (hasBottle() && getBottleLiquid() === "water") {
               setGameState((prev) => ({
                 ...prev,
-                objectStates: { ...prev.objectStates, bottle: 2 },
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
               }));
               addMessage("system", "You drink the water. The bottle is now empty.");
+              decreaseLampLife();
+              return;
+            }
+            const liquidHere = getLiquidAtLocation(gameState.sceneId);
+            if (liquidHere === "water") {
+              addMessage("system", "You have taken a drink from the stream. The water is cool and refreshing.");
               decreaseLampLife();
               return;
             }
@@ -1646,24 +1790,108 @@ export function useGame() {
 
         case "fill": {
           const fillTarget = resolution.targetPhrase?.toLowerCase() || "";
-          if (fillTarget === "bottle" || fillTarget.includes("bottle") || fillTarget === "") {
-            addMessage("system", "Your bottle is now full of water.");
-            setGameState((prev) => ({
-              ...prev,
-              objectStates: { ...prev.objectStates, bottle: 0 },
-            }));
-          } else {
-            addMessage("system", "You can't fill that.");
+          if (fillTarget === "urn" || fillTarget.includes("urn")) {
+            if (gameState.sceneId !== URN_LOCATION) {
+              addMessage("system", "There is no urn here.");
+              decreaseLampLife();
+              return;
+            }
+            addMessage("system", "You can't fill the urn by hand. Try pouring something into it.");
+            decreaseLampLife();
+            return;
           }
+          if (fillTarget === "bottle" || fillTarget.includes("bottle") || fillTarget === "") {
+            if (!hasBottle()) {
+              addMessage("system", "You don't have the bottle.");
+              decreaseLampLife();
+              return;
+            }
+            if (getBottleState() !== BOTTLE_EMPTY) {
+              addMessage("system", "Your bottle is already full.");
+              decreaseLampLife();
+              return;
+            }
+            const liquidHere = getLiquidAtLocation(gameState.sceneId);
+            if (!liquidHere) {
+              addMessage("system", "There is nothing here with which to fill the bottle.");
+              decreaseLampLife();
+              return;
+            }
+            if (liquidHere === "oil") {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_OIL },
+              }));
+              addMessage("system", "Your bottle is now full of oil.");
+            } else {
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_WATER },
+              }));
+              addMessage("system", "Your bottle is now full of water.");
+            }
+            decreaseLampLife();
+            return;
+          }
+          addMessage("system", "You can't fill that.");
           decreaseLampLife();
           return;
         }
 
         case "pour": {
           const pourTarget = resolution.targetPhrase?.toLowerCase() || "";
+          if (!hasBottle()) {
+            addMessage("system", "You don't have anything to pour.");
+            decreaseLampLife();
+            return;
+          }
+          const bottleLiquid = getBottleLiquid();
+          if (!bottleLiquid) {
+            addMessage("system", "Your bottle is empty.");
+            decreaseLampLife();
+            return;
+          }
+
+          if (pourTarget.includes("urn") || (gameState.sceneId === URN_LOCATION && pourTarget === "")) {
+            if (gameState.sceneId !== URN_LOCATION) {
+              addMessage("system", "There is no urn here.");
+              decreaseLampLife();
+              return;
+            }
+            const urnState = gameState.objectStates["urn"] ?? URN_EMPTY;
+            if (urnState !== URN_EMPTY) {
+              addMessage("system", "The urn is already full.");
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
+              }));
+              decreaseLampLife();
+              return;
+            }
+            if (bottleLiquid === "water") {
+              addMessage("narration", "You pour water into the urn. The water evaporates instantly.");
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
+              }));
+            } else {
+              addMessage("narration", "You pour oil into the urn.");
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY, urn: URN_DARK },
+              }));
+            }
+            decreaseLampLife();
+            return;
+          }
+
           if (gameState.sceneId === "westpit" && (pourTarget === "" || pourTarget === "water" || pourTarget === "plant" || pourTarget.includes("plant") || pourTarget.includes("water"))) {
-            if (!gameState.inventory.includes("bottle")) {
-              addMessage("system", "You don't have any water.");
+            if (bottleLiquid === "oil") {
+              addMessage("system", "The plant indifferently shakes the oil off its leaves and asks, \"Water?\"");
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
+              }));
               decreaseLampLife();
               return;
             }
@@ -1671,21 +1899,21 @@ export function useGame() {
             if (currentPlantState === 0) {
               setGameState((prev) => ({
                 ...prev,
-                objectStates: { ...prev.objectStates, plant: 1, bottle: 2 },
+                objectStates: { ...prev.objectStates, plant: 1, bottle: BOTTLE_EMPTY },
               }));
               addMessage("narration", "The plant spurts into furious growth for a few seconds.\n\nThere is a 12-foot-tall beanstalk stretching up out of the pit, bellowing \"Water!! Water!!\"");
               hapticFeedback("success");
             } else if (currentPlantState === 1) {
               setGameState((prev) => ({
                 ...prev,
-                objectStates: { ...prev.objectStates, plant: 2, bottle: 2 },
+                objectStates: { ...prev.objectStates, plant: 2, bottle: BOTTLE_EMPTY },
               }));
               addMessage("narration", "The plant grows explosively, almost filling the bottom of the pit.\n\nThere is a gigantic beanstalk stretching all the way up to the hole.");
               hapticFeedback("success");
             } else {
               setGameState((prev) => ({
                 ...prev,
-                objectStates: { ...prev.objectStates, plant: 0, bottle: 2 },
+                objectStates: { ...prev.objectStates, plant: 0, bottle: BOTTLE_EMPTY },
               }));
               addMessage("narration", "The plant shrivels up and disappears.\n\nThe tiny plant is gone. The pit is empty.");
               hapticFeedback("medium");
@@ -1693,10 +1921,30 @@ export function useGame() {
             decreaseLampLife();
             return;
           }
-          addMessage("system", "You pour out the water.");
+
+          if (pourTarget.includes("door") && gameState.sceneId === "immensenwpass") {
+            if (bottleLiquid === "oil") {
+              addMessage("narration", "The oil has freed up the hinges so that the door will now move, although it requires some effort.");
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
+                flags: { ...prev.flags, doorOiled: true },
+              }));
+            } else {
+              addMessage("narration", "The hinges are quite thoroughly rusted now and won't budge.");
+              setGameState((prev) => ({
+                ...prev,
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
+              }));
+            }
+            decreaseLampLife();
+            return;
+          }
+
+          addMessage("system", `You pour out the ${bottleLiquid}.`);
           setGameState((prev) => ({
             ...prev,
-            objectStates: { ...prev.objectStates, bottle: 2 },
+            objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
           }));
           decreaseLampLife();
           return;

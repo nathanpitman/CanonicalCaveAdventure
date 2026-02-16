@@ -250,6 +250,58 @@ export const CANON_OBJECTS: { id: string; name: string }[] = [
   {
     "id": "obj_69",
     "name": "Ebony statuette"
+  },
+  {
+    "id": "chain",
+    "name": "Golden Chain"
+  },
+  {
+    "id": "rug",
+    "name": "Persian Rug"
+  },
+  {
+    "id": "pearl",
+    "name": "Glistening Pearl"
+  },
+  {
+    "id": "amber",
+    "name": "Amber gemstone"
+  },
+  {
+    "id": "jade",
+    "name": "Jade necklace"
+  },
+  {
+    "id": "chest",
+    "name": "Treasure Chest"
+  },
+  {
+    "id": "urn",
+    "name": "Stone Urn"
+  },
+  {
+    "id": "cavity",
+    "name": "Wall Cavity"
+  },
+  {
+    "id": "water",
+    "name": "Water"
+  },
+  {
+    "id": "oil",
+    "name": "Oil"
+  },
+  {
+    "id": "rod2",
+    "name": "Marked Rod"
+  },
+  {
+    "id": "axe",
+    "name": "Dwarf Axe"
+  },
+  {
+    "id": "oyster",
+    "name": "Giant Oyster"
   }
 ];
 

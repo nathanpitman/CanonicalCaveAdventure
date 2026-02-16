@@ -414,6 +414,13 @@ function resolveTake(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
     }
   }
 
+  const virtualItems = ["water", "oil", "amber"];
+  for (const vi of virtualItems) {
+    if (!takeCandidates.some(c => c.id === vi)) {
+      takeCandidates.push({ id: vi, name: vi });
+    }
+  }
+
   if (takeCandidates.length === 0) {
     return { type: "message", text: "You don't see that here." };
   }
