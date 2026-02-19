@@ -858,6 +858,11 @@ export function useGame() {
 
   const handleMove = useCallback(
     (toSceneId: string) => {
+      const DEATH_SCENES = ["neckbroke", "nomake"];
+      if (DEATH_SCENES.includes(gameState.sceneId)) {
+        return;
+      }
+
       const newScene = SCENES[toSceneId];
       if (!newScene) {
         addMessage("system", "You can't go that way.");
@@ -960,6 +965,12 @@ export function useGame() {
   );
 
   const handleGoBack = useCallback(() => {
+    const DEATH_SCENES = ["neckbroke", "nomake"];
+    if (DEATH_SCENES.includes(gameState.sceneId)) {
+      addMessage("system", "You're dead. You can't go anywhere.");
+      return;
+    }
+
     if (!gameState.previousSceneId) {
       addMessage("system", "You can't go back any further.");
       return;
