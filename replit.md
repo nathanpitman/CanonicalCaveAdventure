@@ -27,7 +27,8 @@ Do not make changes to the `tools/injectPwaMeta.js` file.
 - **Frontend Framework:** React Native with Expo for cross-platform mobile and web deployment.
 - **Backend (Development Only):** Express.js for serving the landing page and API during development. The final web deployment is static.
 - **State Management:** Utilizes React hooks with a custom `useGame` hook to encapsulate core game logic and state.
-- **Natural Language Processing (NLP):** A dedicated NLP layer (`commandParser.ts`, `actionResolver.ts`) handles user input, transforming raw strings into game actions, supporting complex phrases and typo tolerance (Damerau-Levenshtein distance).
+- **Natural Language Processing (NLP):** A dedicated NLP layer (`commandParser.ts`, `actionResolver.ts`) handles user input, transforming raw strings into game actions, supporting complex phrases and typo tolerance (Damerau-Levenshtein distance). Includes `NARRATIVE_SYNONYMS` in `lexicon.ts` mapping ~50 natural language phrases (downstream, upstream, follow stream, etc.) to canonical action tokens (downs, upstr, bed, etc.).
+- **Narrative Exit Audit:** `tools/auditNarrativeExits.ts` scans all 183 scenes for narrative cue phrases in descriptions, tests whether they resolve to available exits, and generates gap reports (`docs/narrative-exit-audit.json`, `docs/narrative-exit-audit.md`). Runs automatically after YAML imports via `importOpenAdventure.ts`.
 - **Game Content Management:** All scenes, items, and game content are structured in `data/story.ts`, imported from a canonical adventure YAML file.
 - **Persistent State:** Game progress is automatically saved locally using AsyncStorage after every state change.
 - **Modular Component Design:** UI elements are broken down into reusable components (e.g., `ActionButton`, `MessageBubble`, `TorchIndicator`).
