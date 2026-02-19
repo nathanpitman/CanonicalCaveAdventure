@@ -42,6 +42,7 @@ export const NARRATIVE_SYNONYMS: Record<string, string> = {
   "down the stream": "downs",
   "follow stream downstream": "downs",
   "follow the stream": "downs",
+  "follow stream": "downs",
   "upstream": "upstr",
   "up stream": "upstr",
   "up the stream": "upstr",

@@ -1,0 +1,9081 @@
+[
+  {
+    "sceneId": "hill",
+    "sceneTitle": "Hill In Road",
+    "cuePhrase": "road",
+    "impliedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "availableExits": [
+      {
+        "id": "go_building",
+        "label": "GO TO BUILDING",
+        "to": "start"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "start"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "roadend"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest20"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest13"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest13"
+      }
+    ],
+    "unresolvedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "building",
+    "sceneTitle": "Building",
+    "cuePhrase": "building",
+    "impliedInputs": [
+      "building",
+      "go building",
+      "enter building",
+      "house",
+      "wellhouse"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "start"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "start"
+      },
+      {
+        "id": "go_xyzzy",
+        "label": "XYZZY",
+        "to": "foof1"
+      },
+      {
+        "id": "go_plugh",
+        "label": "PLUGH",
+        "to": "foof3"
+      },
+      {
+        "id": "go_downs",
+        "label": "Downs",
+        "to": "sewer"
+      },
+      {
+        "id": "go_stream",
+        "label": "STREAM",
+        "to": "sewer"
+      }
+    ],
+    "unresolvedInputs": [
+      "building",
+      "go building",
+      "enter building",
+      "house",
+      "wellhouse"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "valley",
+    "sceneTitle": "Valley",
+    "cuePhrase": "stream",
+    "impliedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "to": "start"
+      },
+      {
+        "id": "go_building",
+        "label": "GO TO BUILDING",
+        "to": "start"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "start"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest6"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest6"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest12"
+      },
+      {
+        "id": "go_downs",
+        "label": "Downs",
+        "to": "slit"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "slit"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "slit"
+      },
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      }
+    ],
+    "unresolvedInputs": [
+      "stream",
+      "go stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "cliff",
+    "sceneTitle": "Cliff",
+    "cuePhrase": "chasm",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest17"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest17"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest19"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "cliff",
+    "sceneTitle": "Cliff",
+    "cuePhrase": "across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest17"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest17"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest19"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "slit",
+    "sceneTitle": "Slit In Streambed",
+    "cuePhrase": "the stream",
+    "impliedInputs": [
+      "follow the stream",
+      "follow stream",
+      "go stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_building",
+        "label": "GO TO BUILDING",
+        "to": "start"
+      },
+      {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "to": "valley"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "valley"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest6"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest6"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest10"
+      },
+      {
+        "id": "go_downs",
+        "label": "Downs",
+        "to": "grate"
+      },
+      {
+        "id": "go_bed",
+        "label": "Bed",
+        "to": "grate"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "grate"
+      },
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      }
+    ],
+    "unresolvedInputs": [
+      "go stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "slit",
+    "sceneTitle": "Slit In Streambed",
+    "cuePhrase": "stream",
+    "impliedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_building",
+        "label": "GO TO BUILDING",
+        "to": "start"
+      },
+      {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "to": "valley"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "valley"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest6"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest6"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest10"
+      },
+      {
+        "id": "go_downs",
+        "label": "Downs",
+        "to": "grate"
+      },
+      {
+        "id": "go_bed",
+        "label": "Bed",
+        "to": "grate"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "grate"
+      },
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      }
+    ],
+    "unresolvedInputs": [
+      "stream",
+      "go stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "grate",
+    "sceneTitle": "Grate",
+    "cuePhrase": "streambed",
+    "impliedInputs": [
+      "streambed",
+      "go streambed",
+      "follow streambed"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest10"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest9"
+      },
+      {
+        "id": "go_building",
+        "label": "GO TO BUILDING",
+        "to": "start"
+      },
+      {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "to": "slit"
+      },
+      {
+        "id": "go_gully",
+        "label": "GULLY",
+        "to": "slit"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "slit"
+      },
+      {
+        "id": "go_enter",
+        "label": "ENTER",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "belowgrate"
+      }
+    ],
+    "unresolvedInputs": [
+      "streambed",
+      "go streambed",
+      "follow streambed"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "grate",
+    "sceneTitle": "Grate",
+    "cuePhrase": "depression",
+    "impliedInputs": [
+      "depression",
+      "go depression",
+      "enter depression"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest10"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest9"
+      },
+      {
+        "id": "go_building",
+        "label": "GO TO BUILDING",
+        "to": "start"
+      },
+      {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "to": "slit"
+      },
+      {
+        "id": "go_gully",
+        "label": "GULLY",
+        "to": "slit"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "slit"
+      },
+      {
+        "id": "go_enter",
+        "label": "ENTER",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "belowgrate"
+      }
+    ],
+    "unresolvedInputs": [
+      "depression",
+      "go depression"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "grate",
+    "sceneTitle": "Grate",
+    "cuePhrase": "outside",
+    "impliedInputs": [
+      "surface",
+      "go surface",
+      "go outside",
+      "go up",
+      "above",
+      "topside"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_forest",
+        "label": "FOREST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest10"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest9"
+      },
+      {
+        "id": "go_building",
+        "label": "GO TO BUILDING",
+        "to": "start"
+      },
+      {
+        "id": "go_upstr",
+        "label": "Upstr",
+        "to": "slit"
+      },
+      {
+        "id": "go_gully",
+        "label": "GULLY",
+        "to": "slit"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "slit"
+      },
+      {
+        "id": "go_enter",
+        "label": "ENTER",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "belowgrate"
+      }
+    ],
+    "unresolvedInputs": [
+      "surface",
+      "go surface",
+      "go outside",
+      "above",
+      "topside"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "belowgrate",
+    "sceneTitle": "Below The Grate",
+    "cuePhrase": "surface",
+    "impliedInputs": [
+      "surface",
+      "go surface",
+      "go outside",
+      "go up",
+      "above",
+      "topside"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "grate"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "grate"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
+        "to": "cobble"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "cobble"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "cobble"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      }
+    ],
+    "unresolvedInputs": [
+      "surface",
+      "go surface",
+      "above",
+      "topside"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "belowgrate",
+    "sceneTitle": "Below The Grate",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "grate"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "grate"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
+        "to": "cobble"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "cobble"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "cobble"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "belowgrate",
+    "sceneTitle": "Below The Grate",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "grate"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "grate"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
+        "to": "cobble"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "cobble"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "cobble"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "cobble",
+    "sceneTitle": "Cobble Crawl",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_surface",
+        "label": "SURFACE",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "debris"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
+        "to": "debris"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "debris"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "cobble",
+    "sceneTitle": "Cobble Crawl",
+    "cuePhrase": "crawl",
+    "impliedInputs": [
+      "crawl",
+      "go crawl",
+      "crawlway",
+      "crawlspace"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_surface",
+        "label": "SURFACE",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "debris"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
+        "to": "debris"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "debris"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "crawl",
+      "go crawl",
+      "crawlway",
+      "crawlspace"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "cobble",
+    "sceneTitle": "Cobble Crawl",
+    "cuePhrase": "cobbles",
+    "impliedInputs": [
+      "cobbles",
+      "go cobbles",
+      "cobblestones"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_surface",
+        "label": "SURFACE",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "debris"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
+        "to": "debris"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "debris"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "cobbles",
+      "go cobbles",
+      "cobblestones"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "cobble",
+    "sceneTitle": "Cobble Crawl",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_surface",
+        "label": "SURFACE",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "debris"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
+        "to": "debris"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "debris"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "debris",
+    "sceneTitle": "Debris Room",
+    "cuePhrase": "surface",
+    "impliedInputs": [
+      "surface",
+      "go surface",
+      "go outside",
+      "go up",
+      "above",
+      "topside"
+    ],
+    "availableExits": [
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
+        "to": "cobble"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "cobble"
+      },
+      {
+        "id": "go_low",
+        "label": "LOW",
+        "to": "cobble"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "cobble"
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "to": "awkward"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "awkward"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "awkward"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "awkward"
+      },
+      {
+        "id": "go_xyzzy",
+        "label": "XYZZY",
+        "to": "foof2"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "surface",
+      "go surface",
+      "go outside",
+      "above",
+      "topside"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "debris",
+    "sceneTitle": "Debris Room",
+    "cuePhrase": "debris",
+    "impliedInputs": [
+      "debris",
+      "go debris",
+      "enter debris"
+    ],
+    "availableExits": [
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
+        "to": "cobble"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "cobble"
+      },
+      {
+        "id": "go_low",
+        "label": "LOW",
+        "to": "cobble"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "cobble"
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "to": "awkward"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "awkward"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "awkward"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "awkward"
+      },
+      {
+        "id": "go_xyzzy",
+        "label": "XYZZY",
+        "to": "foof2"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "debris",
+      "go debris"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "debris",
+    "sceneTitle": "Debris Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "cobble"
+      },
+      {
+        "id": "go_cobbles",
+        "label": "COBBLES",
+        "to": "cobble"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "cobble"
+      },
+      {
+        "id": "go_low",
+        "label": "LOW",
+        "to": "cobble"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "cobble"
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "to": "awkward"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "awkward"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "awkward"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "awkward"
+      },
+      {
+        "id": "go_xyzzy",
+        "label": "XYZZY",
+        "to": "foof2"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "awkward",
+    "sceneTitle": "Awkward",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "debris"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "debris"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "birdchamber",
+    "sceneTitle": "Bird Chamber",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_depression",
+        "label": "DEPRESSION",
+        "to": "grate"
+      },
+      {
+        "id": "go_entra",
+        "label": "Entra",
+        "to": "belowgrate"
+      },
+      {
+        "id": "go_debris",
+        "label": "DEBRIS",
+        "to": "debris"
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "to": "awkward"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "awkward"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "pittop"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "pittop"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "crack",
+    "sceneTitle": "Crack",
+    "cuePhrase": "crack",
+    "impliedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "pittop"
+      }
+    ],
+    "unresolvedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastbank",
+    "sceneTitle": "East Bank Of Fissure",
+    "cuePhrase": "fissure",
+    "impliedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "misthall"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "misthall"
+      },
+      {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "to": "nomake"
+      },
+      {
+        "id": "go_over",
+        "label": "Over",
+        "to": "westbank"
+      }
+    ],
+    "unresolvedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastbank",
+    "sceneTitle": "East Bank Of Fissure",
+    "cuePhrase": "across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "misthall"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "misthall"
+      },
+      {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "to": "nomake"
+      },
+      {
+        "id": "go_over",
+        "label": "Over",
+        "to": "westbank"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "nugget",
+    "sceneTitle": "Nugget-of-gold Room",
+    "cuePhrase": "steps",
+    "impliedInputs": [
+      "stairs",
+      "go stairs",
+      "stairway",
+      "staircase",
+      "climb stairs",
+      "go steps"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "misthall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "misthall"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "misthall"
+      }
+    ],
+    "unresolvedInputs": [
+      "stairs",
+      "go stairs",
+      "stairway",
+      "staircase",
+      "climb stairs",
+      "go steps"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "nugget",
+    "sceneTitle": "Nugget-of-gold Room",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "misthall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "misthall"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "misthall"
+      }
+    ],
+    "unresolvedInputs": [
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "nugget",
+    "sceneTitle": "Nugget-of-gold Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "misthall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "misthall"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "misthall"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "kinghall",
+    "sceneTitle": "Hall Of Mt King",
+    "cuePhrase": "Hall",
+    "impliedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_stairs",
+        "label": "STAIRS",
+        "to": "misthall"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "misthall"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "misthall"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_right",
+        "label": "RIGHT",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "southside"
+      },
+      {
+        "id": "go_left",
+        "label": "LEFT",
+        "to": "southside"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "westside"
+      },
+      {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "to": "westside"
+      },
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "to": "secret3"
+      },
+      {
+        "id": "go_secre",
+        "label": "Secre",
+        "to": "secret3"
+      }
+    ],
+    "unresolvedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "neckbroke",
+    "sceneTitle": "Neckbroke",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "nowhere"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "neckbroke",
+    "sceneTitle": "Neckbroke",
+    "cuePhrase": "broken",
+    "impliedInputs": [
+      "broken",
+      "go broken"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "nowhere"
+      }
+    ],
+    "unresolvedInputs": [
+      "broken",
+      "go broken"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "dome",
+    "sceneTitle": "Dome",
+    "cuePhrase": "dome",
+    "impliedInputs": [
+      "dome",
+      "go dome",
+      "enter dome",
+      "climb dome"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "misthall"
+      }
+    ],
+    "unresolvedInputs": [
+      "dome",
+      "go dome",
+      "enter dome",
+      "climb dome"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westend",
+    "sceneTitle": "West End Of Twopit Room",
+    "cuePhrase": "hole",
+    "impliedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "eastend"
+      },
+      {
+        "id": "go_acros",
+        "label": "Acros",
+        "to": "eastend"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "slab"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "to": "slab"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "westpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "westpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westend",
+    "sceneTitle": "West End Of Twopit Room",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "eastend"
+      },
+      {
+        "id": "go_acros",
+        "label": "Acros",
+        "to": "eastend"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "slab"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "to": "slab"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "westpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "westpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westend",
+    "sceneTitle": "West End Of Twopit Room",
+    "cuePhrase": "Room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "eastend"
+      },
+      {
+        "id": "go_acros",
+        "label": "Acros",
+        "to": "eastend"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "slab"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "to": "slab"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "westpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "westpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastpit",
+    "sceneTitle": "East Pit",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "eastend"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "eastend"
+      }
+    ],
+    "unresolvedInputs": [
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastpit",
+    "sceneTitle": "East Pit",
+    "cuePhrase": "Room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "eastend"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "eastend"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westpit",
+    "sceneTitle": "West Pit",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "westend"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "westend"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "building1"
+      }
+    ],
+    "unresolvedInputs": [
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westpit",
+    "sceneTitle": "West Pit",
+    "cuePhrase": "hole",
+    "impliedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "westend"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "westend"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "building1"
+      }
+    ],
+    "unresolvedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westpit",
+    "sceneTitle": "West Pit",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "westend"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "westend"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "building1"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westpit",
+    "sceneTitle": "West Pit",
+    "cuePhrase": "Room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "westend"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "westend"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "building1"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "climbstalk",
+    "sceneTitle": "Climbstalk",
+    "cuePhrase": "hole",
+    "impliedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "narrow"
+      }
+    ],
+    "unresolvedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westbank",
+    "sceneTitle": "West Bank Of Fissure",
+    "cuePhrase": "fissure",
+    "impliedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "availableExits": [
+      {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "to": "nomake"
+      },
+      {
+        "id": "go_over",
+        "label": "Over",
+        "to": "eastbank"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "parallel1"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "mistwest"
+      }
+    ],
+    "unresolvedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westbank",
+    "sceneTitle": "West Bank Of Fissure",
+    "cuePhrase": "Hall",
+    "impliedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_forward",
+        "label": "FORWARD",
+        "to": "nomake"
+      },
+      {
+        "id": "go_over",
+        "label": "Over",
+        "to": "eastbank"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "parallel1"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "mistwest"
+      }
+    ],
+    "unresolvedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "floorhole",
+    "sceneTitle": "N/s Passage Above E/w Passage",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "y2"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
+        "to": "y2"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "broken"
+      },
+      {
+        "id": "go_hole",
+        "label": "HOLE",
+        "to": "broken"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "southside",
+    "sceneTitle": "Southside",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "kinghall"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westside",
+    "sceneTitle": "The West Side Chamber",
+    "cuePhrase": "passage continues west",
+    "impliedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel",
+      "go west",
+      "west"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "crossover"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "crossover"
+      }
+    ],
+    "unresolvedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westside",
+    "sceneTitle": "The West Side Chamber",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "crossover"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "crossover"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "westside",
+    "sceneTitle": "The West Side Chamber",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "crossover"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "crossover"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "y2",
+    "sceneTitle": "\"y2\"",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_plugh",
+        "label": "PLUGH",
+        "to": "foof4"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "jumble"
+      },
+      {
+        "id": "go_wall",
+        "label": "WALL",
+        "to": "jumble"
+      },
+      {
+        "id": "go_broke",
+        "label": "Broke",
+        "to": "jumble"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "window1"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "foof5"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "y2",
+    "sceneTitle": "\"y2\"",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_plugh",
+        "label": "PLUGH",
+        "to": "foof4"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "jumble"
+      },
+      {
+        "id": "go_wall",
+        "label": "WALL",
+        "to": "jumble"
+      },
+      {
+        "id": "go_broke",
+        "label": "Broke",
+        "to": "jumble"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "window1"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "foof5"
+      }
+    ],
+    "unresolvedInputs": [
+      "over wall"
+    ],
+    "suggestedMapping": "\"over wall\" -> go_wall (WALL) -> jumble"
+  },
+  {
+    "sceneId": "y2",
+    "sceneTitle": "\"y2\"",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_plugh",
+        "label": "PLUGH",
+        "to": "foof4"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "jumble"
+      },
+      {
+        "id": "go_wall",
+        "label": "WALL",
+        "to": "jumble"
+      },
+      {
+        "id": "go_broke",
+        "label": "Broke",
+        "to": "jumble"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "window1"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "foof5"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window1",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "y2"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
+        "to": "y2"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window1",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "y2"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
+        "to": "y2"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window1",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "right",
+    "impliedInputs": [
+      "right",
+      "go right"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "y2"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
+        "to": "y2"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "right",
+      "go right"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window1",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "y2"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
+        "to": "y2"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window1",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "y2"
+      },
+      {
+        "id": "go_y2",
+        "label": "Y2",
+        "to": "y2"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "broken",
+    "sceneTitle": "Dirty Passage",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_hole",
+        "label": "HOLE",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "dusty"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "to": "bedquilt"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "broken",
+    "sceneTitle": "Dirty Passage",
+    "cuePhrase": "broken",
+    "impliedInputs": [
+      "broken",
+      "go broken"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_hole",
+        "label": "HOLE",
+        "to": "floorhole"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "dusty"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "to": "bedquilt"
+      }
+    ],
+    "unresolvedInputs": [
+      "broken",
+      "go broken"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "smallpit",
+    "sceneTitle": "Bottom Of Pit With Stream",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "smallpitbrink"
+      }
+    ],
+    "unresolvedInputs": [
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "smallpit",
+    "sceneTitle": "Bottom Of Pit With Stream",
+    "cuePhrase": "stream",
+    "impliedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "smallpitbrink"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "smallpitbrink"
+      }
+    ],
+    "unresolvedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "dusty",
+    "sceneTitle": "Dusty Rock Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "broken"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "broken"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "complex"
+      },
+      {
+        "id": "go_hole",
+        "label": "HOLE",
+        "to": "complex"
+      },
+      {
+        "id": "go_floor",
+        "label": "FLOOR",
+        "to": "complex"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "to": "bedquilt"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "parallel1",
+    "sceneTitle": "Parallel1",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "mistwest"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "parallel1",
+    "sceneTitle": "Parallel1",
+    "cuePhrase": "Hall",
+    "impliedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "mistwest"
+      }
+    ],
+    "unresolvedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "mistwest",
+    "sceneTitle": "West End Of Hall Of Mists",
+    "cuePhrase": "Hall",
+    "impliedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "alike1"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "alike1"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "alike1"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "alike1"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "westbank"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "parallel2"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "longeast"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "longeast"
+      }
+    ],
+    "unresolvedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "pitbrink",
+    "sceneTitle": "Brink Of Pit",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alike10"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mazeend6"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "alike12"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "alike13"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "pitbrink",
+    "sceneTitle": "Brink Of Pit",
+    "cuePhrase": "climb",
+    "impliedInputs": [
+      "climb",
+      "go up",
+      "ascend",
+      "climb up"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alike10"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mazeend6"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "alike12"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "alike13"
+      }
+    ],
+    "unresolvedInputs": [
+      "go up",
+      "ascend"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "pitbrink",
+    "sceneTitle": "Brink Of Pit",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "birdchamber"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alike10"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mazeend6"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "alike12"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "alike13"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "parallel2",
+    "sceneTitle": "Parallel2",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "westbank"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "parallel2",
+    "sceneTitle": "Parallel2",
+    "cuePhrase": "Hall",
+    "impliedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "westbank"
+      }
+    ],
+    "unresolvedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "longwest",
+    "sceneTitle": "West End Of Long Hall",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "longeast"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "crossover"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "different1"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "longwest",
+    "sceneTitle": "West End Of Long Hall",
+    "cuePhrase": "hall",
+    "impliedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "longeast"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "crossover"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "different1"
+      }
+    ],
+    "unresolvedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "crossover",
+    "sceneTitle": "Crossover",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "longeast"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "deadend7"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "westside"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "longwest"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "complex",
+    "sceneTitle": "Complex Junction",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "dusty"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "dusty"
+      },
+      {
+        "id": "go_room",
+        "label": "ROOM",
+        "to": "dusty"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "anteroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "complex",
+    "sceneTitle": "Complex Junction",
+    "cuePhrase": "crawl",
+    "impliedInputs": [
+      "crawl",
+      "go crawl",
+      "crawlway",
+      "crawlspace"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "dusty"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "dusty"
+      },
+      {
+        "id": "go_room",
+        "label": "ROOM",
+        "to": "dusty"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "anteroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "crawl",
+      "go crawl",
+      "crawlway",
+      "crawlspace"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "complex",
+    "sceneTitle": "Complex Junction",
+    "cuePhrase": "junction",
+    "impliedInputs": [
+      "fork",
+      "go fork",
+      "junction",
+      "intersection"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "dusty"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "dusty"
+      },
+      {
+        "id": "go_room",
+        "label": "ROOM",
+        "to": "dusty"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "anteroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "fork",
+      "go fork",
+      "junction",
+      "intersection"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "bedquilt",
+    "sceneTitle": "Bedquilt",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "complex"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "to": "slab"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "secret2"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "anteroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "swisscheese",
+    "sceneTitle": "Swiss Cheese Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "eastend"
+      },
+      {
+        "id": "go_canyon",
+        "label": "CANYON",
+        "to": "tall"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "softroom"
+      },
+      {
+        "id": "go_oriental",
+        "label": "ORIENTAL",
+        "to": "oriental"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastend",
+    "sceneTitle": "East End Of Twopit Room",
+    "cuePhrase": "path",
+    "impliedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "westend"
+      },
+      {
+        "id": "go_acros",
+        "label": "Acros",
+        "to": "westend"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "eastpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "eastpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "trail"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastend",
+    "sceneTitle": "East End Of Twopit Room",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "westend"
+      },
+      {
+        "id": "go_acros",
+        "label": "Acros",
+        "to": "westend"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "eastpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "eastpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastend",
+    "sceneTitle": "East End Of Twopit Room",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "westend"
+      },
+      {
+        "id": "go_acros",
+        "label": "Acros",
+        "to": "westend"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "eastpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "eastpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "eastend",
+    "sceneTitle": "East End Of Twopit Room",
+    "cuePhrase": "Room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "westend"
+      },
+      {
+        "id": "go_acros",
+        "label": "Acros",
+        "to": "westend"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "eastpit"
+      },
+      {
+        "id": "go_pit",
+        "label": "PIT",
+        "to": "eastpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "slab",
+    "sceneTitle": "Slab Room",
+    "cuePhrase": "slab",
+    "impliedInputs": [
+      "slab",
+      "go slab",
+      "climb slab"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "westend"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "secret1"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "secret1"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "bedquilt"
+      }
+    ],
+    "unresolvedInputs": [
+      "slab",
+      "go slab"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "slab",
+    "sceneTitle": "Slab Room",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "westend"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "secret1"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "secret1"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "bedquilt"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret1",
+    "sceneTitle": "Secret1",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "slab"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "to": "slab"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret5"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret1",
+    "sceneTitle": "Secret1",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "slab"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "to": "slab"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret5"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret1",
+    "sceneTitle": "Secret1",
+    "cuePhrase": "secret",
+    "impliedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "slab"
+      },
+      {
+        "id": "go_slab",
+        "label": "SLAB",
+        "to": "slab"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret5"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret2",
+    "sceneTitle": "Secret2",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "threejunction"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "topstalactite"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret2",
+    "sceneTitle": "Secret2",
+    "cuePhrase": "secret",
+    "impliedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "threejunction"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "topstalactite"
+      }
+    ],
+    "unresolvedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "threejunction",
+    "sceneTitle": "Junction Of Three Secret Canyons",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret2"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "window2"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "threejunction",
+    "sceneTitle": "Junction Of Three Secret Canyons",
+    "cuePhrase": "junction",
+    "impliedInputs": [
+      "fork",
+      "go fork",
+      "junction",
+      "intersection"
+    ],
+    "availableExits": [
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret2"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "window2"
+      }
+    ],
+    "unresolvedInputs": [
+      "fork",
+      "go fork",
+      "junction",
+      "intersection"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "lowroom",
+    "sceneTitle": "Large Low Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_bedquilt",
+        "label": "BEDQUILT",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "to": "winding"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "deadcrawl"
+      },
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "oriental"
+      },
+      {
+        "id": "go_oriental",
+        "label": "ORIENTAL",
+        "to": "oriental"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret3",
+    "sceneTitle": "Secret E/w Canyon Above Tight Canyon",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "secret5"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "wideplace"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret3",
+    "sceneTitle": "Secret E/w Canyon Above Tight Canyon",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "secret5"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "wideplace"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret3",
+    "sceneTitle": "Secret E/w Canyon Above Tight Canyon",
+    "cuePhrase": "secret",
+    "impliedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "kinghall"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "secret5"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "wideplace"
+      }
+    ],
+    "unresolvedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "wideplace",
+    "sceneTitle": "Wideplace",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "tightplace"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "tall"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "tightplace",
+    "sceneTitle": "Tightplace",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "wideplace"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "tall",
+    "sceneTitle": "Tall",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "wideplace"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "boulders1"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "swisscheese"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "boulders1",
+    "sceneTitle": "Boulders1",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "tall"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "sewer",
+    "sceneTitle": "Sewer",
+    "cuePhrase": "The stream",
+    "impliedInputs": [
+      "follow the stream",
+      "follow stream",
+      "go stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "building"
+      }
+    ],
+    "unresolvedInputs": [
+      "follow the stream",
+      "follow stream",
+      "go stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "sewer",
+    "sceneTitle": "Sewer",
+    "cuePhrase": "stream",
+    "impliedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "building"
+      }
+    ],
+    "unresolvedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "narrow",
+    "sceneTitle": "Narrow Corridor",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "westpit"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "westpit"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "westpit"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "to": "giantroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "narrow",
+    "sceneTitle": "Narrow Corridor",
+    "cuePhrase": "hole",
+    "impliedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "westpit"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "westpit"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "westpit"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "to": "giantroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "noclimb",
+    "sceneTitle": "Noclimb",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "westpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "noclimb",
+    "sceneTitle": "Noclimb",
+    "cuePhrase": "climb",
+    "impliedInputs": [
+      "climb",
+      "go up",
+      "ascend",
+      "climb up"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "westpit"
+      }
+    ],
+    "unresolvedInputs": [
+      "climb",
+      "go up",
+      "ascend",
+      "climb up"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "planttop",
+    "sceneTitle": "Planttop",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "to": "westend"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "incline",
+    "sceneTitle": "Steep Incline Above Large Room",
+    "cuePhrase": "climb",
+    "impliedInputs": [
+      "climb",
+      "go up",
+      "ascend",
+      "climb up"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "waterfall"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "waterfall"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "waterfall"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "lowroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "go up",
+      "ascend"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "incline",
+    "sceneTitle": "Steep Incline Above Large Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "waterfall"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "waterfall"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "waterfall"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "lowroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "giantroom",
+    "sceneTitle": "Giant Room",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "narrow"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "cavein"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "immense"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "giantroom",
+    "sceneTitle": "Giant Room",
+    "cuePhrase": "Room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "narrow"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "cavein"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "immense"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "cavein",
+    "sceneTitle": "Cavein",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "giantroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "waterfall",
+    "sceneTitle": "Cavern With Waterfall",
+    "cuePhrase": "hole",
+    "impliedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "immense"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "immense"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "incline"
+      }
+    ],
+    "unresolvedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "waterfall",
+    "sceneTitle": "Cavern With Waterfall",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "immense"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "immense"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "incline"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "waterfall",
+    "sceneTitle": "Cavern With Waterfall",
+    "cuePhrase": "stream",
+    "impliedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "immense"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "immense"
+      },
+      {
+        "id": "go_giant",
+        "label": "GIANT",
+        "to": "giantroom"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "incline"
+      }
+    ],
+    "unresolvedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "softroom",
+    "sceneTitle": "Soft Room",
+    "cuePhrase": "Room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "swisscheese"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "oriental",
+    "sceneTitle": "Oriental Room",
+    "cuePhrase": "passage leads up",
+    "impliedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel",
+      "go up",
+      "up"
+    ],
+    "availableExits": [
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "misty"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "misty"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "misty"
+      }
+    ],
+    "unresolvedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "oriental",
+    "sceneTitle": "Oriental Room",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "misty"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "misty"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "misty"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "oriental",
+    "sceneTitle": "Oriental Room",
+    "cuePhrase": "Room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "swisscheese"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "misty"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "misty"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "misty"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "misty",
+    "sceneTitle": "Misty Cavern",
+    "cuePhrase": "fissure",
+    "impliedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "oriental"
+      },
+      {
+        "id": "go_oriental",
+        "label": "ORIENTAL",
+        "to": "oriental"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alcove"
+      }
+    ],
+    "unresolvedInputs": [
+      "crack",
+      "go crack",
+      "enter crack",
+      "crevice",
+      "fissure"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "misty",
+    "sceneTitle": "Misty Cavern",
+    "cuePhrase": "path",
+    "impliedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "oriental"
+      },
+      {
+        "id": "go_oriental",
+        "label": "ORIENTAL",
+        "to": "oriental"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alcove"
+      }
+    ],
+    "unresolvedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "alcove",
+    "sceneTitle": "Alcove",
+    "cuePhrase": "tunnel leads east",
+    "impliedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel",
+      "go east",
+      "east"
+    ],
+    "availableExits": [
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "to": "misty"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "misty"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "plover"
+      }
+    ],
+    "unresolvedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "alcove",
+    "sceneTitle": "Alcove",
+    "cuePhrase": "tunnel",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "to": "misty"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "misty"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "plover"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "alcove",
+    "sceneTitle": "Alcove",
+    "cuePhrase": "path",
+    "impliedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "availableExits": [
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "to": "misty"
+      },
+      {
+        "id": "go_cavern",
+        "label": "CAVERN",
+        "to": "misty"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "plover"
+      }
+    ],
+    "unresolvedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "plover",
+    "sceneTitle": "Plover Room",
+    "cuePhrase": "corridor leads ",
+    "impliedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alcove"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "foof6"
+      },
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "darkroom"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
+        "to": "darkroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "plover",
+    "sceneTitle": "Plover Room",
+    "cuePhrase": "tunnel",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alcove"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "foof6"
+      },
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "darkroom"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
+        "to": "darkroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "plover",
+    "sceneTitle": "Plover Room",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "alcove"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "foof6"
+      },
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "darkroom"
+      },
+      {
+        "id": "go_dark",
+        "label": "DARK",
+        "to": "darkroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "darkroom",
+    "sceneTitle": "Dark-room",
+    "cuePhrase": "corridor lead",
+    "impliedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "plover"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "plover"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "plover"
+      }
+    ],
+    "unresolvedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "darkroom",
+    "sceneTitle": "Dark-room",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "plover"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "plover"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "plover"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "darkroom",
+    "sceneTitle": "Dark-room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "plover"
+      },
+      {
+        "id": "go_plover",
+        "label": "PLOVER",
+        "to": "plover"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "plover"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "arched",
+    "sceneTitle": "Arched Hall",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "shellroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "arched",
+    "sceneTitle": "Arched Hall",
+    "cuePhrase": "debris",
+    "impliedInputs": [
+      "debris",
+      "go debris",
+      "enter debris"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "shellroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "debris",
+      "go debris",
+      "enter debris"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "arched",
+    "sceneTitle": "Arched Hall",
+    "cuePhrase": "hall",
+    "impliedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "shellroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "hall",
+      "go hall",
+      "enter hall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "shellroom",
+    "sceneTitle": "Shell Room",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "arched"
+      },
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "arched"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "sloping1"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "complex"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "shellroom",
+    "sceneTitle": "Shell Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "arched"
+      },
+      {
+        "id": "go_hall",
+        "label": "HALL",
+        "to": "arched"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "sloping1"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "complex"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "sloping1",
+    "sceneTitle": "Sloping1",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "culdesac"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "culdesac",
+    "sceneTitle": "Culdesac",
+    "cuePhrase": "across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "sloping1"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "sloping1"
+      },
+      {
+        "id": "go_shell",
+        "label": "SHELL",
+        "to": "shellroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "anteroom",
+    "sceneTitle": "Anteroom",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "complex"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "bedquilt"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "wittsend"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "mirrorcanyon",
+    "sceneTitle": "Mirror Canyon",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "reservoir"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "mirrorcanyon",
+    "sceneTitle": "Mirror Canyon",
+    "cuePhrase": "across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "reservoir"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "mirrorcanyon",
+    "sceneTitle": "Mirror Canyon",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "reservoir"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "mirrorcanyon",
+    "sceneTitle": "Mirror Canyon",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "reservoir"
+      },
+      {
+        "id": "go_reservoir",
+        "label": "RESERVOIR",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window2",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "threejunction"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window2",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "threejunction"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window2",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "over",
+    "impliedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "threejunction"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "over",
+      "go over",
+      "climb over"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "window2",
+    "sceneTitle": "Window On Pit",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "threejunction"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "neckbroke"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "topstalactite",
+    "sceneTitle": "Top Of Stalactite",
+    "cuePhrase": "climb",
+    "impliedInputs": [
+      "climb",
+      "go up",
+      "ascend",
+      "climb up"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "secret2"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "alike6"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "alike6"
+      },
+      {
+        "id": "go_climb",
+        "label": "CLIMB",
+        "to": "alike6"
+      }
+    ],
+    "unresolvedInputs": [
+      "go up",
+      "ascend"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "reservoir",
+    "sceneTitle": "Reservoir",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resbottom"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "reservoir",
+    "sceneTitle": "Reservoir",
+    "cuePhrase": "hole",
+    "impliedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resbottom"
+      }
+    ],
+    "unresolvedInputs": [
+      "hole",
+      "go hole",
+      "enter hole",
+      "opening"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "reservoir",
+    "sceneTitle": "Reservoir",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resbottom"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "reservoir",
+    "sceneTitle": "Reservoir",
+    "cuePhrase": "stream",
+    "impliedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resbottom"
+      }
+    ],
+    "unresolvedInputs": [
+      "stream",
+      "go stream",
+      "follow stream"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "reservoir",
+    "sceneTitle": "Reservoir",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resbottom"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "reservoir",
+    "sceneTitle": "Reservoir",
+    "cuePhrase": "reservoir",
+    "impliedInputs": [
+      "reservoir",
+      "go reservoir",
+      "enter reservoir"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "mirrorcanyon"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resbottom"
+      }
+    ],
+    "unresolvedInputs": [
+      "reservoir",
+      "go reservoir",
+      "enter reservoir"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "ne",
+    "sceneTitle": "Ne End",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "to": "sw"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "ne",
+    "sceneTitle": "Ne End",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "to": "sw"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "sw",
+    "sceneTitle": "Sw End",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "ne"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "swchasm",
+    "sceneTitle": "Sw Side Of Chasm",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "to": "winding"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "swchasm",
+    "sceneTitle": "Sw Side Of Chasm",
+    "cuePhrase": "chasm",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "to": "winding"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "swchasm",
+    "sceneTitle": "Sw Side Of Chasm",
+    "cuePhrase": "path",
+    "impliedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "availableExits": [
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "to": "winding"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "winding",
+    "sceneTitle": "Sloping Corridor",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "lowroom"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "swchasm"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret4",
+    "sceneTitle": "Secret4",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "secret1"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret4",
+    "sceneTitle": "Secret4",
+    "cuePhrase": "secret",
+    "impliedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "secret1"
+      }
+    ],
+    "unresolvedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret5",
+    "sceneTitle": "Secret5",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "secret3"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret5",
+    "sceneTitle": "Secret5",
+    "cuePhrase": "secret",
+    "impliedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "secret1"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "secret3"
+      }
+    ],
+    "unresolvedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret6",
+    "sceneTitle": "Secret6",
+    "cuePhrase": "canyon",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "secret3"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "secret3"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "secret6",
+    "sceneTitle": "Secret6",
+    "cuePhrase": "secret",
+    "impliedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "secret3"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "secret3"
+      }
+    ],
+    "unresolvedInputs": [
+      "secret",
+      "go secret",
+      "secret passage"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "nechasm",
+    "sceneTitle": "Ne Side Of Chasm",
+    "cuePhrase": "chasm",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "corridor"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenfront"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "nechasm",
+    "sceneTitle": "Ne Side Of Chasm",
+    "cuePhrase": "path",
+    "impliedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "availableExits": [
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "corridor"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenfront"
+      }
+    ],
+    "unresolvedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "corridor",
+    "sceneTitle": "Corridor",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "nechasm"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "fork"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenfront"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "fork",
+    "sceneTitle": "Fork In Path",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "corridor"
+      },
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_left",
+        "label": "LEFT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "limestone"
+      },
+      {
+        "id": "go_right",
+        "label": "RIGHT",
+        "to": "limestone"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "limestone"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenfront"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "fork",
+    "sceneTitle": "Fork In Path",
+    "cuePhrase": "fork",
+    "impliedInputs": [
+      "fork",
+      "go fork",
+      "junction",
+      "intersection"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "corridor"
+      },
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_left",
+        "label": "LEFT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "limestone"
+      },
+      {
+        "id": "go_right",
+        "label": "RIGHT",
+        "to": "limestone"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "limestone"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenfront"
+      }
+    ],
+    "unresolvedInputs": [
+      "fork",
+      "go fork",
+      "junction",
+      "intersection"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "fork",
+    "sceneTitle": "Fork In Path",
+    "cuePhrase": "path",
+    "impliedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "corridor"
+      },
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_left",
+        "label": "LEFT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "limestone"
+      },
+      {
+        "id": "go_right",
+        "label": "RIGHT",
+        "to": "limestone"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "limestone"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenfront"
+      }
+    ],
+    "unresolvedInputs": [
+      "road",
+      "go road",
+      "follow road",
+      "path",
+      "trail",
+      "follow path"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "warmwalls",
+    "sceneTitle": "Junction With Warm Walls",
+    "cuePhrase": "passage leads south",
+    "impliedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel",
+      "go south",
+      "south"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "fork"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "boulders2"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "boulders2"
+      }
+    ],
+    "unresolvedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "warmwalls",
+    "sceneTitle": "Junction With Warm Walls",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "fork"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "boulders2"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "boulders2"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "breathtaking",
+    "sceneTitle": "Breath-taking View",
+    "cuePhrase": "pit",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "gruesome"
+      }
+    ],
+    "unresolvedInputs": [
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "breathtaking",
+    "sceneTitle": "Breath-taking View",
+    "cuePhrase": "gorge",
+    "impliedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "gruesome"
+      }
+    ],
+    "unresolvedInputs": [
+      "canyon",
+      "go canyon",
+      "enter canyon",
+      "gorge"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "breathtaking",
+    "sceneTitle": "Breath-taking View",
+    "cuePhrase": "left",
+    "impliedInputs": [
+      "left",
+      "go left"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "gruesome"
+      }
+    ],
+    "unresolvedInputs": [
+      "left",
+      "go left"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "breathtaking",
+    "sceneTitle": "Breath-taking View",
+    "cuePhrase": "right",
+    "impliedInputs": [
+      "right",
+      "go right"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "gruesome"
+      }
+    ],
+    "unresolvedInputs": [
+      "right",
+      "go right"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "breathtaking",
+    "sceneTitle": "Breath-taking View",
+    "cuePhrase": "wall",
+    "impliedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "gruesome"
+      }
+    ],
+    "unresolvedInputs": [
+      "wall",
+      "go wall",
+      "climb wall",
+      "over wall"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "breathtaking",
+    "sceneTitle": "Breath-taking View",
+    "cuePhrase": "barren",
+    "impliedInputs": [
+      "barren",
+      "go barren"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_passage",
+        "label": "PASSAGE",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "gruesome"
+      }
+    ],
+    "unresolvedInputs": [
+      "barren",
+      "go barren"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "boulders2",
+    "sceneTitle": "Chamber Of Boulders",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_crawl",
+        "label": "CRAWL",
+        "to": "warmwalls"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "limestone",
+    "sceneTitle": "Limestone Passage",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "fork"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "fork"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "barrenfront",
+    "sceneTitle": "Front Of Barren Room",
+    "cuePhrase": "entrance",
+    "impliedInputs": [
+      "entrance",
+      "go entrance",
+      "enter entrance",
+      "entryway"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "limestone"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "limestone"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_enter",
+        "label": "ENTER",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      }
+    ],
+    "unresolvedInputs": [
+      "entrance",
+      "go entrance",
+      "entryway"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "barrenfront",
+    "sceneTitle": "Front Of Barren Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "limestone"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "limestone"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_in",
+        "label": "GO IN",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_barre",
+        "label": "Barre",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_enter",
+        "label": "ENTER",
+        "to": "barrenroom"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "barrenroom",
+    "sceneTitle": "Barren Room",
+    "cuePhrase": "room",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "barrenroom",
+    "sceneTitle": "Barren Room",
+    "cuePhrase": "barren",
+    "impliedInputs": [
+      "barren",
+      "go barren"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "barrenfront"
+      },
+      {
+        "id": "go_fork",
+        "label": "FORK",
+        "to": "fork"
+      },
+      {
+        "id": "go_view",
+        "label": "VIEW",
+        "to": "breathtaking"
+      }
+    ],
+    "unresolvedInputs": [
+      "barren",
+      "go barren"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "roughhewn",
+    "sceneTitle": "Roughhewn",
+    "cuePhrase": "corridor",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "deadend13"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "large"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "large",
+    "sceneTitle": "Large",
+    "cuePhrase": "chamber",
+    "impliedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "availableExits": [
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "roughhewn"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "storeroom"
+      }
+    ],
+    "unresolvedInputs": [
+      "room",
+      "go room",
+      "enter room",
+      "chamber"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest1",
+    "sceneTitle": "Forest1",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "start"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest13"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest2"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest3"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest2",
+    "sceneTitle": "Forest2",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest1"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest19"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest3"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest18"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest3",
+    "sceneTitle": "Forest3",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest4"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest4"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest2"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest1"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest4",
+    "sceneTitle": "Forest4",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest3"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest3"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest5"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest5"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest5",
+    "sceneTitle": "Forest5",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest4"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest4"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest6"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest6",
+    "sceneTitle": "Forest6",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest5"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest7"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "valley"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "slit"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest7",
+    "sceneTitle": "Forest7",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest5"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest6"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "grate"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest8"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest8",
+    "sceneTitle": "Forest8",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest9"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest11"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest22"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest7"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest9",
+    "sceneTitle": "Forest9",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest11"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest8"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest10"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "grate"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest10",
+    "sceneTitle": "Forest10",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "slit"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest11"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest9"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "grate"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest11",
+    "sceneTitle": "Forest11",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest10"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest8"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest22"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest9"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest12",
+    "sceneTitle": "Forest12",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest13"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest14"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest22"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "valley"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest13",
+    "sceneTitle": "Forest13",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest1"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest12"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest20"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "hill"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest14",
+    "sceneTitle": "Forest14",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "roadend"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest16"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest15"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest12"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest15",
+    "sceneTitle": "Forest15",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest16"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest22"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "roadend"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest14"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest16",
+    "sceneTitle": "Forest16",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest17"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest17"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest14"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest15"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest17",
+    "sceneTitle": "Forest17",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest18"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest16"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest16"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "cliff"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest18",
+    "sceneTitle": "Forest18",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest19"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest17"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest2"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest21"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest19",
+    "sceneTitle": "Forest19",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest2"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest18"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "cliff"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest20"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest20",
+    "sceneTitle": "Forest20",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "hill"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest21"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest19"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest13"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest21",
+    "sceneTitle": "Forest21",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest20"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "roadend"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest18"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest21"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "forest22",
+    "sceneTitle": "Forest22",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_east",
+        "label": "GO EAST",
+        "to": "forest8"
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "to": "forest11"
+      },
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "forest15"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "forest12"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "ledge",
+    "sceneTitle": "Ledge",
+    "cuePhrase": "chasm",
+    "impliedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "availableExits": [
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "pit",
+      "go pit",
+      "enter pit",
+      "chasm",
+      "abyss"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "ledge",
+    "sceneTitle": "Ledge",
+    "cuePhrase": "forest",
+    "impliedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "availableExits": [
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "forest",
+      "go forest",
+      "enter forest",
+      "woods"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "ledge",
+    "sceneTitle": "Ledge",
+    "cuePhrase": "Across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_jump",
+        "label": "JUMP",
+        "to": "nomake"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "resbottom",
+    "sceneTitle": "Bottom Of Reservoir",
+    "cuePhrase": "across",
+    "impliedInputs": [
+      "across",
+      "go across"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resnorth"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "across",
+      "go across"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "resbottom",
+    "sceneTitle": "Bottom Of Reservoir",
+    "cuePhrase": "reservoir",
+    "impliedInputs": [
+      "reservoir",
+      "go reservoir",
+      "enter reservoir"
+    ],
+    "availableExits": [
+      {
+        "id": "go_north",
+        "label": "GO NORTH",
+        "to": "resnorth"
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "reservoir"
+      }
+    ],
+    "unresolvedInputs": [
+      "reservoir",
+      "go reservoir",
+      "enter reservoir"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "resnorth",
+    "sceneTitle": "North Of Reservoir",
+    "cuePhrase": "passage leads ",
+    "impliedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "resbottom"
+      },
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "to": "treacherous"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "treacherous"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "treacherous"
+      }
+    ],
+    "unresolvedInputs": [
+      "go passage",
+      "enter passage",
+      "passage",
+      "go tunnel",
+      "enter tunnel"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "resnorth",
+    "sceneTitle": "North Of Reservoir",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "resbottom"
+      },
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "to": "treacherous"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "treacherous"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "treacherous"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "resnorth",
+    "sceneTitle": "North Of Reservoir",
+    "cuePhrase": "reservoir",
+    "impliedInputs": [
+      "reservoir",
+      "go reservoir",
+      "enter reservoir"
+    ],
+    "availableExits": [
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "to": "resbottom"
+      },
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "to": "treacherous"
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "treacherous"
+      },
+      {
+        "id": "go_out",
+        "label": "GO OUT",
+        "to": "treacherous"
+      }
+    ],
+    "unresolvedInputs": [
+      "reservoir",
+      "go reservoir",
+      "enter reservoir"
+    ],
+    "suggestedMapping": null
+  },
+  {
+    "sceneId": "treacherous",
+    "sceneTitle": "Treacherous",
+    "cuePhrase": "passage",
+    "impliedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "availableExits": [
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "to": "steep"
+      },
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "to": "steep"
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "to": "resnorth"
+      },
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "to": "resnorth"
+      }
+    ],
+    "unresolvedInputs": [
+      "passage",
+      "go passage",
+      "enter passage",
+      "passageway",
+      "tunnel",
+      "corridor"
+    ],
+    "suggestedMapping": null
+  }
+]
