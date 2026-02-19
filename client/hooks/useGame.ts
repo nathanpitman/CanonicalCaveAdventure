@@ -937,6 +937,15 @@ export function useGame() {
       decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
 
+      const DEATH_SCENES: Record<string, string> = {
+        neckbroke: "You are at the bottom of the pit with a broken neck.",
+        nomake: "You didn't make it.",
+      };
+      if (DEATH_SCENES[toSceneId]) {
+        triggerDeath();
+        return;
+      }
+
       const y2Rng = lcgRandom(gameState.rngSeed);
       setGameState((prev) => ({ ...prev, rngSeed: y2Rng.nextSeed }));
       if (toSceneId === "y2" && (y2Rng.value % 4) === 0 && !gameState.flags.closingReached) {
