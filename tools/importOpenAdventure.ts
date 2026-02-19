@@ -879,6 +879,14 @@ export const SCENES: Record<string, Scene> = ${JSON.stringify(SCENES, null, 2)};
   console.log(`Item count: ${itemCount}`);
   console.log(`START_SCENE_ID: ${START_SCENE_ID}`);
   console.log(`\nImport complete!`);
+
+  console.log(`\n=== RUNNING NARRATIVE EXIT AUDIT ===`);
+  try {
+    const { execSync } = require("child_process");
+    execSync("npx tsx tools/auditNarrativeExits.ts", { stdio: "inherit" });
+  } catch (e) {
+    console.warn("Narrative exit audit failed (non-fatal):", (e as Error).message);
+  }
 }
 
 main();
