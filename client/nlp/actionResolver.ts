@@ -3,6 +3,7 @@ import { Action, Item, Scene } from "@/data/generatedStory";
 import {
   NOUN_SYNONYMS,
   DIRECTION_SYNONYMS,
+  NARRATIVE_SYNONYMS,
   resolveObjectToken,
   FuzzyCandidate,
   FuzzyResult,
@@ -104,6 +105,12 @@ function buildMovementCandidates(ctx: ResolverContext): FuzzyCandidate[] {
   for (const [synonym, canonical] of Object.entries(DIRECTION_SYNONYMS)) {
     if (seen.has(canonical) && !seen.has(synonym)) {
       candidates.push({ id: synonym, name: canonical });
+    }
+  }
+
+  for (const [synonym, actionToken] of Object.entries(NARRATIVE_SYNONYMS)) {
+    if (seen.has(actionToken) && !seen.has(synonym)) {
+      candidates.push({ id: actionToken, name: synonym });
     }
   }
 
@@ -252,12 +259,12 @@ function resolveMove(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
 
     const moveCandidates = buildMovementCandidates(ctx);
     const fuzzy = applyFuzzyMovement(parsed.direction, moveCandidates);
-    if (fuzzy.confidence === "corrected" && fuzzy.matchId) {
+    if ((fuzzy.confidence === "exact" || fuzzy.confidence === "corrected") && fuzzy.matchId) {
       const matchedAction = availableActions.find(a =>
         a.id === `go_${fuzzy.matchId}` || a.id.replace(/^go_/, "") === fuzzy.matchId
       );
       if (matchedAction && matchedAction.to) {
-        const note = fuzzy.correctedFrom
+        const note = fuzzy.confidence === "corrected" && fuzzy.correctedFrom
           ? ` ${correctionNote(fuzzy.correctedFrom, fuzzy.suggestion || fuzzy.matchId)}`
           : "";
         return { type: "action", action: matchedAction, correction: note || undefined };

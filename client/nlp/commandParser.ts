@@ -2,6 +2,7 @@ import {
   STOPWORDS,
   ARTICLES,
   DIRECTION_SYNONYMS,
+  NARRATIVE_SYNONYMS,
   VERB_SYNONYMS,
   MOVE_VERBS,
   TARGET_FIRST_VERBS,
@@ -194,8 +195,20 @@ function tryStructuredUse(text: string, out: ParsedCommand): boolean {
   return false;
 }
 
+function tryNarrativeSynonym(text: string, out: ParsedCommand): boolean {
+  const narrativeToken = NARRATIVE_SYNONYMS[text];
+  if (narrativeToken) {
+    out.intent = "move";
+    out.locationPhrase = narrativeToken;
+    return true;
+  }
+  return false;
+}
+
 function tryMovement(text: string, tokens: string[], out: ParsedCommand): boolean {
-  const goToPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(to|toward|towards|into)\s+(.+)$/;
+  if (tryNarrativeSynonym(text, out)) return true;
+
+  const goToPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb|follow)\s+(to|toward|towards|into)\s+(.+)$/;
   const goToMatch = text.match(goToPattern);
   if (goToMatch) {
     const noun = stripArticles(goToMatch[3]);
@@ -213,7 +226,7 @@ function tryMovement(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const dirPrefixPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb)\s+(.+)$/;
+  const dirPrefixPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb|follow)\s+(.+)$/;
   const dirMatch = text.match(dirPrefixPattern);
   if (dirMatch) {
     const rest = dirMatch[2].replace(/ward(s)?$/i, "");
@@ -221,6 +234,19 @@ function tryMovement(text: string, tokens: string[], out: ParsedCommand): boolea
     if (canonical) {
       out.intent = "move";
       out.direction = canonical;
+      return true;
+    }
+    const narrativeToken = NARRATIVE_SYNONYMS[rest];
+    if (narrativeToken) {
+      out.intent = "move";
+      out.locationPhrase = narrativeToken;
+      return true;
+    }
+    const strippedRest = stripArticles(rest);
+    const narrativeStripped = NARRATIVE_SYNONYMS[strippedRest];
+    if (narrativeStripped) {
+      out.intent = "move";
+      out.locationPhrase = narrativeStripped;
       return true;
     }
     const noun = stripArticles(rest);
@@ -236,6 +262,12 @@ function tryMovement(text: string, tokens: string[], out: ParsedCommand): boolea
     if (canonical) {
       out.intent = "move";
       out.direction = canonical;
+      return true;
+    }
+    const narrativeToken = NARRATIVE_SYNONYMS[tokens[0]];
+    if (narrativeToken) {
+      out.intent = "move";
+      out.locationPhrase = narrativeToken;
       return true;
     }
   }
