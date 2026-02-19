@@ -858,8 +858,8 @@ export function useGame() {
 
   const handleMove = useCallback(
     (toSceneId: string) => {
-      const DEATH_SCENES = ["neckbroke", "nomake"];
-      if (DEATH_SCENES.includes(gameState.sceneId)) {
+      const deathSceneIds = ["neckbroke", "nomake"];
+      if (deathSceneIds.includes(gameState.sceneId)) {
         return;
       }
 
@@ -942,11 +942,7 @@ export function useGame() {
       decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
 
-      const DEATH_SCENES: Record<string, string> = {
-        neckbroke: "You are at the bottom of the pit with a broken neck.",
-        nomake: "You didn't make it.",
-      };
-      if (DEATH_SCENES[toSceneId]) {
+      if (deathSceneIds.includes(toSceneId)) {
         triggerDeath();
         return;
       }
@@ -965,8 +961,8 @@ export function useGame() {
   );
 
   const handleGoBack = useCallback(() => {
-    const DEATH_SCENES = ["neckbroke", "nomake"];
-    if (DEATH_SCENES.includes(gameState.sceneId)) {
+    const deathSceneIds = ["neckbroke", "nomake"];
+    if (deathSceneIds.includes(gameState.sceneId)) {
       addMessage("system", "You're dead. You can't go anywhere.");
       return;
     }
@@ -1313,6 +1309,13 @@ export function useGame() {
   const parseCommand = useCallback(
     (input: string) => {
       const rawInput = input.trim();
+
+      if (gameState.pendingPrompt) {
+        const lower = rawInput.toLowerCase();
+        if (lower !== "yes" && lower !== "no" && lower !== "y" && lower !== "n") {
+          return;
+        }
+      }
 
       addMessage("action", `> ${rawInput}`);
 
