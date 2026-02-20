@@ -471,6 +471,7 @@ export function useGame() {
       }));
 
       if (newTurns >= hint.turns) {
+        addMessage("system", hint.question);
         setGameState(prev => ({
           ...prev,
           pendingPrompt: {
@@ -509,6 +510,8 @@ export function useGame() {
 
     const obituaryIndex = Math.min(numdie, OBITUARIES.length - 1);
     const obituary = OBITUARIES[obituaryIndex];
+
+    addMessage("narration", obituary.query);
 
     setGameState(prev => ({
       ...prev,
@@ -595,7 +598,6 @@ export function useGame() {
           addMessage("narration", getSceneDescription("building"));
         }, 500);
       } else {
-        addMessage("narration", "Very well. Game over.");
         setGameState(prev => ({
           ...prev,
           pendingPrompt: null,
@@ -1309,10 +1311,7 @@ export function useGame() {
       const rawInput = input.trim();
 
       if (gameState.pendingPrompt) {
-        const lower = rawInput.toLowerCase();
-        if (lower !== "yes" && lower !== "no" && lower !== "y" && lower !== "n") {
-          return;
-        }
+        return;
       }
 
       const sentenceCased = rawInput.charAt(0).toUpperCase() + rawInput.slice(1).toLowerCase();

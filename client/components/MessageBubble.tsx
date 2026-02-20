@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     borderTopColor: "transparent",
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    marginLeft: -1,
     marginBottom: 0,
   },
   playerText: {

@@ -14,7 +14,6 @@ import { MessageBubble } from "@/components/MessageBubble";
 import { CommandInput } from "@/components/CommandInput";
 import { GameHeader } from "@/components/GameHeader";
 import { HelpModal } from "@/components/HelpModal";
-import { PendingPromptModal } from "@/components/PendingPromptModal";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useGame } from "@/hooks/useGame";
@@ -68,6 +67,91 @@ export default function GameScreen() {
     );
   }
 
+  const pendingPrompt = gameState.pendingPrompt;
+  const isObituaryPrompt = pendingPrompt?.type === "obituary";
+
+  const renderBottomBar = () => {
+    if (gameOver) {
+      return (
+        <View
+          style={[
+            styles.promptBar,
+            {
+              backgroundColor: theme.backgroundDefault,
+              borderTopColor: theme.backgroundSecondary,
+              paddingBottom: Math.max(insets.bottom, 8),
+            },
+            Platform.OS === "web" && {
+              paddingBottom: `calc(8px + env(safe-area-inset-bottom, 0px))` as any,
+            },
+          ]}
+        >
+          <Pressable
+            onPress={handleNewGame}
+            style={[styles.promptButtonFull, { backgroundColor: theme.primary }]}
+            testID="play-again-button"
+          >
+            <ThemedText style={[styles.promptButtonText, { color: theme.buttonText }]}>
+              Play Again
+            </ThemedText>
+          </Pressable>
+        </View>
+      );
+    }
+
+    if (pendingPrompt) {
+      const noLabel = isObituaryPrompt ? "Restart Story" : "No";
+      const onNo = isObituaryPrompt
+        ? () => handleNewGame()
+        : () => handlePromptResponse(false);
+
+      return (
+        <View
+          style={[
+            styles.promptBar,
+            {
+              backgroundColor: theme.backgroundDefault,
+              borderTopColor: theme.backgroundSecondary,
+              paddingBottom: Math.max(insets.bottom, 8),
+            },
+            Platform.OS === "web" && {
+              paddingBottom: `calc(8px + env(safe-area-inset-bottom, 0px))` as any,
+            },
+          ]}
+        >
+          <View style={styles.promptButtonRow}>
+            <Pressable
+              onPress={() => handlePromptResponse(true)}
+              style={[styles.promptButton, { backgroundColor: theme.primary }]}
+              testID="prompt-yes"
+            >
+              <ThemedText style={[styles.promptButtonText, { color: theme.buttonText }]}>
+                Yes
+              </ThemedText>
+            </Pressable>
+            <Pressable
+              onPress={onNo}
+              style={[styles.promptButton, { backgroundColor: theme.backgroundTertiary }]}
+              testID="prompt-no"
+            >
+              <ThemedText style={[styles.promptButtonText, { color: theme.text }]}>
+                {noLabel}
+              </ThemedText>
+            </Pressable>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <CommandInput
+        onSubmit={parseCommand}
+        onHelp={() => setHelpVisible(true)}
+        onRestart={handleNewGame}
+      />
+    );
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <GameHeader
@@ -91,45 +175,10 @@ export default function GameScreen() {
           }}
         />
 
-        {gameOver ? (
-          <View
-            style={[
-              styles.gameOverBar,
-              {
-                backgroundColor: theme.backgroundDefault,
-                borderTopColor: theme.backgroundSecondary,
-                paddingBottom: Math.max(insets.bottom, 8),
-              },
-              Platform.OS === "web" && {
-                paddingBottom: `calc(8px + env(safe-area-inset-bottom, 0px))` as any,
-              },
-            ]}
-          >
-            <Pressable
-              onPress={handleNewGame}
-              style={[styles.playAgainButton, { backgroundColor: theme.primary }]}
-              testID="play-again-button"
-            >
-              <ThemedText style={[styles.playAgainText, { color: theme.buttonText }]}>
-                Play Again
-              </ThemedText>
-            </Pressable>
-          </View>
-        ) : (
-          <CommandInput
-            onSubmit={parseCommand}
-            onHelp={() => setHelpVisible(true)}
-            onRestart={handleNewGame}
-          />
-        )}
+        {renderBottomBar()}
       </KeyboardAvoidingView>
 
       <HelpModal visible={helpVisible} onClose={() => setHelpVisible(false)} />
-      <PendingPromptModal
-        prompt={gameState.pendingPrompt}
-        onYes={() => handlePromptResponse(true)}
-        onNo={() => handlePromptResponse(false)}
-      />
     </View>
   );
 }
@@ -150,19 +199,30 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     paddingBottom: Spacing.md,
   },
-  gameOverBar: {
+  promptBar: {
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.lg,
     borderTopWidth: 1,
   },
-  playAgainButton: {
+  promptButtonRow: {
+    flexDirection: "row",
+    gap: Spacing.md,
+  },
+  promptButton: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.full,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  promptButtonFull: {
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.full,
     alignItems: "center",
     justifyContent: "center",
   },
-  playAgainText: {
+  promptButtonText: {
     fontSize: 16,
     fontWeight: "600",
   },
