@@ -304,11 +304,6 @@ function resolveMove(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
       }
     }
 
-    const enterAction = moveActions.find(a => a.id === "go_enter" || a.id === "go_in");
-    if (enterAction && enterAction.to) {
-      return { type: "action", action: enterAction };
-    }
-
     const eventAction = availableActions.find(a => {
       if (a.type !== "event" || !(a as any).message) return false;
       const label = a.label.toLowerCase();
@@ -336,6 +331,11 @@ function resolveMove(parsed: ParsedCommand, ctx: ResolverContext): Resolution {
 
     if (fuzzy.confidence === "suggestion" && fuzzy.suggestion) {
       return { type: "message", text: `Did you mean '${fuzzy.suggestion}'?` };
+    }
+
+    const enterAction = moveActions.find(a => a.id === "go_enter" || a.id === "go_in");
+    if (enterAction && enterAction.to) {
+      return { type: "action", action: enterAction };
     }
 
     return { type: "message", text: "You can't go that way." };
