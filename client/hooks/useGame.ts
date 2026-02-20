@@ -983,7 +983,7 @@ export function useGame() {
       return;
     }
 
-    addMessage("action", "> GO BACK");
+    addMessage("action", "Go back");
     
     if (isCurrentlyDark() && !gameOver) {
       const pitChance = Math.random();
@@ -1168,8 +1168,6 @@ export function useGame() {
 
   const handleAction = useCallback(
     (action: Action) => {
-      addMessage("action", `> ${action.label}`);
-
       switch (action.type) {
         case "command":
           if (action.command === "look") {
@@ -1317,7 +1315,8 @@ export function useGame() {
         }
       }
 
-      addMessage("action", `> ${rawInput}`);
+      const sentenceCased = rawInput.charAt(0).toUpperCase() + rawInput.slice(1).toLowerCase();
+      addMessage("action", sentenceCased);
 
       const availableActions = getAvailableActions();
       const parsed = parseInput(rawInput);
