@@ -71,30 +71,42 @@ export default function GameScreen() {
   const isObituaryPrompt = pendingPrompt?.type === "obituary";
 
   const renderBottomBar = () => {
+    const safeAreaBottom = Platform.OS === "web" ? 0 : insets.bottom;
+
     if (gameOver) {
       return (
-        <View
-          style={[
-            styles.promptBar,
-            {
-              backgroundColor: theme.backgroundDefault,
-              borderTopColor: theme.backgroundSecondary,
-              paddingBottom: Math.max(insets.bottom, 8),
-            },
-            Platform.OS === "web" && {
-              paddingBottom: `calc(8px + env(safe-area-inset-bottom, 0px))` as any,
-            },
-          ]}
-        >
-          <Pressable
-            onPress={handleNewGame}
-            style={[styles.promptButtonFull, { backgroundColor: theme.primary }]}
-            testID="play-again-button"
+        <View style={{ backgroundColor: theme.backgroundDefault }}>
+          <View
+            style={[
+              styles.promptBar,
+              {
+                backgroundColor: theme.backgroundDefault,
+                borderTopColor: theme.backgroundSecondary,
+              },
+            ]}
           >
-            <ThemedText style={[styles.promptButtonText, { color: theme.buttonText }]}>
-              Play Again
-            </ThemedText>
-          </Pressable>
+            <Pressable
+              onPress={handleNewGame}
+              style={[styles.promptButtonFull, { backgroundColor: theme.primary }]}
+              testID="play-again-button"
+            >
+              <ThemedText style={[styles.promptButtonText, { color: theme.buttonText }]}>
+                Play Again
+              </ThemedText>
+            </Pressable>
+          </View>
+          <View
+            style={[
+              styles.safeAreaBleed,
+              {
+                backgroundColor: theme.backgroundDefault,
+                height: safeAreaBottom,
+              },
+              Platform.OS === "web" && {
+                height: `env(safe-area-inset-bottom, 0px)` as any,
+              },
+            ]}
+          />
         </View>
       );
     }
@@ -106,39 +118,49 @@ export default function GameScreen() {
         : () => handlePromptResponse(false);
 
       return (
-        <View
-          style={[
-            styles.promptBar,
-            {
-              backgroundColor: theme.backgroundDefault,
-              borderTopColor: theme.backgroundSecondary,
-              paddingBottom: Math.max(insets.bottom, 8),
-            },
-            Platform.OS === "web" && {
-              paddingBottom: `calc(8px + env(safe-area-inset-bottom, 0px))` as any,
-            },
-          ]}
-        >
-          <View style={styles.promptButtonRow}>
-            <Pressable
-              onPress={() => handlePromptResponse(true)}
-              style={[styles.promptButton, { backgroundColor: theme.primary }]}
-              testID="prompt-yes"
-            >
-              <ThemedText style={[styles.promptButtonText, { color: theme.buttonText }]}>
-                Yes
-              </ThemedText>
-            </Pressable>
-            <Pressable
-              onPress={onNo}
-              style={[styles.promptButton, { backgroundColor: theme.backgroundTertiary }]}
-              testID="prompt-no"
-            >
-              <ThemedText style={[styles.promptButtonText, { color: theme.text }]}>
-                {noLabel}
-              </ThemedText>
-            </Pressable>
+        <View style={{ backgroundColor: theme.backgroundDefault }}>
+          <View
+            style={[
+              styles.promptBar,
+              {
+                backgroundColor: theme.backgroundDefault,
+                borderTopColor: theme.backgroundSecondary,
+              },
+            ]}
+          >
+            <View style={styles.promptButtonRow}>
+              <Pressable
+                onPress={() => handlePromptResponse(true)}
+                style={[styles.promptButton, { backgroundColor: theme.primary }]}
+                testID="prompt-yes"
+              >
+                <ThemedText style={[styles.promptButtonText, { color: theme.buttonText }]}>
+                  Yes
+                </ThemedText>
+              </Pressable>
+              <Pressable
+                onPress={onNo}
+                style={[styles.promptButton, { backgroundColor: theme.backgroundTertiary }]}
+                testID="prompt-no"
+              >
+                <ThemedText style={[styles.promptButtonText, { color: theme.text }]}>
+                  {noLabel}
+                </ThemedText>
+              </Pressable>
+            </View>
           </View>
+          <View
+            style={[
+              styles.safeAreaBleed,
+              {
+                backgroundColor: theme.backgroundDefault,
+                height: safeAreaBottom,
+              },
+              Platform.OS === "web" && {
+                height: `env(safe-area-inset-bottom, 0px)` as any,
+              },
+            ]}
+          />
         </View>
       );
     }
@@ -201,8 +223,11 @@ const styles = StyleSheet.create({
   },
   promptBar: {
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.lg,
+    paddingVertical: Spacing.lg,
     borderTopWidth: 1,
+  },
+  safeAreaBleed: {
+    width: "100%",
   },
   promptButtonRow: {
     flexDirection: "row",

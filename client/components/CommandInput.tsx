@@ -32,9 +32,10 @@ interface CommandInputProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const COLLAPSED_HEIGHT = 68;
-const EXPANDED_HEIGHT = 158;
-const WEB_BOTTOM_BASE = 8;
+const CONTENT_COLLAPSED_HEIGHT = 68;
+const MENU_SPACING = Spacing.md;
+const MENU_BUTTON_HEIGHT = 40;
+const CONTENT_EXPANDED_HEIGHT = CONTENT_COLLAPSED_HEIGHT + MENU_SPACING + MENU_BUTTON_HEIGHT + MENU_SPACING;
 const DRAG_THRESHOLD = 50;
 
 const PLACEHOLDER_EXAMPLES = [
@@ -67,11 +68,9 @@ export function CommandInput({
   const isExpanded = useSharedValue(false);
   const startY = useSharedValue(0);
 
-  const bottomPad = Platform.OS === "web"
-    ? Math.max(insets.bottom, WEB_BOTTOM_BASE)
-    : Math.max(insets.bottom, Spacing.xs);
-  const totalCollapsedHeight = COLLAPSED_HEIGHT + bottomPad;
-  const totalExpandedHeight = EXPANDED_HEIGHT + bottomPad;
+  const safeAreaBottom = Platform.OS === "web" ? 0 : insets.bottom;
+  const totalCollapsedHeight = CONTENT_COLLAPSED_HEIGHT + MENU_SPACING;
+  const totalExpandedHeight = CONTENT_EXPANDED_HEIGHT + MENU_SPACING;
 
   useEffect(() => {
     if (isFocused || command.length > 0) return;
@@ -210,104 +209,114 @@ export function CommandInput({
 
   return (
     <>
-      <GestureDetector gesture={panGesture}>
-        <Animated.View
-          style={[
-            styles.container,
-            {
-              backgroundColor: theme.backgroundDefault,
-              borderTopColor: theme.backgroundSecondary,
-              paddingBottom: bottomPad,
-            },
-            Platform.OS === "web" && {
-              paddingBottom: `calc(${WEB_BOTTOM_BASE}px + env(safe-area-inset-bottom, 0px))` as any,
-            },
-            containerAnimatedStyle,
-          ]}
-        >
-          <View style={styles.handleContainer}>
-            <Animated.View style={[styles.handleIndicator, handleIndicatorStyle]}>
-              <Feather name="chevron-up" size={20} color={theme.textSecondary} />
-            </Animated.View>
-          </View>
-
-          <View
+      <View style={{ backgroundColor: theme.backgroundDefault }}>
+        <GestureDetector gesture={panGesture}>
+          <Animated.View
             style={[
-              styles.inputContainer,
+              styles.container,
               {
-                backgroundColor: theme.backgroundSecondary,
-                borderColor: isFocused ? theme.primary : "transparent",
+                backgroundColor: theme.backgroundDefault,
+                borderTopColor: theme.backgroundSecondary,
               },
+              containerAnimatedStyle,
             ]}
           >
-            <View style={styles.inputWrapper}>
-              {!isFocused && command.length === 0 ? (
-                <Animated.View style={[styles.placeholderContainer, placeholderAnimatedStyle]}>
-                  <ThemedText style={[styles.placeholder, { color: theme.textDisabled }]}>
-                    {currentPlaceholder}
-                  </ThemedText>
-                </Animated.View>
-              ) : null}
-              <TextInput
-                ref={inputRef}
-                style={[styles.input, { color: theme.text }, Platform.OS === "web" && { outlineStyle: "none" as any }]}
-                placeholderTextColor="transparent"
-                value={command}
-                onChangeText={setCommand}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                onSubmitEditing={handleSubmit}
-                returnKeyType="send"
-                autoCapitalize="none"
-                autoCorrect={false}
-                keyboardAppearance={isDark ? "dark" : "light"}
-                testID="command-input"
-              />
+            <View style={styles.handleContainer}>
+              <Animated.View style={[styles.handleIndicator, handleIndicatorStyle]}>
+                <Feather name="chevron-up" size={20} color={theme.textSecondary} />
+              </Animated.View>
             </View>
-            <AnimatedPressable
-              onPress={handleSubmit}
-              onPressIn={handleButtonPressIn}
-              onPressOut={handleButtonPressOut}
+
+            <View
               style={[
-                styles.sendButton,
+                styles.inputContainer,
                 {
-                  backgroundColor: command.trim() ? theme.primary : theme.backgroundTertiary,
+                  backgroundColor: theme.backgroundSecondary,
+                  borderColor: isFocused ? theme.primary : "transparent",
                 },
-                buttonAnimatedStyle,
               ]}
-              testID="send-button"
             >
-              <Feather
-                name="send"
-                size={18}
-                color={command.trim() ? theme.buttonText : theme.textDisabled}
-              />
-            </AnimatedPressable>
-          </View>
+              <View style={styles.inputWrapper}>
+                {!isFocused && command.length === 0 ? (
+                  <Animated.View style={[styles.placeholderContainer, placeholderAnimatedStyle]}>
+                    <ThemedText style={[styles.placeholder, { color: theme.textDisabled }]}>
+                      {currentPlaceholder}
+                    </ThemedText>
+                  </Animated.View>
+                ) : null}
+                <TextInput
+                  ref={inputRef}
+                  style={[styles.input, { color: theme.text }, Platform.OS === "web" && { outlineStyle: "none" as any }]}
+                  placeholderTextColor="transparent"
+                  value={command}
+                  onChangeText={setCommand}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  onSubmitEditing={handleSubmit}
+                  returnKeyType="send"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardAppearance={isDark ? "dark" : "light"}
+                  testID="command-input"
+                />
+              </View>
+              <AnimatedPressable
+                onPress={handleSubmit}
+                onPressIn={handleButtonPressIn}
+                onPressOut={handleButtonPressOut}
+                style={[
+                  styles.sendButton,
+                  {
+                    backgroundColor: command.trim() ? theme.primary : theme.backgroundTertiary,
+                  },
+                  buttonAnimatedStyle,
+                ]}
+                testID="send-button"
+              >
+                <Feather
+                  name="arrow-up"
+                  size={20}
+                  color={command.trim() ? theme.buttonText : theme.textDisabled}
+                />
+              </AnimatedPressable>
+            </View>
 
-          <Animated.View style={[styles.menuContainer, menuOpacity]}>
-            <Pressable
-              onPress={handleHelpPress}
-              style={[styles.menuButton, { backgroundColor: theme.backgroundSecondary }]}
-              testID="help-button"
-            >
-              <Feather name="help-circle" size={20} color={theme.primary} />
-              <ThemedText style={styles.menuLabel}>How to Play</ThemedText>
-            </Pressable>
+            <Animated.View style={[styles.menuContainer, menuOpacity]}>
+              <Pressable
+                onPress={handleHelpPress}
+                style={[styles.menuButton, { backgroundColor: theme.backgroundSecondary }]}
+                testID="help-button"
+              >
+                <Feather name="help-circle" size={20} color={theme.primary} />
+                <ThemedText style={styles.menuLabel}>How to Play</ThemedText>
+              </Pressable>
 
-            <Pressable
-              onPress={handleRestartPress}
-              style={[styles.menuButton, { backgroundColor: theme.backgroundSecondary }]}
-              testID="restart-button"
-            >
-              <Feather name="rotate-ccw" size={20} color={theme.danger} />
-              <ThemedText style={[styles.menuLabel, { color: theme.danger }]}>
-                Restart Story
-              </ThemedText>
-            </Pressable>
+              <Pressable
+                onPress={handleRestartPress}
+                style={[styles.menuButton, { backgroundColor: theme.backgroundSecondary }]}
+                testID="restart-button"
+              >
+                <Feather name="rotate-ccw" size={20} color={theme.danger} />
+                <ThemedText style={[styles.menuLabel, { color: theme.danger }]}>
+                  Restart Story
+                </ThemedText>
+              </Pressable>
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-      </GestureDetector>
+        </GestureDetector>
+        <View
+          style={[
+            styles.safeAreaBleed,
+            {
+              backgroundColor: theme.backgroundDefault,
+              height: safeAreaBottom,
+            },
+            Platform.OS === "web" && {
+              height: `env(safe-area-inset-bottom, 0px)` as any,
+            },
+          ]}
+        />
+      </View>
 
       <Modal
         visible={showConfirm}
@@ -392,9 +401,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  safeAreaBleed: {
+    width: "100%",
+  },
   menuContainer: {
     flexDirection: "row",
-    marginTop: Spacing.md,
+    marginTop: MENU_SPACING,
+    marginBottom: MENU_SPACING,
     gap: Spacing.sm,
   },
   menuButton: {
