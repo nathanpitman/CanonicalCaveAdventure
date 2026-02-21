@@ -443,11 +443,25 @@ export function useGame() {
     }
   }, [gameState]);
 
+  const getEffectiveHints = useCallback((scene: typeof SCENES[string]): number[] => {
+    if (scene.hints && scene.hints.length > 0) return scene.hints;
+    const moveActions = scene.actions.filter(a => a.type === "move" && a.id !== "look");
+    if (moveActions.length === 1 && moveActions[0].to) {
+      const parentScene = SCENES[moveActions[0].to];
+      if (parentScene && parentScene.hints && parentScene.hints.length > 0) {
+        return parentScene.hints;
+      }
+    }
+    return [];
+  }, []);
+
   const checkHints = useCallback(() => {
     const scene = SCENES[gameState.sceneId];
-    if (!scene || !scene.hints || scene.hints.length === 0) return;
+    if (!scene) return;
+    const effectiveHints = getEffectiveHints(scene);
+    if (effectiveHints.length === 0) return;
 
-    for (const hintNum of scene.hints) {
+    for (const hintNum of effectiveHints) {
       if (gameState.hintState.hintsGiven.includes(hintNum)) continue;
       if (!isHintEligible(hintNum)) continue;
 
@@ -481,7 +495,7 @@ export function useGame() {
         return;
       }
     }
-  }, [gameState, isHintEligible]);
+  }, [gameState, isHintEligible, getEffectiveHints]);
 
   const triggerDeath = useCallback((deathMessage?: string) => {
     if (deathMessage) {
