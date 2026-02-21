@@ -419,6 +419,61 @@ function main() {
     }
   }
 
+  // Build hint eligibility conditions keyed by hint name.
+  // Scene-level checking (which scenes a hint can appear at) is already
+  // handled by the hints[] array on each scene.  These conditions capture
+  // the additional game-state requirements that must be true for the hint
+  // to be eligible.  By pairing them with the hint NAME (which comes from
+  // the YAML) the mapping survives re-imports even if hint numbers change.
+  interface HintCondition {
+    type: "flag_false" | "flag_true" | "not_carrying" | "carrying" | "treasure_count" | "always";
+    flag?: string;
+    item?: string;
+    items?: string[];
+    threshold?: number;
+  }
+  const HINT_CONDITIONS: Record<number, HintCondition> = {};
+  for (const entry of HINTS) {
+    switch (entry.name) {
+      case "CAVE":
+        HINT_CONDITIONS[entry.number] = { type: "flag_false", flag: "grateOpen" };
+        break;
+      case "BIRD":
+        HINT_CONDITIONS[entry.number] = { type: "not_carrying", item: "bird" };
+        break;
+      case "SNAKE":
+        HINT_CONDITIONS[entry.number] = { type: "not_carrying", item: "bird" };
+        break;
+      case "MAZE":
+        HINT_CONDITIONS[entry.number] = { type: "not_carrying", item: "coins" };
+        break;
+      case "DARK":
+        HINT_CONDITIONS[entry.number] = { type: "flag_false", flag: "crystalBridge" };
+        break;
+      case "WITT":
+      case "CLIFF":
+        HINT_CONDITIONS[entry.number] = { type: "always" };
+        break;
+      case "WOODS":
+        HINT_CONDITIONS[entry.number] = { type: "not_carrying", item: "emerald" };
+        break;
+      case "OGRE":
+        HINT_CONDITIONS[entry.number] = { type: "carrying", item: "emerald" };
+        break;
+      case "JADE":
+        HINT_CONDITIONS[entry.number] = {
+          type: "treasure_count",
+          items: ["nugget", "coins", "eggs", "trident", "emerald", "pyramid",
+                  "ruby", "sapph", "pearl", "chest", "rug", "spices", "chain"],
+          threshold: 12,
+        };
+        break;
+      default:
+        HINT_CONDITIONS[entry.number] = { type: "always" };
+        break;
+    }
+  }
+
   // Build obituaries table
   interface ObituaryEntry {
     query: string;
@@ -993,6 +1048,14 @@ export interface Item {
   };
 }
 
+export interface HintCondition {
+  type: "flag_false" | "flag_true" | "not_carrying" | "carrying" | "treasure_count" | "always";
+  flag?: string;
+  item?: string;
+  items?: string[];
+  threshold?: number;
+}
+
 export interface HintEntry {
   number: number;
   name: string;
@@ -1027,6 +1090,8 @@ export const CANON_TRAVEL_VERBS: string[] = ${JSON.stringify([...canonTravelVerb
 export const CANON_OBJECTS: { id: string; name: string }[] = ${JSON.stringify(canonObjects, null, 2)};
 
 export const HINTS: HintEntry[] = ${JSON.stringify(HINTS, null, 2)};
+
+export const HINT_CONDITIONS: Record<number, HintCondition> = ${JSON.stringify(HINT_CONDITIONS, null, 2)};
 
 export const OBITUARIES: ObituaryEntry[] = ${JSON.stringify(OBITUARIES, null, 2)};
 
