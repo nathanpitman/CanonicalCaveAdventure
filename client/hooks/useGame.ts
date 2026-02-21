@@ -423,18 +423,14 @@ export function useGame() {
     const gs = gameState;
     switch (hintNumber) {
       case 1: return !gs.flags.grateOpen;
-      case 2: return gs.sceneId === "birdchamber" && gs.inventory.includes("rod") && !gs.inventory.includes("bird");
-      case 3: return gs.sceneId === "snakeblock" && !gs.inventory.includes("bird");
-      case 4: {
-        const mazeScenes = ["maze1", "maze2", "maze3", "maze4", "maze5", "maze6", "maze7",
-          "maze8", "maze9", "maze10", "maze11", "maze12", "maze13", "maze14"];
-        return mazeScenes.includes(gs.sceneId) && !gs.inventory.includes("coins");
-      }
-      case 5: return gs.sceneId === "westside" && !gs.flags.crystalBridge;
-      case 6: return gs.sceneId === "deadend13";
+      case 2: return gs.inventory.includes("rod") && !gs.inventory.includes("bird");
+      case 3: return !gs.inventory.includes("bird");
+      case 4: return !gs.inventory.includes("coins");
+      case 5: return !gs.flags.crystalBridge;
+      case 6: return true;
       case 7: return true;
       case 8: return !gs.inventory.includes("emerald");
-      case 9: return gs.sceneId === "alcove" && gs.inventory.includes("emerald");
+      case 9: return gs.inventory.includes("emerald");
       case 10: {
         const treasureItems = ["nugget", "coins", "eggs", "trident", "emerald", "pyramid",
           "ruby", "sapph", "pearl", "chest", "rug", "spices", "chain"];
