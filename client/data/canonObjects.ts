@@ -1,3 +1,7 @@
+// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
+// Generated: 2026-02-21T21:57:23.761Z
+// Run: npx tsx tools/importOpenAdventure.ts to regenerate
+
 export const INVLIMIT = 7;
 
 export interface CanonObject {
@@ -15,43 +19,38 @@ export interface CanonObject {
 export const TREASURE_DEPOSIT_LOCATION = "building";
 
 export const OBJECT_START_LOCATIONS: Record<string, string> = {
-  keys: "building",
-  lamp: "building",
-  food: "building",
-  bottle: "building",
-  cage: "cobble",
-  rod: "debris",
-  rod2: "kinghall",
-  bird: "birdchamber",
-  nugget: "nuggetroom",
-  obj_51: "westfissure",
-  obj_52: "floorhole",
-  obj_53: "southside",
-  coins: "westside",
-  eggs: "giantroom",
-  trident: "waterfall",
-  pillow: "softroom",
-  vase: "oriental",
-  emerald: "plover",
-  pyramid: "darkroom",
-  clam: "shellroom",
-  magazine: "anteroom",
-  obj_63: "boulders2",
-  ruby: "storeroom",
-  rabbitfoot: "forest22",
-  sapph: "ledge",
-  obj_69: "reachdead",
-  axe: "_nowhere",
-  chain: "barrenroom",
-  rug: "secret_canyon_e",
-  jade: "_nowhere",
+  "keys": "building",
+  "lamp": "building",
+  "cage": "cobble",
+  "rod": "debris",
+  "bird": "birdchamber",
+  "pillow": "softroom",
+  "clam": "shellroom",
+  "magazine": "anteroom",
+  "food": "building",
+  "bottle": "building",
+  "rabbitfoot": "forest22",
+  "nugget": "nugget",
+  "obj_51": "westbank",
+  "obj_52": "floorhole",
+  "obj_53": "southside",
+  "coins": "westside",
+  "eggs": "giantroom",
+  "trident": "waterfall",
+  "vase": "oriental",
+  "emerald": "plover",
+  "pyramid": "darkroom",
+  "obj_63": "boulders2",
+  "ruby": "storeroom",
+  "sapph": "ledge",
+  "obj_69": "reachdead"
 };
 
 export const OGRE_LOCATION = "large";
 
 export const SNAKE_LOCATION = "kinghall";
-export const DRAGON_LOCATIONS = ["secret_canyon_e", "secret_canyon_n"];
-export const TROLL_LOCATIONS = ["swchasm", "nechasm"];
+export const DRAGON_LOCATIONS = ["secret4","secret6"];
+export const TROLL_LOCATIONS = ["swchasm","nechasm"];
 export const BEAR_LOCATION = "barrenroom";
 export const PLANT_LOCATION = "westpit";
 export const CLAM_LOCATION = "shellroom";
@@ -64,52 +63,80 @@ export const TREASURE_IDS: string[] = [
   "obj_52",
   "obj_53",
   "coins",
+  "chest",
   "eggs",
   "trident",
   "vase",
   "emerald",
   "pyramid",
-  "ruby",
-  "sapph",
-  "obj_63",
-  "obj_69",
-  "clam",
-  "chain",
-  "chest",
   "pearl",
   "rug",
+  "obj_63",
+  "chain",
+  "ruby",
   "jade",
   "amber",
+  "sapph",
+  "obj_69"
 ];
 
 export const TREASURE_VALUES: Record<string, number> = {
-  nugget: 12,
-  obj_51: 12,
-  obj_52: 12,
-  obj_53: 12,
-  coins: 12,
-  chest: 14,
-  eggs: 16,
-  trident: 16,
-  vase: 16,
-  emerald: 16,
-  pyramid: 16,
-  pearl: 16,
-  rug: 16,
-  obj_63: 16,
-  chain: 16,
-  ruby: 16,
-  jade: 16,
-  amber: 16,
-  sapph: 16,
-  obj_69: 16,
+  "nugget": 12,
+  "obj_51": 12,
+  "obj_52": 12,
+  "obj_53": 12,
+  "coins": 12,
+  "chest": 14,
+  "eggs": 16,
+  "trident": 16,
+  "vase": 16,
+  "emerald": 16,
+  "pyramid": 16,
+  "pearl": 16,
+  "rug": 16,
+  "obj_63": 16,
+  "chain": 16,
+  "ruby": 16,
+  "jade": 16,
+  "amber": 16,
+  "sapph": 16,
+  "obj_69": 16
 };
 
 export const IMMOVABLE_OBJECTS = new Set([
-  "grate", "steps", "door", "snake", "fissure", "plant", "plant2",
-  "stalactite", "shadow", "mirror", "dragon", "chasm", "troll", "troll2",
-  "bear", "messag", "volcano", "vend", "carpet", "ogre", "urn", "cavity",
-  "blood", "reser", "mud", "note", "sign",
+  "grate",
+  "steps",
+  "door",
+  "snake",
+  "fissure",
+  "obj_13",
+  "dwarf",
+  "mirror",
+  "plant",
+  "plant2",
+  "obj_26",
+  "obj_27",
+  "obj_29",
+  "obj_30",
+  "dragon",
+  "chasm",
+  "troll",
+  "troll2",
+  "bear",
+  "messag",
+  "volcano",
+  "vend",
+  "obj_40",
+  "ogre",
+  "urn",
+  "cavity",
+  "blood",
+  "reser",
+  "obj_47",
+  "obj_48",
+  "sign",
+  "rug",
+  "chain"
 ]);
 
 export function buildInitialObjectLocations(): Record<string, string> {
@@ -118,11 +145,11 @@ export function buildInitialObjectLocations(): Record<string, string> {
     locations[objId] = locId;
   }
   locations["snake"] = SNAKE_LOCATION;
-  locations["troll"] = "swchasm";
+  locations["troll"] = TROLL_LOCATIONS[0];
   locations["ogre"] = OGRE_LOCATION;
-  locations["dragon"] = "secret_canyon_e";
+  locations["dragon"] = DRAGON_LOCATIONS[0];
   locations["fissure"] = "eastbank";
-  locations["door"] = "immensenwpass";
+  locations["door"] = "immense";
   locations["chasm"] = "swchasm";
   return locations;
 }
