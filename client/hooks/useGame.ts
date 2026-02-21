@@ -54,6 +54,7 @@ import {
   TREASURE_DEPOSIT_LOCATION,
   IMMOVABLE_OBJECTS,
   URN_LOCATION,
+  DRAGON_LOCATIONS,
   calculateScore,
   getScoreClass,
 } from "@/data/canonObjects";
@@ -265,11 +266,11 @@ export function useGame() {
       if (sceneId === "kinghall" && !gameState.flags.snakeChased) {
         itemDescs.push("A huge green fierce snake bars the way!");
       }
-      if ((sceneId === "secret_canyon_e" || sceneId === "secret_canyon_n") && !gameState.flags.dragonDead) {
+      if (DRAGON_LOCATIONS.includes(sceneId) && !gameState.flags.dragonDead) {
         itemDescs.push("A huge green fierce dragon bars the way!");
         itemDescs.push("The dragon is sprawled out on a Persian rug!!");
       }
-      if ((sceneId === "secret_canyon_e" || sceneId === "secret_canyon_n") && gameState.flags.dragonDead) {
+      if (DRAGON_LOCATIONS.includes(sceneId) && gameState.flags.dragonDead) {
         itemDescs.push("The body of a huge green dead dragon is lying off to one side.");
         itemDescs.push("There is blood on the ground here.");
       }
@@ -1698,7 +1699,7 @@ export function useGame() {
 
         case "attack": {
           const atkTarget = resolution.targetPhrase?.toLowerCase() || "";
-          const isAtDragon = (gameState.sceneId === "secret_canyon_e" || gameState.sceneId === "secret_canyon_n") && !gameState.flags.dragonDead;
+          const isAtDragon = DRAGON_LOCATIONS.includes(gameState.sceneId) && !gameState.flags.dragonDead;
           if (isAtDragon && (atkTarget === "" || atkTarget === "dragon" || atkTarget.includes("dragon"))) {
             setGameState((prev) => ({
               ...prev,
@@ -2082,7 +2083,7 @@ export function useGame() {
         case "drink": {
           const drinkTarget = resolution.targetPhrase?.toLowerCase() || "";
           if (drinkTarget === "blood" || drinkTarget.includes("blood") || drinkTarget.includes("dragon")) {
-            if (gameState.flags.dragonDead && (gameState.sceneId === "secret_canyon_e" || gameState.sceneId === "secret_canyon_n")) {
+            if (gameState.flags.dragonDead && DRAGON_LOCATIONS.includes(gameState.sceneId)) {
               setGameState((prev) => ({
                 ...prev,
                 flags: { ...prev.flags, blooded: true },
@@ -2418,7 +2419,7 @@ export function useGame() {
             return;
           }
 
-          if (pourTarget.includes("door") && gameState.sceneId === "immensenwpass") {
+          if (pourTarget.includes("door") && gameState.sceneId === "immense") {
             if (bottleLiquid === "oil") {
               addMessage("narration", "The oil has freed up the hinges so that the door will now move, although it requires some effort.");
               setGameState((prev) => ({
