@@ -1769,19 +1769,28 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
-        "to": "neckbroke"
+        "to": "misthall",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "neckbroke" }
+        ]
       },
       {
         "id": "go_pit",
         "label": "PIT",
         "type": "move",
-        "to": "neckbroke"
+        "to": "misthall",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "neckbroke" }
+        ]
       },
       {
         "id": "go_steps",
         "label": "STEPS",
         "type": "move",
-        "to": "neckbroke"
+        "to": "misthall",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "neckbroke" }
+        ]
       },
       {
         "id": "go_crack",
@@ -1863,37 +1872,55 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
-        "to": "dome"
+        "to": "pittop",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "dome" }
+        ]
       },
       {
         "id": "go_pit",
         "label": "PIT",
         "type": "move",
-        "to": "dome"
+        "to": "pittop",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "dome" }
+        ]
       },
       {
         "id": "go_steps",
         "label": "STEPS",
         "type": "move",
-        "to": "dome"
+        "to": "pittop",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "dome" }
+        ]
       },
       {
         "id": "go_dome",
         "label": "Dome",
         "type": "move",
-        "to": "dome"
+        "to": "pittop",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "dome" }
+        ]
       },
       {
         "id": "go_passage",
         "label": "PASSAGE",
         "type": "move",
-        "to": "dome"
+        "to": "pittop",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "dome" }
+        ]
       },
       {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
-        "to": "dome"
+        "to": "pittop",
+        "conditionalRoutes": [
+          { "condition": { "type": "carry", "item": "nugget" }, "to": "dome" }
+        ]
       },
       {
         "id": "go_y2",
@@ -1962,51 +1989,38 @@ export const SCENES: Record<string, Scene> = {
         "to": "misthall"
       },
       {
-        "id": "say_cross_bridge_jump",
-        "label": "Jump",
-        "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping.",
-        "uiHint": "hidden"
+        "id": "go_jump",
+        "label": "JUMP",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "fissure", "state": "0"},
+            "message": "I respectfully suggest you go across the bridge instead of jumping."
+          }
+        ]
       },
       {
         "id": "go_forward",
         "label": "FORWARD",
         "type": "move",
-        "to": "nomake"
-      },
-      {
-        "id": "say_no_cross_over",
-        "label": "Over",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_no_cross_acros",
-        "label": "Acros",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_no_cross_west",
-        "label": "West",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_no_cross_cross",
-        "label": "Cross",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "fissure", "state": "1"},
+            "to": "nomake"
+          }
+        ]
       },
       {
         "id": "go_over",
         "label": "Over",
         "type": "move",
-        "to": "westbank"
+        "to": "westbank",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "fissure", "state": "1"},
+            "message": "There is no way across the fissure."
+          }
+        ]
       }
     ],
     "conditions": {
@@ -2099,43 +2113,85 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
-        "to": "floorhole"
+        "to": "snakeblock",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "snake", "state": "0"},
+            "to": "floorhole"
+          }
+        ]
       },
       {
         "id": "go_right",
         "label": "RIGHT",
         "type": "move",
-        "to": "floorhole"
+        "to": "snakeblock",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "snake", "state": "0"},
+            "to": "floorhole"
+          }
+        ]
       },
       {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
-        "to": "southside"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "snake", "state": "0"},
+            "to": "southside"
+          }
+        ]
       },
       {
         "id": "go_left",
         "label": "LEFT",
         "type": "move",
-        "to": "southside"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "snake", "state": "0"},
+            "to": "southside"
+          }
+        ]
       },
       {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
-        "to": "westside"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "snake", "state": "0"},
+            "to": "westside"
+          }
+        ]
       },
       {
         "id": "go_forward",
         "label": "FORWARD",
         "type": "move",
-        "to": "westside"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "snake", "state": "0"},
+            "to": "westside"
+          }
+        ]
       },
       {
         "id": "go_sw",
         "label": "GO SOUTHWEST",
         "type": "move",
-        "to": "secret3"
+        "to": "secret3",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 35},
+            "to": "secret3"
+          },
+          {
+            "condition": {"type": "with", "object": "snake"},
+            "to": "snakeblock"
+          }
+        ]
       },
       {
         "id": "go_secre",
@@ -2352,7 +2408,38 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_climb",
         "label": "CLIMB",
         "type": "move",
-        "to": "building1"
+        "to": "climbstalk",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "plant", "state": "2"},
+            "to": "building1"
+          }
+        ]
+      }
+    ],
+    "conditions": {
+      "DEEP": true
+    }
+  },
+  "building1": {
+    "id": "building1",
+    "title": "Middle Of Plant",
+    "description": {
+      "long": "You are clinging to the plant in the middle of the pit.",
+      "short": "You are clinging to the plant in the middle of the pit."
+    },
+    "actions": [
+      {
+        "id": "go_default",
+        "label": "CONTINUE",
+        "type": "move",
+        "to": "planttop",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "plant", "state": "1"},
+            "to": "noclimb"
+          }
+        ]
       }
     ],
     "conditions": {
@@ -2399,51 +2486,38 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
-        "id": "say_cross_bridge_jump",
-        "label": "Jump",
-        "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping.",
-        "uiHint": "hidden"
+        "id": "go_jump",
+        "label": "JUMP",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "fissure", "state": "0"},
+            "message": "I respectfully suggest you go across the bridge instead of jumping."
+          }
+        ]
       },
       {
         "id": "go_forward",
         "label": "FORWARD",
         "type": "move",
-        "to": "nomake"
-      },
-      {
-        "id": "say_no_cross_over",
-        "label": "Over",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_no_cross_acros",
-        "label": "Acros",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_no_cross_east",
-        "label": "East",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_no_cross_cross",
-        "label": "Cross",
-        "type": "event",
-        "message": "There is no way across the fissure.",
-        "uiHint": "hidden"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "fissure", "state": "1"},
+            "to": "nomake"
+          }
+        ]
       },
       {
         "id": "go_over",
         "label": "Over",
         "type": "move",
-        "to": "eastbank"
+        "to": "eastbank",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "fissure", "state": "1"},
+            "message": "There is no way across the fissure."
+          }
+        ]
       },
       {
         "id": "go_north",
@@ -3790,7 +3864,17 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
-        "to": "mazeend5"
+        "to": "alike4",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 40},
+            "to": "alike6"
+          },
+          {
+            "condition": {"type": "pct", "percent": 50},
+            "to": "alike9"
+          }
+        ]
       },
       {
         "id": "go_east",
@@ -4236,11 +4320,15 @@ export const SCENES: Record<string, Scene> = {
         "to": "swisscheese"
       },
       {
-        "id": "say_futile_crawl_south",
-        "label": "South",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 65},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
       },
       {
         "id": "go_slab",
@@ -4249,43 +4337,48 @@ export const SCENES: Record<string, Scene> = {
         "to": "slab"
       },
       {
-        "id": "say_futile_crawl_upwar",
-        "label": "Upwar",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
-        "to": "secret2"
-      },
-      {
-        "id": "say_futile_crawl_north",
-        "label": "North",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
+        "to": "dusty",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 60},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          },
+          {
+            "condition": {"type": "pct", "percent": 70},
+            "to": "secret2"
+          }
+        ]
       },
       {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
-        "to": "lowroom"
-      },
-      {
-        "id": "say_futile_crawl_down",
-        "label": "Down",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
+        "to": "threejunction",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 50},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          },
+          {
+            "condition": {"type": "pct", "percent": 75},
+            "to": "lowroom"
+          }
+        ]
       },
       {
         "id": "go_down",
         "label": "GO DOWN",
         "type": "move",
-        "to": "anteroom"
+        "to": "anteroom",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 65},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
       }
     ],
     "conditions": {
@@ -4319,11 +4412,15 @@ export const SCENES: Record<string, Scene> = {
         "to": "eastend"
       },
       {
-        "id": "say_futile_crawl_south",
-        "label": "South",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 80},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
       },
       {
         "id": "go_canyon",
@@ -4338,11 +4435,15 @@ export const SCENES: Record<string, Scene> = {
         "to": "softroom"
       },
       {
-        "id": "say_futile_crawl_nw",
-        "label": "Nw",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 50},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
       },
       {
         "id": "go_oriental",
@@ -4477,7 +4578,13 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
-        "to": "secret5"
+        "to": "secret4",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "dragon", "state": "0"},
+            "to": "secret5"
+          }
+        ]
       },
       {
         "id": "go_north",
@@ -4689,7 +4796,13 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_west",
         "label": "GO WEST",
         "type": "move",
-        "to": "secret5"
+        "to": "secret6",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "dragon", "state": "0"},
+            "to": "secret5"
+          }
+        ]
       },
       {
         "id": "go_down",
@@ -5444,26 +5557,46 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
-        "to": "waterfall"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "door", "state": "0"},
+            "to": "waterfall"
+          },
+          {
+            "condition": {"type": "not", "object": "door", "state": "1"},
+            "message": "The door is extremely rusty and refuses to open."
+          }
+        ]
       },
       {
         "id": "go_enter",
         "label": "ENTER",
         "type": "move",
-        "to": "waterfall"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "door", "state": "0"},
+            "to": "waterfall"
+          },
+          {
+            "condition": {"type": "not", "object": "door", "state": "1"},
+            "message": "The door is extremely rusty and refuses to open."
+          }
+        ]
       },
       {
         "id": "go_cavern",
         "label": "CAVERN",
         "type": "move",
-        "to": "waterfall"
-      },
-      {
-        "id": "say_rusty_door_north",
-        "label": "North",
-        "type": "event",
-        "message": "The door is extremely rusty and refuses to open.",
-        "uiHint": "hidden"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "door", "state": "0"},
+            "to": "waterfall"
+          },
+          {
+            "condition": {"type": "not", "object": "door", "state": "1"},
+            "message": "The door is extremely rusty and refuses to open."
+          }
+        ]
       }
     ],
     "sound": "WIND_WHISTLES",
@@ -5902,24 +6035,20 @@ export const SCENES: Record<string, Scene> = {
         "to": "sloping1"
       },
       {
-        "id": "say_clam_blocker_south",
-        "label": "South",
-        "type": "event",
-        "message": "You can't fit this five-foot clam through that little passage!",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_oyster_blocker_south",
-        "label": "South",
-        "type": "event",
-        "message": "You can't fit this five-foot oyster through that little passage!",
-        "uiHint": "hidden"
-      },
-      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
-        "to": "complex"
+        "to": "complex",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "carry", "item": "clam"},
+            "message": "You can't fit this five-foot clam through that little passage!"
+          },
+          {
+            "condition": {"type": "carry", "item": "oyster"},
+            "message": "You can't fit this five-foot oyster through that little passage!"
+          }
+        ]
       },
       {
         "id": "take_clam",
@@ -6162,80 +6291,115 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
-        "id": "say_futile_crawl_east",
-        "label": "East",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_north",
-        "label": "North",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_south",
-        "label": "South",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_ne",
-        "label": "Ne",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_se",
-        "label": "Se",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_sw",
-        "label": "Sw",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_nw",
-        "label": "Nw",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_upwar",
-        "label": "Upwar",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_futile_crawl_down",
-        "label": "Down",
-        "type": "event",
-        "message": "You have crawled around in some little holes and wound up back in the main passage.",
-        "uiHint": "hidden"
-      },
-      {
         "id": "go_east",
         "label": "GO EAST",
         "type": "move",
-        "to": "anteroom"
+        "to": "anteroom",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
       },
       {
-        "id": "say_way_blocked_west",
-        "label": "West",
-        "type": "event",
-        "message": "You have crawled around in some little holes and found your way blocked by a recent cave-in. You are now back in the main passage.",
-        "uiHint": "hidden"
+        "id": "go_north",
+        "label": "GO NORTH",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_south",
+        "label": "GO SOUTH",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_se",
+        "label": "GO SOUTHEAST",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_nw",
+        "label": "GO NORTHWEST",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_up",
+        "label": "GO UP",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_down",
+        "label": "GO DOWN",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and wound up back in the main passage."
+          }
+        ]
+      },
+      {
+        "id": "go_west",
+        "label": "GO WEST",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "pct", "percent": 95},
+            "message": "You have crawled around in some little holes and found your way blocked by a recent cave-in. You are now back in the main passage."
+          }
+        ]
       }
     ],
     "conditions": {
@@ -6471,31 +6635,38 @@ export const SCENES: Record<string, Scene> = {
         "to": "mirrorcanyon"
       },
       {
-        "id": "say_bad_direction_north",
-        "label": "North",
-        "type": "event",
-        "message": "There is no way to go that direction.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_bad_direction_acros",
-        "label": "Acros",
-        "type": "event",
-        "message": "There is no way to go that direction.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_bad_direction_cross",
-        "label": "Cross",
-        "type": "event",
-        "message": "There is no way to go that direction.",
-        "uiHint": "hidden"
-      },
-      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
-        "to": "resbottom"
+        "to": "resbottom",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "reser", "state": "1"},
+            "message": "You have no way to go in that direction."
+          }
+        ]
+      },
+      {
+        "id": "go_across",
+        "label": "ACROSS",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "reser", "state": "1"},
+            "message": "You have no way to go in that direction."
+          }
+        ]
+      },
+      {
+        "id": "go_cross",
+        "label": "CROSS",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "reser", "state": "1"},
+            "message": "You have no way to go in that direction."
+          }
+        ]
       }
     ],
     "sound": "STREAM_SPLASHES",
@@ -6614,52 +6785,83 @@ export const SCENES: Record<string, Scene> = {
         "to": "winding"
       },
       {
-        "id": "say_troll_blocks_over",
-        "label": "Over",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
+        "id": "go_over",
+        "label": "OVER",
+        "type": "move",
+        "to": "nechasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          },
+          {
+            "condition": {"type": "not", "object": "chasm", "state": "0"},
+            "message": "There is no longer any way across the chasm."
+          }
+        ]
       },
       {
-        "id": "say_troll_blocks_acros",
-        "label": "Acros",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
+        "id": "go_across",
+        "label": "ACROSS",
+        "type": "move",
+        "to": "nechasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          },
+          {
+            "condition": {"type": "not", "object": "chasm", "state": "0"},
+            "message": "There is no longer any way across the chasm."
+          }
+        ]
       },
       {
-        "id": "say_troll_blocks_cross",
-        "label": "Cross",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
+        "id": "go_cross",
+        "label": "CROSS",
+        "type": "move",
+        "to": "nechasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          },
+          {
+            "condition": {"type": "not", "object": "chasm", "state": "0"},
+            "message": "There is no longer any way across the chasm."
+          }
+        ]
       },
       {
-        "id": "say_troll_blocks_ne",
-        "label": "Ne",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_bridge_gone_over",
-        "label": "Over",
-        "type": "event",
-        "message": "There is no longer any way across the chasm.",
-        "uiHint": "hidden"
+        "id": "go_ne",
+        "label": "GO NORTHEAST",
+        "type": "move",
+        "to": "nechasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          },
+          {
+            "condition": {"type": "not", "object": "chasm", "state": "0"},
+            "message": "There is no longer any way across the chasm."
+          }
+        ]
       },
       {
         "id": "go_jump",
         "label": "JUMP",
         "type": "move",
-        "to": "nomake"
-      },
-      {
-        "id": "say_cross_bridge_jump",
-        "label": "Jump",
-        "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping.",
-        "uiHint": "hidden"
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "chasm", "state": "0"},
+            "to": "nomake"
+          },
+          {
+            "condition": {"type": "not", "object": "chasm", "state": "1"},
+            "message": "I respectfully suggest you go across the bridge instead of jumping."
+          }
+        ]
       }
     ],
     "conditions": {
@@ -6842,39 +7044,63 @@ export const SCENES: Record<string, Scene> = {
         "to": "corridor"
       },
       {
-        "id": "say_troll_blocks_over",
-        "label": "Over",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
+        "id": "go_over",
+        "label": "OVER",
+        "type": "move",
+        "to": "swchasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          }
+        ]
       },
       {
-        "id": "say_troll_blocks_acros",
-        "label": "Acros",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
+        "id": "go_across",
+        "label": "ACROSS",
+        "type": "move",
+        "to": "swchasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          }
+        ]
       },
       {
-        "id": "say_troll_blocks_cross",
-        "label": "Cross",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
+        "id": "go_cross",
+        "label": "CROSS",
+        "type": "move",
+        "to": "swchasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          }
+        ]
       },
       {
-        "id": "say_troll_blocks_sw",
-        "label": "Sw",
-        "type": "event",
-        "message": "The troll refuses to let you cross.",
-        "uiHint": "hidden"
+        "id": "go_sw",
+        "label": "GO SOUTHWEST",
+        "type": "move",
+        "to": "swchasm",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "troll"},
+            "message": "The troll refuses to let you cross."
+          }
+        ]
       },
       {
-        "id": "say_cross_bridge_jump",
-        "label": "Jump",
-        "type": "event",
-        "message": "I respectfully suggest you go across the bridge instead of jumping.",
-        "uiHint": "hidden"
+        "id": "go_jump",
+        "label": "JUMP",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "chasm", "state": "1"},
+            "message": "I respectfully suggest you go across the bridge instead of jumping."
+          }
+        ]
       },
       {
         "id": "go_fork",
@@ -8147,7 +8373,13 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
-        "to": "roughhewn"
+        "to": "baddirection",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "vend", "state": "0"},
+            "to": "roughhewn"
+          }
+        ]
       }
     ],
     "conditions": {
@@ -8234,17 +8466,16 @@ export const SCENES: Record<string, Scene> = {
         "to": "roughhewn"
       },
       {
-        "id": "say_ogre_snarl_north",
-        "label": "North",
-        "type": "event",
-        "message": "The ogre snarls and shoves you back.",
-        "uiHint": "hidden"
-      },
-      {
         "id": "go_north",
         "label": "GO NORTH",
         "type": "move",
-        "to": "storeroom"
+        "to": "storeroom",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "with", "object": "ogre"},
+            "message": "The ogre snarls and drives you back."
+          }
+        ]
       }
     ],
     "conditions": {
@@ -9477,31 +9708,38 @@ export const SCENES: Record<string, Scene> = {
         "command": "look"
       },
       {
-        "id": "say_bad_direction_south",
-        "label": "South",
-        "type": "event",
-        "message": "There is no way to go that direction.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_bad_direction_acros",
-        "label": "Acros",
-        "type": "event",
-        "message": "There is no way to go that direction.",
-        "uiHint": "hidden"
-      },
-      {
-        "id": "say_bad_direction_cross",
-        "label": "Cross",
-        "type": "event",
-        "message": "There is no way to go that direction.",
-        "uiHint": "hidden"
-      },
-      {
         "id": "go_south",
         "label": "GO SOUTH",
         "type": "move",
-        "to": "resbottom"
+        "to": "resbottom",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "reser", "state": "1"},
+            "message": "You have no way to go in that direction."
+          }
+        ]
+      },
+      {
+        "id": "go_across",
+        "label": "ACROSS",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "reser", "state": "1"},
+            "message": "You have no way to go in that direction."
+          }
+        ]
+      },
+      {
+        "id": "go_cross",
+        "label": "CROSS",
+        "type": "move",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "not", "object": "reser", "state": "1"},
+            "message": "You have no way to go in that direction."
+          }
+        ]
       },
       {
         "id": "go_nw",
@@ -9684,7 +9922,13 @@ export const SCENES: Record<string, Scene> = {
         "id": "go_up",
         "label": "GO UP",
         "type": "move",
-        "to": "clifftop"
+        "to": "footslip",
+        "conditionalRoutes": [
+          {
+            "condition": {"type": "carry", "item": "rabbitfoot"},
+            "to": "clifftop"
+          }
+        ]
       }
     ],
     "conditions": {
