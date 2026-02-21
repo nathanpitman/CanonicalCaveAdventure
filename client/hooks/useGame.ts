@@ -1614,8 +1614,8 @@ export function useGame() {
             setGameState((prev) => ({
               ...prev,
               inventory: prev.inventory.filter((id) => id !== "bird"),
-              objectLocations: { ...prev.objectLocations, bird: prev.sceneId },
-              objectStates: { ...prev.objectStates, bird: 0 },
+              objectLocations: { ...prev.objectLocations, bird: prev.sceneId, snake: "limbo" },
+              objectStates: { ...prev.objectStates, bird: 0, snake: 1 },
               flags: { ...prev.flags, snakeChased: true },
             }));
             addMessage("narration", "The little bird attacks the green snake, and in an astounding flurry drives the snake away.");
@@ -1755,6 +1755,7 @@ export function useGame() {
               ...prev,
               inventory: prev.inventory.filter((id) => id !== resolution.itemId),
               flags: { ...prev.flags, trollPaid: true },
+              objectLocations: { ...prev.objectLocations, troll: "limbo" },
             }));
             addMessage("narration", "The troll catches your treasure and scurries away out of sight.");
             hapticFeedback("medium");
@@ -1766,6 +1767,7 @@ export function useGame() {
               ...prev,
               inventory: prev.inventory.filter((id) => id !== "bear"),
               flags: { ...prev.flags, trollGone: true },
+              objectLocations: { ...prev.objectLocations, troll: "limbo", bear: "limbo" },
             }));
             addMessage("narration", "The bear lumbers toward the troll, who lets out a startled shriek and scurries away. The bear soon wanders off through the chasm.");
             hapticFeedback("success");
@@ -1776,7 +1778,7 @@ export function useGame() {
             setGameState((prev) => ({
               ...prev,
               inventory: prev.inventory.filter((id) => id !== "bear"),
-              objectLocations: { ...prev.objectLocations, bear: prev.sceneId, jade: prev.sceneId },
+              objectLocations: { ...prev.objectLocations, bear: prev.sceneId, jade: prev.sceneId, ogre: "limbo" },
               flags: { ...prev.flags, ogreGone: true },
             }));
             addMessage("narration", "The bear lunges at the ogre, who flees in terror. A jade necklace falls from the ogre's neck as it disappears into the shadows.");
@@ -1857,12 +1859,14 @@ export function useGame() {
               setGameState((prev) => ({
                 ...prev,
                 flags: { ...prev.flags, crystalBridge: true },
+                objectStates: { ...prev.objectStates, fissure: 1 },
               }));
             } else {
               addMessage("narration", "The crystal bridge has vanished!");
               setGameState((prev) => ({
                 ...prev,
                 flags: { ...prev.flags, crystalBridge: false },
+                objectStates: { ...prev.objectStates, fissure: 0 },
               }));
             }
           } else if (resolution.itemId === "rod" && gameState.flags.closed && (gameState.sceneId === "ne" || gameState.sceneId === "sw")) {
@@ -2237,6 +2241,7 @@ export function useGame() {
             setGameState((prev) => ({
               ...prev,
               flags: { ...prev.flags, dragonDead: true, _dragonPrompt: false },
+              objectStates: { ...prev.objectStates, dragon: 1 },
               pendingPrompt: null,
             }));
             addMessage("narration", "Congratulations! You have just vanquished a dragon with your bare hands! (Strstrength, strstrength.)");
@@ -2393,7 +2398,7 @@ export function useGame() {
               addMessage("narration", "The oil has freed up the hinges so that the door will now move, although it requires some effort.");
               setGameState((prev) => ({
                 ...prev,
-                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY },
+                objectStates: { ...prev.objectStates, bottle: BOTTLE_EMPTY, door: 1 },
                 flags: { ...prev.flags, doorOiled: true },
               }));
             } else {

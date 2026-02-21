@@ -117,6 +117,13 @@ export function buildInitialObjectLocations(): Record<string, string> {
   for (const [objId, locId] of Object.entries(OBJECT_START_LOCATIONS)) {
     locations[objId] = locId;
   }
+  locations["snake"] = SNAKE_LOCATION;
+  locations["troll"] = "swchasm";
+  locations["ogre"] = OGRE_LOCATION;
+  locations["dragon"] = "secret_canyon_e";
+  locations["fissure"] = "eastbank";
+  locations["door"] = "immensenwpass";
+  locations["chasm"] = "swchasm";
   return locations;
 }
 
