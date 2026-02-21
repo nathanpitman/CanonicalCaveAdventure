@@ -506,6 +506,95 @@ function main() {
     }
   }
 
+  // ============================================================
+  // EXTRACT SCORE CLASSES FROM YAML
+  // ============================================================
+  interface ScoreClass {
+    threshold: number;
+    message: string;
+  }
+  const classesRaw: any[] = Array.isArray(data.classes) ? data.classes : [];
+  const SCORE_CLASSES: ScoreClass[] = [];
+  for (const cls of classesRaw) {
+    if (cls && typeof cls.threshold === "number" && cls.message) {
+      SCORE_CLASSES.push({
+        threshold: cls.threshold,
+        message: normaliseText(cls.message),
+      });
+    }
+  }
+  SCORE_CLASSES.sort((a, b) => a.threshold - b.threshold);
+  console.log(`Found ${SCORE_CLASSES.length} score classes`);
+
+  // ============================================================
+  // EXTRACT OBJECT STATE CONSTANTS FROM YAML
+  // ============================================================
+  const OBJECT_STATES: Record<string, string[]> = {};
+  for (const [objId, obj] of objects) {
+    if (obj.states && Array.isArray(obj.states)) {
+      OBJECT_STATES[objId] = obj.states;
+    }
+  }
+  console.log(`Found ${Object.keys(OBJECT_STATES).length} objects with state labels`);
+
+  // ============================================================
+  // EXTRACT DWARF CONFIG FROM YAML
+  // ============================================================
+  const dwarflocsRaw: string[] = Array.isArray(data.dwarflocs) ? data.dwarflocs : [];
+  const DWARF_START_LOCS = dwarflocsRaw.map((loc: string) => toSceneId(loc));
+  const NDWARVES = DWARF_START_LOCS.length > 0 ? DWARF_START_LOCS.length - 1 : 5;
+  const PIRATE_INDEX = NDWARVES;
+  const PIRATE_START_LOC = DWARF_START_LOCS.length > 0 ? DWARF_START_LOCS[DWARF_START_LOCS.length - 1] : "mazeend12";
+  console.log(`Found ${DWARF_START_LOCS.length} dwarf start locations (${NDWARVES} dwarves + 1 pirate)`);
+
+  // ============================================================
+  // EXTRACT MOTION VOCABULARY FROM YAML
+  // ============================================================
+  const motionsRaw: Map<string, any> = data.motions instanceof Map
+    ? data.motions
+    : new Map();
+  const MOTION_VOCABULARY: Record<string, string[]> = {};
+  for (const [motId, mot] of motionsRaw) {
+    if (mot && mot.words && Array.isArray(mot.words)) {
+      MOTION_VOCABULARY[motId] = mot.words;
+    }
+  }
+  console.log(`Found ${Object.keys(MOTION_VOCABULARY).length} motion entries`);
+
+  // ============================================================
+  // EXTRACT ACTION VERB VOCABULARY FROM YAML
+  // ============================================================
+  const actionsRaw: Map<string, any> = data.actions instanceof Map
+    ? data.actions
+    : new Map();
+  const ACTION_VOCABULARY: Record<string, string[]> = {};
+  for (const [actId, act] of actionsRaw) {
+    if (act && act.words && Array.isArray(act.words)) {
+      ACTION_VOCABULARY[actId] = act.words;
+    }
+  }
+  console.log(`Found ${Object.keys(ACTION_VOCABULARY).length} action verb entries`);
+
+  // ============================================================
+  // EXTRACT DWARF/PIRATE MESSAGES FROM YAML
+  // ============================================================
+  const DWARF_PIRATE_MSG_KEYS = [
+    'DWARF_BLOCK', 'DWARF_RAN', 'DWARF_PACK', 'DWARF_SINGLE',
+    'KNIFE_THROWN', 'GETS_YOU', 'MISSES_YOU', 'KILLED_DWARF', 'DWARF_DODGES',
+    'PIRATE_RUSTLES', 'PIRATE_POUNCES', 'PIRATE_SPOTTED',
+    'KNIVES_VANISH', 'BEAR_BLOCKS', 'BIRD_ATTACKS', 'BIRD_DEAD',
+    'BIRD_DEVOURED', 'BIRD_PINING', 'BIRD_EVADES', 'CANNOT_CARRY',
+    'SNAKE_WARNING', 'OGRE_SNARL', 'CARRY_LIMIT',
+  ];
+  const STORY_MESSAGES: Record<string, string> = {};
+  for (const key of DWARF_PIRATE_MSG_KEYS) {
+    const msg = arbitraryMsgs.get(key);
+    if (msg) {
+      STORY_MESSAGES[key] = normaliseText(typeof msg === "string" ? msg : (msg.text || ""));
+    }
+  }
+  console.log(`Extracted ${Object.keys(STORY_MESSAGES).length} story messages`);
+
   // Build message lookup from YAML
   const messageTable: Record<string, string> = { ...ARBITRARY_MESSAGES };
   for (const [msgId, msg] of arbitraryMsgs) {
@@ -1175,9 +1264,37 @@ export const SCENES: Record<string, Scene> = ${JSON.stringify(SCENES, null, 2)};
   const urnLoc = (typeof npcLocations["urn"] === "string") ? npcLocations["urn"] : "cliff";
   const cavityLoc = (typeof npcLocations["cavity"] === "string") ? npcLocations["cavity"] : "cliff";
 
+  // Build hint penalties from HINTS array
+  const hintPenalties: Record<number, number> = {};
+  for (const h of HINTS) {
+    hintPenalties[h.number] = h.penalty;
+  }
+
+  // Compute max score from treasure values + fixed scoring categories
+  let maxTreasureScore = 0;
+  for (const tid of treasureIds) {
+    maxTreasureScore += (treasureValues[tid] || 0);
+  }
+  const maxScore = maxTreasureScore + 25 + (OBITUARIES.length * 10) + 4 + 25 + 45 + 1 + 2;
+
+  // Build getScoreClass from YAML classes
+  const scoreClassLines: string[] = [];
+  const sortedClasses = [...SCORE_CLASSES].sort((a, b) => b.threshold - a.threshold);
+  for (const cls of sortedClasses) {
+    if (cls.threshold >= 9999) {
+      scoreClassLines.push(`  if (score >= ${maxScore}) return ${JSON.stringify(cls.message)};`);
+    } else if (cls.threshold > 0) {
+      scoreClassLines.push(`  if (score >= ${cls.threshold + 1}) return ${JSON.stringify(cls.message)};`);
+    }
+  }
+  const defaultClass = SCORE_CLASSES.find(c => c.threshold === 0);
+  const defaultClassFallback = classesRaw.find((c: any) => c.threshold === 0 && !c.message);
+
   const canonObjectsOutput = `// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
 // Generated: ${new Date().toISOString()}
 // Run: npx tsx tools/importOpenAdventure.ts to regenerate
+
+import { TURN_THRESHOLDS } from "./generatedStory";
 
 export const INVLIMIT = 7;
 
@@ -1229,18 +1346,7 @@ export function buildInitialObjectLocations(): Record<string, string> {
   return locations;
 }
 
-export const HINT_PENALTIES: Record<number, number> = {
-  0: 2,
-  1: 2,
-  2: 2,
-  3: 4,
-  4: 5,
-  5: 3,
-  6: 2,
-  7: 2,
-  8: 2,
-  9: 4,
-};
+export const HINT_PENALTIES: Record<number, number> = ${JSON.stringify(hintPenalties, null, 2)};
 
 export function calculateScore(state: {
   objectLocations: Record<string, string>;
@@ -1319,15 +1425,9 @@ export function calculateScore(state: {
   }
 
   let turnDeductions = 0;
-  const turnThresholds = [
-    { threshold: 350, loss: 2 },
-    { threshold: 500, loss: 3 },
-    { threshold: 1000, loss: 5 },
-    { threshold: 2500, loss: 10 },
-  ];
-  for (const t of turnThresholds) {
+  for (const t of TURN_THRESHOLDS) {
     if (state.stats.turns >= t.threshold) {
-      turnDeductions += t.loss;
+      turnDeductions += t.pointLoss;
     }
   }
   if (turnDeductions > 0) {
@@ -1335,20 +1435,12 @@ export function calculateScore(state: {
     score -= turnDeductions;
   }
 
-  return { score, maxScore: 430, breakdown };
+  return { score, maxScore: ${maxScore}, breakdown };
 }
 
 export function getScoreClass(score: number): string {
-  if (score >= 430) return "You are now the WORLD CHAMPION ADVENTURER!!";
-  if (score >= 427) return "You have achieved the rank of Adventurer Grandmaster.";
-  if (score >= 411) return "You have achieved the rank of Master Adventurer Class A.";
-  if (score >= 376) return "You have achieved the rank of Master Adventurer Class B.";
-  if (score >= 321) return "You have achieved the rank of Master Adventurer Class C.";
-  if (score >= 251) return "You have achieved the rank of Junior Master.";
-  if (score >= 171) return "You are a Seasoned Adventurer.";
-  if (score >= 121) return "You are an Experienced Adventurer.";
-  if (score >= 46) return "You are a Novice Class adventurer.";
-  return "You are obviously a rank amateur.";
+${scoreClassLines.join("\n")}
+  return ${JSON.stringify(defaultClass ? defaultClass.message : "You are obviously a rank amateur.")};
 }
 `;
 
@@ -1368,6 +1460,193 @@ export function getScoreClass(score: number): string {
     }
   }
   console.log(`Canon location mismatches: ${canonMismatches}`);
+
+  // ============================================================
+  // GENERATE generatedConstants.ts
+  // ============================================================
+  console.log(`\n=== GENERATING generatedConstants.ts ===`);
+
+  // Build object state constants
+  const objectStateLines: string[] = [];
+  for (const [objId, states] of Object.entries(OBJECT_STATES)) {
+    for (let i = 0; i < states.length; i++) {
+      const constName = states[i];
+      objectStateLines.push(`export const ${constName} = ${i};`);
+    }
+  }
+
+  // Build direction synonyms from motions vocabulary
+  const directionSynonyms: Record<string, string> = {};
+  const canonicalDirectionMap: Record<string, string> = {
+    "NORTH": "north", "SOUTH": "south", "EAST": "east", "WEST": "west",
+    "UP": "up", "DOWN": "down", "NE": "ne", "NW": "nw", "SE": "se", "SW": "sw",
+    "INSIDE": "in", "OUTSIDE": "out", "ENTER": "enter",
+  };
+  for (const [motId, words] of Object.entries(MOTION_VOCABULARY)) {
+    const canonical = canonicalDirectionMap[motId];
+    if (canonical) {
+      for (const word of words) {
+        directionSynonyms[word] = canonical;
+      }
+    }
+  }
+
+  // Build narrative synonyms from motions vocabulary
+  const narrativeSynonymMap: Record<string, string> = {};
+  const narrativeMotionIds: Record<string, string> = {
+    "MOT_4": "upstr", "MOT_5": "downs", "MOT_6": "fores",
+    "FORWARD": "forward", "CRAWL": "crawl", "STREAM": "strea",
+    "MOT_15": "fork", "MOT_16": "bed", "MOT_23": "passa",
+    "MOT_24": "low", "MOT_25": "canyo", "MOT_26": "awkwa",
+    "MOT_27": "giant", "MOT_28": "view", "MOT_31": "pit",
+    "MOT_33": "crack", "MOT_34": "steps", "MOT_35": "dome",
+    "MOT_38": "hall", "MOT_39": "jump", "MOT_40": "barre",
+    "MOT_41": "over", "MOT_42": "acros", "MOT_50": "nw",
+    "MOT_51": "debri", "MOT_52": "hole", "MOT_53": "wall",
+    "MOT_54": "broke", "MOT_55": "y2", "MOT_56": "climb",
+    "MOT_58": "floor", "MOT_59": "room", "MOT_10": "stair",
+    "MOT_9": "valle", "MOT_12": "build", "MOT_13": "gully",
+    "MOT_18": "cobbl", "MOT_20": "surfa", "MOT_22": "dark",
+    "MOT_32": "outdo", "MOT_2": "road",
+  };
+  for (const [motId, canonWord] of Object.entries(narrativeMotionIds)) {
+    const words = MOTION_VOCABULARY[motId];
+    if (words) {
+      for (const word of words) {
+        if (word !== canonWord) {
+          narrativeSynonymMap[word] = canonWord;
+        }
+      }
+    }
+  }
+
+  // Build noun synonyms from object words
+  const nounSynonyms: Record<string, string[]> = {};
+  for (const [objId, obj] of objects) {
+    if (obj.words && Array.isArray(obj.words)) {
+      const lowerId = toItemId(objId);
+      const words = obj.words.map((w: string) => w.toLowerCase());
+      if (words.length > 0) {
+        nounSynonyms[lowerId] = words;
+      }
+    }
+  }
+  // Also add motion-based noun synonyms for locations
+  const locationNouns: Record<string, string[]> = {
+    "building": [], "stream": [], "valley": [], "forest": [],
+    "road": [], "hill": [], "pit": [], "passage": [], "canyon": [],
+    "tunnel": [], "cobbles": [], "debris": [], "stairs": [],
+    "hall": [], "room": [], "cave": [], "surface": [],
+  };
+  for (const [motId, words] of Object.entries(MOTION_VOCABULARY)) {
+    for (const [noun, arr] of Object.entries(locationNouns)) {
+      for (const word of words) {
+        if (word.toLowerCase().startsWith(noun.substring(0, 4)) ||
+            noun.startsWith(word.toLowerCase().substring(0, 4))) {
+          for (const w of words) {
+            if (!arr.includes(w.toLowerCase())) {
+              arr.push(w.toLowerCase());
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  // Build maze scene IDs from location conditions
+  const mazeSceneIds: string[] = [];
+  for (const [locId, loc] of locations) {
+    if (loc.conditions && (loc.conditions.ALLALIKE === true || loc.conditions.ALLDIFFERENT === true)) {
+      const sceneId = toSceneId(locId);
+      if (SCENES[sceneId]) {
+        mazeSceneIds.push(sceneId);
+      }
+    }
+  }
+  mazeSceneIds.sort();
+
+  // Find the pirate's chest hide location (last dwarf start loc) and adjacent dead end
+  const chestHideLoc = PIRATE_START_LOC;
+  // Find the next maze dead end after the chest location for the message
+  let messageHideLoc = "mazeend13";
+  const mazeEnds = mazeSceneIds.filter(s => s.startsWith("mazeend")).sort();
+  const chestIdx = mazeEnds.indexOf(chestHideLoc);
+  if (chestIdx >= 0 && chestIdx + 1 < mazeEnds.length) {
+    messageHideLoc = mazeEnds[chestIdx + 1];
+  }
+
+  const generatedConstantsOutput = `// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
+// Generated: ${new Date().toISOString()}
+// Run: npx tsx tools/importOpenAdventure.ts to regenerate
+
+// ============================================================
+// OBJECT STATE CONSTANTS
+// ============================================================
+${objectStateLines.join("\n")}
+
+// ============================================================
+// DWARF CONFIGURATION
+// ============================================================
+export const NDWARVES = ${NDWARVES};
+export const PIRATE_INDEX = ${PIRATE_INDEX};
+export const DWARF_START_LOCS: string[] = ${JSON.stringify(DWARF_START_LOCS, null, 2)};
+export const DALTLC = "nugget";
+export const CHEST_HIDE_LOC = ${JSON.stringify(chestHideLoc)};
+export const MESSAGE_HIDE_LOC = ${JSON.stringify(messageHideLoc)};
+
+// ============================================================
+// STORY MESSAGES (dwarf, pirate, NPC combat messages)
+// ============================================================
+export const STORY_MESSAGES: Record<string, string> = ${JSON.stringify(STORY_MESSAGES, null, 2)};
+
+// ============================================================
+// MOTION VOCABULARY (from motions section)
+// ============================================================
+export const MOTION_VOCABULARY: Record<string, string[]> = ${JSON.stringify(MOTION_VOCABULARY, null, 2)};
+
+// ============================================================
+// ACTION VERB VOCABULARY (from actions section)
+// ============================================================
+export const ACTION_VOCABULARY: Record<string, string[]> = ${JSON.stringify(ACTION_VOCABULARY, null, 2)};
+
+// ============================================================
+// DIRECTION SYNONYMS (derived from motions)
+// ============================================================
+export const YAML_DIRECTION_SYNONYMS: Record<string, string> = ${JSON.stringify(directionSynonyms, null, 2)};
+
+// ============================================================
+// NOUN SYNONYMS (derived from object words)
+// ============================================================
+export const YAML_NOUN_SYNONYMS: Record<string, string[]> = ${JSON.stringify(nounSynonyms, null, 2)};
+
+// ============================================================
+// MAZE SCENE IDS (derived from location conditions)
+// ============================================================
+export const YAML_MAZE_SCENE_IDS: string[] = ${JSON.stringify(mazeSceneIds, null, 2)};
+
+// ============================================================
+// SCORE CLASSES (from classes section)
+// ============================================================
+export interface ScoreClass {
+  threshold: number;
+  message: string;
+}
+export const SCORE_CLASSES: ScoreClass[] = ${JSON.stringify(SCORE_CLASSES, null, 2)};
+`;
+
+  const generatedConstantsPath = path.resolve("client/data/generatedConstants.ts");
+  fs.writeFileSync(generatedConstantsPath, generatedConstantsOutput, "utf-8");
+  console.log(`Written to: ${generatedConstantsPath}`);
+  console.log(`Object state constants: ${objectStateLines.length}`);
+  console.log(`Dwarf start locs: ${DWARF_START_LOCS.length}`);
+  console.log(`Story messages: ${Object.keys(STORY_MESSAGES).length}`);
+  console.log(`Motion vocabulary entries: ${Object.keys(MOTION_VOCABULARY).length}`);
+  console.log(`Action vocabulary entries: ${Object.keys(ACTION_VOCABULARY).length}`);
+  console.log(`Direction synonyms: ${Object.keys(directionSynonyms).length}`);
+  console.log(`Noun synonym groups: ${Object.keys(nounSynonyms).length}`);
+  console.log(`Maze scene IDs: ${mazeSceneIds.length}`);
+  console.log(`Score classes: ${SCORE_CLASSES.length}`);
 
   console.log(`\nImport complete!`);
 

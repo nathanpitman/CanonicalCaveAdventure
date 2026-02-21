@@ -1,6 +1,8 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
-// Generated: 2026-02-21T21:57:23.761Z
+// Generated: 2026-02-21T22:34:21.992Z
 // Run: npx tsx tools/importOpenAdventure.ts to regenerate
+
+import { TURN_THRESHOLDS } from "./generatedStory";
 
 export const INVLIMIT = 7;
 
@@ -155,16 +157,16 @@ export function buildInitialObjectLocations(): Record<string, string> {
 }
 
 export const HINT_PENALTIES: Record<number, number> = {
-  0: 2,
-  1: 2,
-  2: 2,
-  3: 4,
-  4: 5,
-  5: 3,
-  6: 2,
-  7: 2,
-  8: 2,
-  9: 4,
+  "1": 2,
+  "2": 2,
+  "3": 2,
+  "4": 4,
+  "5": 5,
+  "6": 3,
+  "7": 2,
+  "8": 2,
+  "9": 4,
+  "10": 4
 };
 
 export function calculateScore(state: {
@@ -244,15 +246,9 @@ export function calculateScore(state: {
   }
 
   let turnDeductions = 0;
-  const turnThresholds = [
-    { threshold: 350, loss: 2 },
-    { threshold: 500, loss: 3 },
-    { threshold: 1000, loss: 5 },
-    { threshold: 2500, loss: 10 },
-  ];
-  for (const t of turnThresholds) {
+  for (const t of TURN_THRESHOLDS) {
     if (state.stats.turns >= t.threshold) {
-      turnDeductions += t.loss;
+      turnDeductions += t.pointLoss;
     }
   }
   if (turnDeductions > 0) {
@@ -264,14 +260,15 @@ export function calculateScore(state: {
 }
 
 export function getScoreClass(score: number): string {
-  if (score >= 430) return "You are now the WORLD CHAMPION ADVENTURER!!";
-  if (score >= 427) return "You have achieved the rank of Adventurer Grandmaster.";
-  if (score >= 411) return "You have achieved the rank of Master Adventurer Class A.";
-  if (score >= 376) return "You have achieved the rank of Master Adventurer Class B.";
-  if (score >= 321) return "You have achieved the rank of Master Adventurer Class C.";
-  if (score >= 251) return "You have achieved the rank of Junior Master.";
-  if (score >= 171) return "You are a Seasoned Adventurer.";
-  if (score >= 121) return "You are an Experienced Adventurer.";
-  if (score >= 46) return "You are a Novice Class adventurer.";
+  if (score >= 430) return "Adventuredom stands in awe -- you have now joined the ranks of the W O R L D C H A M P I O N A D V E N T U R E R S ! It may interest you to know that the Dungeon-Master himself has, to my knowledge, never achieved this threshold in fewer than 330 turns.";
+  if (score >= 430) return "All of Adventuredom gives tribute to you, Adventurer Grandmaster!";
+  if (score >= 427) return "Your score puts you in Master Adventurer Class A.";
+  if (score >= 411) return "Your score puts you in Master Adventurer Class B.";
+  if (score >= 376) return "Your score puts you in Master Adventurer Class C.";
+  if (score >= 321) return "You have reached \"Junior Master\" status.";
+  if (score >= 251) return "You may now consider yourself a \"Seasoned Adventurer\".";
+  if (score >= 171) return "You have achieved the rating: \"Experienced Adventurer\".";
+  if (score >= 121) return "Your score qualifies you as a novice class adventurer.";
+  if (score >= 46) return "You are obviously a rank amateur. Better luck next time.";
   return "You are obviously a rank amateur.";
 }
