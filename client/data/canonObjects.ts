@@ -146,7 +146,7 @@ export function calculateScore(state: {
   flags: Record<string, boolean>;
   deathState: { numdie: number; maxDeaths: number };
   hintState: { hintsGiven: number[] };
-  stats: { turns: number };
+  stats: { turns: number; endgameBonus?: number };
   thresholdsTriggered: number[];
   milestonesCompleted: string[];
   dwarfState?: { dflag: number };
@@ -194,7 +194,7 @@ export function calculateScore(state: {
     breakdown.endgame = 45;
     score += 45;
   } else if (state.flags.endgameDefeat) {
-    const bonus = (state as any).flags?.endgameDefeatBonus || 25;
+    const bonus = state.stats.endgameBonus ?? 25;
     breakdown.endgame = bonus;
     score += bonus;
   }

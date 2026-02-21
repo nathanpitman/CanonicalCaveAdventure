@@ -1926,7 +1926,10 @@ export function useGame() {
                 ...gameState.flags,
                 endgameVictory: false,
                 endgameDefeat: true,
-                endgameDefeatBonus: bonusPoints,
+              },
+              stats: {
+                ...gameState.stats,
+                endgameBonus: bonusPoints,
               },
             });
             const finalScore = score + bonusPoints;

@@ -29,6 +29,7 @@ export interface GameState {
   stats: {
     turns: number;
     score: number;
+    endgameBonus?: number;
   };
   lamp: {
     lit: boolean;
