@@ -929,7 +929,11 @@ export function useGame() {
       const defaultAction = targetScene?.actions?.find(
         (a: any) => a.type === "move" && a.id === "go_default"
       );
-      const isForcedScene = toSceneId.startsWith("foof") && defaultAction?.to;
+      const nonLookMoveActions = targetScene?.actions?.filter(
+        (a: any) => a.type === "move" && a.id !== "look"
+      ) || [];
+      const isBounceScene = defaultAction?.to && nonLookMoveActions.length === 1 && nonLookMoveActions[0].id === "go_default";
+      const isForcedScene = (toSceneId.startsWith("foof") || isBounceScene) && defaultAction?.to;
 
       setGameState((prev) => {
         const newVisitCount = (prev.visitCounts[toSceneId] || 0) + 1;
