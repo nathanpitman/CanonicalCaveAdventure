@@ -1135,6 +1135,12 @@ export function useGame() {
       }
 
       if (item.useEffect) {
+        if (item.useEffect.setsFlag && gameState.flags[item.useEffect.setsFlag]) {
+          addMessage("system", "That doesn't seem to work here.");
+          decreaseLampLife();
+          return;
+        }
+
         addMessage("system", item.useEffect.message);
 
         if (item.useEffect.lightBonus) {
@@ -1163,7 +1169,7 @@ export function useGame() {
 
       decreaseLampLife();
     },
-    [gameState.inventory, addMessage, decreaseLampLife, hapticFeedback]
+    [gameState.inventory, gameState.flags, addMessage, decreaseLampLife, hapticFeedback]
   );
 
   const resolveActionDestination = useCallback(
