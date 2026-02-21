@@ -47,9 +47,6 @@ export const MILESTONE_FLAG_TRIGGERS: Record<string, MilestoneId> = {
   escaped: "game_complete",
 };
 
-export const MAZE_SCENE_IDS = [
-  "alike1", "alike2", "alike3", "alike4", "alike5",
-  "alike6", "alike7", "alike8", "alike9", "alike10",
-  "mazeend1", "mazeend2", "mazeend3", "mazeend4", "mazeend5",
-  "mazeend6", "mazeend8", "mazeend9", "mazeend10", "mazeend11", "mazeend12",
-];
+import { YAML_MAZE_SCENE_IDS } from "./generatedConstants";
+
+export const MAZE_SCENE_IDS = YAML_MAZE_SCENE_IDS;

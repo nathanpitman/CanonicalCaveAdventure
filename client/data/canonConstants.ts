@@ -1,42 +1,79 @@
-export const INITIAL_LAMP_LIMIT = 330;
-export const WARN_TIME = 30;
-export const BATTERY_LIFE_BONUS = 2500;
+export {
+  LAMP_DARK,
+  LAMP_BRIGHT,
+  GRATE_CLOSED,
+  GRATE_OPEN,
+  STEPS_DOWN,
+  STEPS_UP,
+  BIRD_UNCAGED,
+  BIRD_CAGED,
+  BIRD_FOREST_UNCAGED,
+  DOOR_RUSTED,
+  DOOR_UNRUSTED,
+  SNAKE_BLOCKS,
+  SNAKE_CHASED,
+  UNBRIDGED,
+  BRIDGED,
+  WATER_BOTTLE,
+  EMPTY_BOTTLE,
+  OIL_BOTTLE,
+  MIRROR_UNBROKEN,
+  MIRROR_BROKEN,
+  PLANT_THIRSTY,
+  PLANT_BELLOWING,
+  PLANT_GROWN,
+  AXE_HERE,
+  AXE_LOST,
+  DRAGON_BARS,
+  DRAGON_DEAD,
+  DRAGON_BLOODLESS,
+  TROLL_BRIDGE,
+  BRIDGE_WRECKED,
+  TROLL_UNPAID,
+  TROLL_PAIDONCE,
+  TROLL_GONE,
+  UNTAMED_BEAR,
+  SITTING_BEAR,
+  CONTENTED_BEAR,
+  BEAR_DEAD,
+  VEND_BLOCKS,
+  VEND_UNBLOCKS,
+  FRESH_BATTERIES,
+  DEAD_BATTERIES,
+  URN_EMPTY,
+  URN_DARK,
+  URN_LIT,
+  CAVITY_FULL,
+  CAVITY_EMPTY,
+  WATERS_UNPARTED,
+  WATERS_PARTED,
+  INGAME_SIGN,
+  ENDGAME_SIGN,
+  EGGS_HERE,
+  EGGS_VANISHED,
+  EGGS_DONE,
+  VASE_WHOLE,
+  VASE_DROPPED,
+  VASE_BROKEN,
+  RUG_FLOOR,
+  RUG_DRAGON,
+  RUG_HOVER,
+  CHAIN_HEAP,
+  CHAINING_BEAR,
+  CHAIN_FIXED,
+  AMBER_IN_URN,
+  AMBER_IN_ROCK,
+} from "./generatedConstants";
 
 export const BOTTLE_WATER = 0;
 export const BOTTLE_EMPTY = 1;
 export const BOTTLE_OIL = 2;
 
-export const URN_EMPTY = 0;
-export const URN_DARK = 1;
-export const URN_LIT = 2;
-
-export const CAVITY_FULL = 0;
-export const CAVITY_EMPTY = 1;
+export const INITIAL_LAMP_LIMIT = 330;
+export const WARN_TIME = 30;
+export const BATTERY_LIFE_BONUS = 2500;
 
 export const CLOCK1_START = 15;
 export const CLOCK2_START = 15;
 
-export const SNAKE_BLOCKS = 0;
-export const SNAKE_CHASED = 1;
-
-export const UNBRIDGED = 0;
-export const BRIDGED = 1;
-
-export const PLANT_THIRSTY = 0;
-export const PLANT_BELLOWING = 1;
-export const PLANT_GROWN = 2;
-
-export const DRAGON_BARS = 0;
-export const DRAGON_DEAD = 1;
-
-export const DOOR_RUSTED = 0;
-export const DOOR_UNRUSTED = 1;
-
 export const TROLL_BRIDGE_STATE = 0;
-export const BRIDGE_WRECKED = 1;
-
-export const VEND_BLOCKS = 0;
-export const VEND_UNBLOCKS = 1;
-
-export const WATERS_UNPARTED = 0;
-export const WATERS_PARTED = 1;

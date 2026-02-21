@@ -1,22 +1,15 @@
 import { SCENES } from "./story";
 import { TREASURE_IDS } from "./canonObjects";
+import {
+  NDWARVES,
+  PIRATE_INDEX,
+  DWARF_START_LOCS,
+  DALTLC,
+  CHEST_HIDE_LOC,
+  MESSAGE_HIDE_LOC,
+} from "./generatedConstants";
 
-export const NDWARVES = 5;
-export const PIRATE_INDEX = 5;
-
-export const DWARF_START_LOCS = [
-  "kinghall",
-  "westbank",
-  "y2",
-  "alike3",
-  "complex",
-  "mazeend12",
-];
-
-export const DALTLC = "nugget";
-
-export const CHEST_HIDE_LOC = "mazeend12";
-export const MESSAGE_HIDE_LOC = "mazeend13";
+export { NDWARVES, PIRATE_INDEX, DWARF_START_LOCS, DALTLC, CHEST_HIDE_LOC, MESSAGE_HIDE_LOC };
 
 export interface DwarfState {
   loc: string;

@@ -1,4 +1,5 @@
 import { CANON_TRAVEL_VERBS, CANON_OBJECTS } from "./generatedStory";
+import { YAML_DIRECTION_SYNONYMS, YAML_NOUN_SYNONYMS } from "./generatedConstants";
 
 const canonVerbSet = new Set(CANON_TRAVEL_VERBS);
 const canonObjectIds = new Set(CANON_OBJECTS.map(o => o.id.toLowerCase()));
@@ -17,23 +18,24 @@ export const STOPWORDS = new Set([
 
 export const ARTICLES = new Set(["the", "a", "an", "my", "that", "this", "some"]);
 
+const EXTRA_DIRECTION_SYNONYMS: Record<string, string> = {
+  "northward": "north", "northwards": "north",
+  "southward": "south", "southwards": "south",
+  "eastward": "east", "eastwards": "east",
+  "westward": "west", "westwards": "west",
+  "upward": "up", "upwards": "up", "ascend": "up", "climb up": "up",
+  "downward": "down", "downwards": "down", "descend": "down", "climb down": "down",
+  "northeast": "ne",
+  "northwest": "nw",
+  "southeast": "se",
+  "southwest": "sw",
+  "inward": "in", "inwards": "in",
+  "outward": "out", "outwards": "out", "exit": "out", "leave": "out",
+};
+
 export const DIRECTION_SYNONYMS: Record<string, string> = {
-  "north": "north", "n": "north", "northward": "north", "northwards": "north",
-  "south": "south", "s": "south", "southward": "south", "southwards": "south",
-  "east": "east", "e": "east", "eastward": "east", "eastwards": "east",
-  "west": "west", "w": "west", "westward": "west", "westwards": "west",
-  "up": "up", "u": "up", "upward": "up", "upwards": "up", "ascend": "up", "climb up": "up",
-  "upwar": "up",
-  "down": "down", "d": "down", "downward": "down", "downwards": "down", "descend": "down", "climb down": "down",
-  "northeast": "ne", "ne": "ne",
-  "northwest": "nw", "nw": "nw",
-  "southeast": "se", "se": "se",
-  "southwest": "sw", "sw": "sw",
-  "in": "in", "inside": "in", "inward": "in", "inwards": "in",
-  "inwar": "in", "insid": "in",
-  "out": "out", "outside": "out", "outward": "out", "outwards": "out", "exit": "out", "leave": "out",
-  "outsi": "out", "outdo": "out",
-  "enter": "enter",
+  ...YAML_DIRECTION_SYNONYMS,
+  ...EXTRA_DIRECTION_SYNONYMS,
 };
 
 export const NARRATIVE_SYNONYMS: Record<string, string> = {
@@ -144,37 +146,25 @@ export const TARGET_FIRST_VERBS = new Set([
   "close", "lock", "smash", "cut", "fill", "empty", "drink",
 ]);
 
-export const NOUN_SYNONYMS: Record<string, string[]> = {
+const EXTRA_NOUN_SYNONYMS: Record<string, string[]> = {
   "building": ["build", "building", "house", "wellhouse", "well house"],
   "house": ["build", "building", "house"],
   "well house": ["build", "building"],
   "wellhouse": ["build", "building"],
   "grate": ["grate", "enter", "in"],
   "depression": ["depre", "depression"],
-  "stream": ["strea", "stream", "streambed"],
   "streambed": ["strea", "stream"],
-  "valley": ["valle", "valley"],
-  "forest": ["fores", "forest"],
-  "road": ["road"],
-  "hill": ["hill"],
-  "slit": ["slit"],
-  "pit": ["pit"],
-  "passage": ["passa", "passage"],
-  "canyon": ["canyo", "canyon"],
-  "tunnel": ["tunne", "tunnel"],
-  "cobbles": ["cobbl", "cobbles"],
-  "debris": ["debri", "debris"],
-  "stairs": ["stair", "stairs"],
-  "hall": ["hall"],
-  "room": ["room"],
   "cave": ["caver", "cavern", "cave"],
   "cavern": ["caver", "cavern"],
-  "surface": ["surfa", "surface"],
   "oriental": ["orien", "oriental"],
-  "shell": ["shell"],
   "reservoir": ["reser", "reservoir"],
   "bedquilt": ["bedqu", "bedquilt"],
   "y2": ["y2"],
+};
+
+export const NOUN_SYNONYMS: Record<string, string[]> = {
+  ...YAML_NOUN_SYNONYMS,
+  ...EXTRA_NOUN_SYNONYMS,
 };
 
 export const MAGIC_WORD_VERBS = new Set([
