@@ -18,6 +18,7 @@ import {
   INTRO_MESSAGES,
   HELP_TEXT,
   HINTS,
+  HINT_CONDITIONS,
   OBITUARIES,
   TURN_THRESHOLDS,
   LAMP_MESSAGES,
@@ -420,24 +421,25 @@ export function useGame() {
   }, []);
 
   const isHintEligible = useCallback((hintNumber: number): boolean => {
+    const cond = HINT_CONDITIONS[hintNumber];
+    if (!cond) return true;
     const gs = gameState;
-    switch (hintNumber) {
-      case 1: return !gs.flags.grateOpen;
-      case 2: return gs.inventory.includes("rod") && !gs.inventory.includes("bird");
-      case 3: return !gs.inventory.includes("bird");
-      case 4: return !gs.inventory.includes("coins");
-      case 5: return !gs.flags.crystalBridge;
-      case 6: return true;
-      case 7: return true;
-      case 8: return !gs.inventory.includes("emerald");
-      case 9: return gs.inventory.includes("emerald");
-      case 10: {
-        const treasureItems = ["nugget", "coins", "eggs", "trident", "emerald", "pyramid",
-          "ruby", "sapph", "pearl", "chest", "rug", "spices", "chain"];
-        const treasureCount = treasureItems.filter(t => gs.inventory.includes(t)).length;
-        return treasureCount >= 12;
+    switch (cond.type) {
+      case "flag_false":
+        return !gs.flags[cond.flag as string];
+      case "flag_true":
+        return !!gs.flags[cond.flag as string];
+      case "not_carrying":
+        return !gs.inventory.includes(cond.item as string);
+      case "carrying":
+        return gs.inventory.includes(cond.item as string);
+      case "treasure_count": {
+        const count = (cond.items || []).filter(t => gs.inventory.includes(t)).length;
+        return count >= (cond.threshold || 0);
       }
-      default: return true;
+      case "always":
+      default:
+        return true;
     }
   }, [gameState]);
 

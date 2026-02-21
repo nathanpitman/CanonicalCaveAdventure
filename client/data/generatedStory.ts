@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
-// Generated: 2026-02-21T16:18:58.177Z
+// Generated: 2026-02-21T18:14:11.011Z
 // Canonical Open Adventure import with travel mechanics
 
 export interface ConditionalRoute {
@@ -59,6 +59,14 @@ export interface Item {
     message: string;
     setsFlag?: string;
   };
+}
+
+export interface HintCondition {
+  type: "flag_false" | "flag_true" | "not_carrying" | "carrying" | "treasure_count" | "always";
+  flag?: string;
+  item?: string;
+  items?: string[];
+  threshold?: number;
 }
 
 export interface HintEntry {
@@ -350,6 +358,62 @@ export const HINTS: HintEntry[] = [
     "hint": "Once you've found all the other treasures, it is no longer possible to locate the one you're now missing."
   }
 ];
+
+export const HINT_CONDITIONS: Record<number, HintCondition> = {
+  "1": {
+    "type": "flag_false",
+    "flag": "grateOpen"
+  },
+  "2": {
+    "type": "not_carrying",
+    "item": "bird"
+  },
+  "3": {
+    "type": "not_carrying",
+    "item": "bird"
+  },
+  "4": {
+    "type": "not_carrying",
+    "item": "coins"
+  },
+  "5": {
+    "type": "flag_false",
+    "flag": "crystalBridge"
+  },
+  "6": {
+    "type": "always"
+  },
+  "7": {
+    "type": "always"
+  },
+  "8": {
+    "type": "not_carrying",
+    "item": "emerald"
+  },
+  "9": {
+    "type": "carrying",
+    "item": "emerald"
+  },
+  "10": {
+    "type": "treasure_count",
+    "items": [
+      "nugget",
+      "coins",
+      "eggs",
+      "trident",
+      "emerald",
+      "pyramid",
+      "ruby",
+      "sapph",
+      "pearl",
+      "chest",
+      "rug",
+      "spices",
+      "chain"
+    ],
+    "threshold": 12
+  }
+};
 
 export const OBITUARIES: ObituaryEntry[] = [
   {
