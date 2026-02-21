@@ -1168,6 +1168,55 @@ export function useGame() {
     [gameState.inventory, addMessage, decreaseLampLife, hapticFeedback]
   );
 
+  const resolveActionDestination = useCallback(
+    (action: Action): { type: "goto"; to: string } | { type: "speak"; message: string } | null => {
+      if (!action.conditionalRoutes || action.conditionalRoutes.length === 0) {
+        return action.to ? { type: "goto", to: action.to } : null;
+      }
+
+      for (const route of action.conditionalRoutes) {
+        const cond = route.condition;
+        let matches = false;
+
+        switch (cond.type) {
+          case "carry":
+            matches = cond.item ? gameState.inventory.includes(cond.item) : false;
+            break;
+          case "not":
+            if (cond.object && cond.state !== undefined) {
+              const currentState = gameState.objectStates[cond.object] ?? 0;
+              const targetState = Number(cond.state);
+              matches = currentState !== targetState;
+            }
+            break;
+          case "with": {
+            if (cond.object) {
+              const objLoc = gameState.objectLocations[cond.object];
+              const isAtLocation = objLoc === gameState.sceneId;
+              const isCarried = gameState.inventory.includes(cond.object);
+              matches = isAtLocation || isCarried;
+            }
+            break;
+          }
+          case "pct":
+            matches = cond.percent ? Math.random() * 100 < cond.percent : false;
+            break;
+        }
+
+        if (matches) {
+          if (route.to) {
+            return { type: "goto", to: route.to };
+          } else if (route.message) {
+            return { type: "speak", message: route.message };
+          }
+        }
+      }
+
+      return action.to ? { type: "goto", to: action.to } : null;
+    },
+    [gameState.inventory, gameState.objectStates, gameState.objectLocations, gameState.sceneId]
+  );
+
   const handleAction = useCallback(
     (action: Action) => {
       switch (action.type) {
@@ -1178,11 +1227,18 @@ export function useGame() {
           decreaseLampLife();
           break;
 
-        case "move":
-          if (action.to) {
-            handleMove(action.to);
+        case "move": {
+          const resolved = resolveActionDestination(action);
+          if (resolved) {
+            if (resolved.type === "goto") {
+              handleMove(resolved.to);
+            } else {
+              addMessage("narration", resolved.message);
+              decreaseLampLife();
+            }
           }
           break;
+        }
 
         case "event":
           const actionAny = action as any;
@@ -1225,7 +1281,7 @@ export function useGame() {
           break;
       }
     },
-    [getCurrentScene, handleMove, handleTakeItem, addMessage, decreaseLampLife, hapticFeedback]
+    [getCurrentScene, handleMove, handleTakeItem, addMessage, decreaseLampLife, hapticFeedback, resolveActionDestination]
   );
 
   // Move these BEFORE parseCommand to avoid hoisting issues
@@ -1260,13 +1316,23 @@ export function useGame() {
       const actions = getAvailableActions();
       const moveAction = actions.find((a) => a.id === actionId && a.type === "move");
 
-      if (moveAction && moveAction.to) {
-        handleMove(moveAction.to);
+      if (moveAction) {
+        const resolved = resolveActionDestination(moveAction);
+        if (resolved) {
+          if (resolved.type === "goto") {
+            handleMove(resolved.to);
+          } else {
+            addMessage("narration", resolved.message);
+            decreaseLampLife();
+          }
+        } else {
+          addMessage("system", "You can't go that way.");
+        }
       } else {
         addMessage("system", "You can't go that way.");
       }
     },
-    [getAvailableActions, handleMove, addMessage]
+    [getAvailableActions, handleMove, addMessage, resolveActionDestination, decreaseLampLife]
   );
 
   // Autosave effect - saves whenever game state or messages change
@@ -2076,8 +2142,15 @@ export function useGame() {
             const magicAction = availableActions.find(
               (a) => a.type === "move" && a.id === `go_${phrase}`
             );
-            if (magicAction && magicAction.to) {
-              handleMove(magicAction.to);
+            if (magicAction) {
+              const resolved = resolveActionDestination(magicAction);
+              if (resolved && resolved.type === "goto") {
+                handleMove(resolved.to);
+              } else if (resolved && resolved.type === "speak") {
+                addMessage("narration", resolved.message);
+              } else {
+                addMessage("narration", "Nothing happens.");
+              }
             } else {
               addMessage("narration", "Nothing happens.");
             }
@@ -2442,10 +2515,18 @@ export function useGame() {
             a.label.toLowerCase() === `go ${token}`
           )
         );
-        if (moveAction && moveAction.to) {
-          handleMove(moveAction.to);
-          checkLampWarning();
-          return;
+        if (moveAction) {
+          const resolved = resolveActionDestination(moveAction);
+          if (resolved) {
+            if (resolved.type === "goto") {
+              handleMove(resolved.to);
+            } else {
+              addMessage("narration", resolved.message);
+              decreaseLampLife();
+            }
+            checkLampWarning();
+            return;
+          }
         }
 
         const eventAction = availableActions.find(
@@ -2463,10 +2544,18 @@ export function useGame() {
       const defaultMove = availableActions.find(
         (a) => a.type === "move" && a.id === "go_default"
       );
-      if (defaultMove && defaultMove.to) {
-        handleMove(defaultMove.to);
-        checkLampWarning();
-        return;
+      if (defaultMove) {
+        const resolved = resolveActionDestination(defaultMove);
+        if (resolved) {
+          if (resolved.type === "goto") {
+            handleMove(resolved.to);
+          } else {
+            addMessage("narration", resolved.message);
+            decreaseLampLife();
+          }
+          checkLampWarning();
+          return;
+        }
       }
 
       addMessage(
@@ -2493,6 +2582,7 @@ export function useGame() {
       isLocationDark,
       hapticFeedback,
       getSceneDescription,
+      resolveActionDestination,
     ]
   );
 
