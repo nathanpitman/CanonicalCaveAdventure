@@ -1403,6 +1403,32 @@ export function useGame() {
         return;
       }
 
+      if (__DEV__) {
+        const testMatch = rawInput.match(/^test\s+(\S+)$/i);
+        if (testMatch) {
+          const targetSceneId = testMatch[1].toLowerCase();
+          if (SCENES[targetSceneId]) {
+            addMessage("action", rawInput);
+            addMessage("system", `[DEV] Teleporting to: ${targetSceneId}`);
+            setGameState((prev) => ({
+              ...prev,
+              sceneId: targetSceneId,
+              previousSceneId: prev.sceneId,
+              visitCounts: {
+                ...prev.visitCounts,
+                [targetSceneId]: (prev.visitCounts[targetSceneId] || 0) + 1,
+              },
+            }));
+            addMessage("narration", getSceneDescription(targetSceneId, true));
+            return;
+          } else {
+            addMessage("action", rawInput);
+            addMessage("system", `[DEV] Unknown scene ID: ${targetSceneId}`);
+            return;
+          }
+        }
+      }
+
       const sentenceCased = rawInput.charAt(0).toUpperCase() + rawInput.slice(1).toLowerCase();
       addMessage("action", sentenceCased);
 
