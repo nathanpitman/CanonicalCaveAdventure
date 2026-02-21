@@ -1112,6 +1112,263 @@ export const SCENES: Record<string, Scene> = ${JSON.stringify(SCENES, null, 2)};
   console.log(`Scene count: ${sceneCount}`);
   console.log(`Item count: ${itemCount}`);
   console.log(`START_SCENE_ID: ${START_SCENE_ID}`);
+
+  // ============================================================
+  // GENERATE canonObjects.ts
+  // ============================================================
+  console.log(`\n=== GENERATING canonObjects.ts ===`);
+
+  const objectStartLocations: Record<string, string> = {};
+  const treasureIds: string[] = [];
+  const immovableObjects: string[] = [];
+  const npcLocations: Record<string, string | string[]> = {};
+
+  for (const [objId, obj] of objects) {
+    const itemId = toItemId(objId);
+    const locs = obj.locations
+      ? (Array.isArray(obj.locations) ? obj.locations : [obj.locations])
+      : [];
+    const sceneIdLocs = locs
+      .filter((l: string) => l !== "LOC_NOWHERE")
+      .map((l: string) => toSceneId(l));
+
+    if (obj.immovable) {
+      immovableObjects.push(itemId);
+      if (sceneIdLocs.length === 1) {
+        npcLocations[itemId] = sceneIdLocs[0];
+      } else if (sceneIdLocs.length > 1) {
+        npcLocations[itemId] = sceneIdLocs;
+      }
+    } else if (sceneIdLocs.length > 0) {
+      objectStartLocations[itemId] = sceneIdLocs[0];
+    }
+
+    if (obj.treasure) {
+      treasureIds.push(itemId);
+    }
+  }
+
+  const treasureValues: Record<string, number> = {};
+  const SMALL_TREASURE_VALUE = 12;
+  const LARGE_TREASURE_VALUE = 16;
+  const smallTreasures = new Set(["nugget", "obj_51", "obj_52", "obj_53", "coins"]);
+  for (const tid of treasureIds) {
+    if (smallTreasures.has(tid)) {
+      treasureValues[tid] = SMALL_TREASURE_VALUE;
+    } else if (tid === "chest") {
+      treasureValues[tid] = 14;
+    } else {
+      treasureValues[tid] = LARGE_TREASURE_VALUE;
+    }
+  }
+
+  const snakeLoc = npcLocations["snake"] || "kinghall";
+  const dragonLocs = Array.isArray(npcLocations["dragon"]) ? npcLocations["dragon"] : [npcLocations["dragon"] || "secret4"];
+  const trollLocs = Array.isArray(npcLocations["troll"]) ? npcLocations["troll"] : [npcLocations["troll"] || "swchasm"];
+  const ogreLoc = (typeof npcLocations["ogre"] === "string") ? npcLocations["ogre"] : "large";
+  const bearLoc = (typeof npcLocations["bear"] === "string") ? npcLocations["bear"] : "barrenroom";
+  const plantLoc = (typeof npcLocations["plant"] === "string") ? npcLocations["plant"] : "westpit";
+  const clamLoc = (typeof npcLocations["clam"] === "string") ? npcLocations["clam"] : "shellroom";
+  const doorLoc = (typeof npcLocations["door"] === "string") ? npcLocations["door"] : "immense";
+  const fissureLocs = Array.isArray(npcLocations["fissure"]) ? npcLocations["fissure"] : [npcLocations["fissure"] || "eastbank"];
+  const chasmLocs = Array.isArray(npcLocations["chasm"]) ? npcLocations["chasm"] : [npcLocations["chasm"] || "swchasm"];
+  const urnLoc = (typeof npcLocations["urn"] === "string") ? npcLocations["urn"] : "cliff";
+  const cavityLoc = (typeof npcLocations["cavity"] === "string") ? npcLocations["cavity"] : "cliff";
+
+  const canonObjectsOutput = `// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
+// Generated: ${new Date().toISOString()}
+// Run: npx tsx tools/importOpenAdventure.ts to regenerate
+
+export const INVLIMIT = 7;
+
+export interface CanonObject {
+  id: string;
+  name: string;
+  words: string[];
+  startLocation: string;
+  fixedLocation?: string;
+  immovable?: boolean;
+  treasure?: boolean;
+  treasureValue?: number;
+  descriptions: string[];
+}
+
+export const TREASURE_DEPOSIT_LOCATION = "building";
+
+export const OBJECT_START_LOCATIONS: Record<string, string> = ${JSON.stringify(objectStartLocations, null, 2)};
+
+export const OGRE_LOCATION = ${JSON.stringify(ogreLoc)};
+
+export const SNAKE_LOCATION = ${JSON.stringify(typeof snakeLoc === "string" ? snakeLoc : snakeLoc[0])};
+export const DRAGON_LOCATIONS = ${JSON.stringify(dragonLocs)};
+export const TROLL_LOCATIONS = ${JSON.stringify(trollLocs)};
+export const BEAR_LOCATION = ${JSON.stringify(bearLoc)};
+export const PLANT_LOCATION = ${JSON.stringify(plantLoc)};
+export const CLAM_LOCATION = ${JSON.stringify(clamLoc)};
+export const URN_LOCATION = ${JSON.stringify(urnLoc)};
+export const CAVITY_LOCATION = ${JSON.stringify(cavityLoc)};
+
+export const TREASURE_IDS: string[] = ${JSON.stringify(treasureIds, null, 2)};
+
+export const TREASURE_VALUES: Record<string, number> = ${JSON.stringify(treasureValues, null, 2)};
+
+export const IMMOVABLE_OBJECTS = new Set(${JSON.stringify(immovableObjects, null, 2)});
+
+export function buildInitialObjectLocations(): Record<string, string> {
+  const locations: Record<string, string> = {};
+  for (const [objId, locId] of Object.entries(OBJECT_START_LOCATIONS)) {
+    locations[objId] = locId;
+  }
+  locations["snake"] = SNAKE_LOCATION;
+  locations["troll"] = TROLL_LOCATIONS[0];
+  locations["ogre"] = OGRE_LOCATION;
+  locations["dragon"] = DRAGON_LOCATIONS[0];
+  locations["fissure"] = ${JSON.stringify(fissureLocs[0])};
+  locations["door"] = ${JSON.stringify(doorLoc)};
+  locations["chasm"] = ${JSON.stringify(chasmLocs[0])};
+  return locations;
+}
+
+export const HINT_PENALTIES: Record<number, number> = {
+  0: 2,
+  1: 2,
+  2: 2,
+  3: 4,
+  4: 5,
+  5: 3,
+  6: 2,
+  7: 2,
+  8: 2,
+  9: 4,
+};
+
+export function calculateScore(state: {
+  objectLocations: Record<string, string>;
+  inventory: string[];
+  flags: Record<string, boolean>;
+  deathState: { numdie: number; maxDeaths: number };
+  hintState: { hintsGiven: number[] };
+  stats: { turns: number; endgameBonus?: number };
+  thresholdsTriggered: number[];
+  milestonesCompleted: string[];
+  dwarfState?: { dflag: number };
+}): { score: number; maxScore: number; breakdown: Record<string, number> } {
+  const breakdown: Record<string, number> = {};
+  let score = 0;
+
+  let treasurePoints = 0;
+  for (const tid of TREASURE_IDS) {
+    const value = TREASURE_VALUES[tid] || 0;
+    const loc = state.objectLocations[tid];
+    const inInventory = state.inventory.includes(tid);
+
+    if (loc || inInventory) {
+      treasurePoints += 2;
+    }
+    if (loc === TREASURE_DEPOSIT_LOCATION) {
+      treasurePoints += (value - 2);
+    }
+  }
+  breakdown.treasures = treasurePoints;
+  score += treasurePoints;
+
+  const dflag = state.dwarfState?.dflag ?? 0;
+  if (dflag > 0 || state.flags.reachedDeep) {
+    breakdown.exploration = 25;
+    score += 25;
+  }
+
+  const survivalBonus = (state.deathState.maxDeaths - state.deathState.numdie) * 10;
+  breakdown.survival = survivalBonus;
+  score += survivalBonus;
+
+  if (!state.flags.gameQuit) {
+    breakdown.completion = 4;
+    score += 4;
+  }
+
+  if (state.flags.closingReached) {
+    breakdown.closing = 25;
+    score += 25;
+  }
+
+  if (state.flags.endgameVictory) {
+    breakdown.endgame = 45;
+    score += 45;
+  } else if (state.flags.endgameDefeat) {
+    const bonus = state.stats.endgameBonus ?? 25;
+    breakdown.endgame = bonus;
+    score += bonus;
+  }
+
+  if (state.objectLocations.magazine === "wittsend") {
+    breakdown.magazine = 1;
+    score += 1;
+  }
+
+  breakdown.roundout = 2;
+  score += 2;
+
+  let hintDeductions = 0;
+  for (const hintNum of state.hintState.hintsGiven) {
+    hintDeductions += HINT_PENALTIES[hintNum] ?? 0;
+  }
+  if (hintDeductions > 0) {
+    breakdown.hintPenalty = -hintDeductions;
+    score -= hintDeductions;
+  }
+
+  let turnDeductions = 0;
+  const turnThresholds = [
+    { threshold: 350, loss: 2 },
+    { threshold: 500, loss: 3 },
+    { threshold: 1000, loss: 5 },
+    { threshold: 2500, loss: 10 },
+  ];
+  for (const t of turnThresholds) {
+    if (state.stats.turns >= t.threshold) {
+      turnDeductions += t.loss;
+    }
+  }
+  if (turnDeductions > 0) {
+    breakdown.turnPenalty = -turnDeductions;
+    score -= turnDeductions;
+  }
+
+  return { score, maxScore: 430, breakdown };
+}
+
+export function getScoreClass(score: number): string {
+  if (score >= 430) return "You are now the WORLD CHAMPION ADVENTURER!!";
+  if (score >= 427) return "You have achieved the rank of Adventurer Grandmaster.";
+  if (score >= 411) return "You have achieved the rank of Master Adventurer Class A.";
+  if (score >= 376) return "You have achieved the rank of Master Adventurer Class B.";
+  if (score >= 321) return "You have achieved the rank of Master Adventurer Class C.";
+  if (score >= 251) return "You have achieved the rank of Junior Master.";
+  if (score >= 171) return "You are a Seasoned Adventurer.";
+  if (score >= 121) return "You are an Experienced Adventurer.";
+  if (score >= 46) return "You are a Novice Class adventurer.";
+  return "You are obviously a rank amateur.";
+}
+`;
+
+  const canonObjectsPath = path.resolve("client/data/canonObjects.ts");
+  fs.writeFileSync(canonObjectsPath, canonObjectsOutput, "utf-8");
+  console.log(`Written to: ${canonObjectsPath}`);
+  console.log(`Object start locations: ${Object.keys(objectStartLocations).length}`);
+  console.log(`Treasure IDs: ${treasureIds.length}`);
+  console.log(`Immovable objects: ${immovableObjects.length}`);
+
+  // Validate generated locations against scenes
+  let canonMismatches = 0;
+  for (const [itemId, loc] of Object.entries(objectStartLocations)) {
+    if (loc !== "_nowhere" && !SCENES[loc]) {
+      console.warn(`CANON WARNING: item ${itemId} start location ${loc} has no matching scene`);
+      canonMismatches++;
+    }
+  }
+  console.log(`Canon location mismatches: ${canonMismatches}`);
+
   console.log(`\nImport complete!`);
 
   console.log(`\n=== RUNNING NARRATIVE EXIT AUDIT ===`);
