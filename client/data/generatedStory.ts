@@ -2,6 +2,18 @@
 // Generated: 2026-02-15T19:19:01.103Z
 // Canonical Open Adventure import with travel mechanics
 
+export interface ConditionalRoute {
+  condition: {
+    type: "carry" | "not" | "with" | "pct";
+    item?: string;
+    object?: string;
+    state?: string;
+    percent?: number;
+  };
+  to?: string;
+  message?: string;
+}
+
 export interface Action {
   id: string;
   label: string;
@@ -16,6 +28,7 @@ export interface Action {
   requiresFlag?: string;
   message?: string;
   uiHint?: "auto" | "nav" | "hidden";
+  conditionalRoutes?: ConditionalRoute[];
 }
 
 export interface SceneDescription {
