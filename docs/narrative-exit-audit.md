@@ -1,8 +1,8 @@
 # Narrative Exit Audit Report
 
-Generated: 2026-02-19T21:54:15.313Z
+Generated: 2026-02-21T16:18:59.628Z
 
-Total gaps found: **218**
+Total gaps found: **221**
 
 ## Gaps
 
@@ -145,7 +145,6 @@ Total gaps found: **218**
 - `go_upstr` (Upstr) -> `slit`
 - `go_gully` (GULLY) -> `slit`
 - `go_north` (GO NORTH) -> `slit`
-- `go_enter` (ENTER) -> `belowgrate`
 - `go_in` (GO IN) -> `belowgrate`
 - `go_down` (GO DOWN) -> `belowgrate`
 
@@ -181,7 +180,6 @@ Total gaps found: **218**
 ### Below The Grate (`belowgrate`)
 
 **Available exits:**
-- `go_out` (GO OUT) -> `grate`
 - `go_up` (GO UP) -> `grate`
 - `go_crawl` (CRAWL) -> `cobble`
 - `go_cobbles` (COBBLES) -> `cobble`
@@ -196,7 +194,7 @@ Total gaps found: **218**
 |---|---|
 | `surface` | **NO** |
 | `go surface` | **NO** |
-| `go outside` | YES |
+| `go outside` | **NO** |
 | `go up` | YES |
 | `above` | **NO** |
 | `topside` | **NO** |
@@ -364,6 +362,68 @@ Total gaps found: **218**
 
 ---
 
+### Top Of Small Pit (`pittop`)
+
+**Available exits:**
+- `go_depression` (DEPRESSION) -> `grate`
+- `go_entra` (Entra) -> `belowgrate`
+- `go_debris` (DEBRIS) -> `debris`
+- `go_passage` (PASSAGE) -> `birdchamber`
+- `go_east` (GO EAST) -> `birdchamber`
+- `go_down` (GO DOWN) -> `misthall`
+- `go_crack` (CRACK) -> `crack`
+- `go_west` (GO WEST) -> `crack`
+
+**Cue phrase:** "pit"
+
+| Implied Input | Resolves? |
+|---|---|
+| `pit` | **NO** |
+| `go pit` | **NO** |
+| `enter pit` | **NO** |
+| `chasm` | **NO** |
+| `abyss` | **NO** |
+
+---
+
+### Hall Of Mists (`misthall`)
+
+**Available exits:**
+- `go_left` (LEFT) -> `nugget`
+- `go_south` (GO SOUTH) -> `nugget`
+- `go_forward` (FORWARD) -> `eastbank`
+- `go_hall` (HALL) -> `eastbank`
+- `go_west` (GO WEST) -> `eastbank`
+- `go_stairs` (STAIRS) -> `kinghall`
+- `go_down` (GO DOWN) -> `kinghall`
+- `go_north` (GO NORTH) -> `kinghall`
+- `go_up` (GO UP) -> `pittop`
+- `go_y2` (Y2) -> `jumble`
+
+**Cue phrase:** "passage"
+
+| Implied Input | Resolves? |
+|---|---|
+| `passage` | **NO** |
+| `go passage` | **NO** |
+| `enter passage` | **NO** |
+| `passageway` | **NO** |
+| `tunnel` | **NO** |
+| `corridor` | **NO** |
+
+**Cue phrase:** "staircase"
+
+| Implied Input | Resolves? |
+|---|---|
+| `stairs` | YES |
+| `go stairs` | YES |
+| `stairway` | YES |
+| `staircase` | YES |
+| `climb stairs` | YES |
+| `go steps` | **NO** |
+
+---
+
 ### Crack (`crack`)
 
 **Available exits:**
@@ -386,7 +446,6 @@ Total gaps found: **218**
 **Available exits:**
 - `go_hall` (HALL) -> `misthall`
 - `go_east` (GO EAST) -> `misthall`
-- `go_forward` (FORWARD) -> `nomake`
 - `go_over` (Over) -> `westbank`
 
 **Cue phrase:** "fissure"
@@ -452,13 +511,7 @@ Total gaps found: **218**
 - `go_stairs` (STAIRS) -> `misthall`
 - `go_up` (GO UP) -> `misthall`
 - `go_east` (GO EAST) -> `misthall`
-- `go_north` (GO NORTH) -> `floorhole`
-- `go_right` (RIGHT) -> `floorhole`
-- `go_south` (GO SOUTH) -> `southside`
-- `go_left` (LEFT) -> `southside`
-- `go_west` (GO WEST) -> `westside`
-- `go_forward` (FORWARD) -> `westside`
-- `go_sw` (GO SOUTHWEST) -> `secret3`
+- `go_north` (GO NORTH) -> `snakeblock`
 - `go_secre` (Secre) -> `secret3`
 
 **Cue phrase:** "Hall"
@@ -582,7 +635,7 @@ Total gaps found: **218**
 **Available exits:**
 - `go_up` (GO UP) -> `westend`
 - `go_out` (GO OUT) -> `westend`
-- `go_climb` (CLIMB) -> `building1`
+- `go_climb` (CLIMB) -> `climbstalk`
 
 **Cue phrase:** "pit"
 
@@ -642,7 +695,6 @@ Total gaps found: **218**
 ### West Bank Of Fissure (`westbank`)
 
 **Available exits:**
-- `go_forward` (FORWARD) -> `nomake`
 - `go_over` (Over) -> `eastbank`
 - `go_north` (GO NORTH) -> `parallel1`
 - `go_west` (GO WEST) -> `mistwest`
@@ -1043,7 +1095,6 @@ Total gaps found: **218**
 **Available exits:**
 - `go_east` (GO EAST) -> `longeast`
 - `go_north` (GO NORTH) -> `crossover`
-- `go_south` (GO SOUTH) -> `different1`
 
 **Cue phrase:** "passage"
 
@@ -1136,8 +1187,8 @@ Total gaps found: **218**
 - `go_east` (GO EAST) -> `complex`
 - `go_west` (GO WEST) -> `swisscheese`
 - `go_slab` (SLAB) -> `slab`
-- `go_up` (GO UP) -> `secret2`
-- `go_north` (GO NORTH) -> `lowroom`
+- `go_up` (GO UP) -> `dusty`
+- `go_north` (GO NORTH) -> `threejunction`
 - `go_down` (GO DOWN) -> `anteroom`
 
 **Cue phrase:** "passage"
@@ -1253,7 +1304,7 @@ Total gaps found: **218**
 **Available exits:**
 - `go_down` (GO DOWN) -> `slab`
 - `go_slab` (SLAB) -> `slab`
-- `go_south` (GO SOUTH) -> `secret5`
+- `go_south` (GO SOUTH) -> `secret4`
 - `go_north` (GO NORTH) -> `mirrorcanyon`
 - `go_reservoir` (RESERVOIR) -> `reservoir`
 
@@ -1363,7 +1414,7 @@ Total gaps found: **218**
 
 **Available exits:**
 - `go_east` (GO EAST) -> `kinghall`
-- `go_west` (GO WEST) -> `secret5`
+- `go_west` (GO WEST) -> `secret6`
 - `go_down` (GO DOWN) -> `wideplace`
 
 **Cue phrase:** "canyon"
@@ -2093,18 +2144,16 @@ Total gaps found: **218**
 
 **Available exits:**
 - `go_north` (GO NORTH) -> `secret2`
-- `go_down` (GO DOWN) -> `alike6`
-- `go_jump` (JUMP) -> `alike6`
-- `go_climb` (CLIMB) -> `alike6`
+- `go_down` (GO DOWN) -> `alike4`
 
 **Cue phrase:** "climb"
 
 | Implied Input | Resolves? |
 |---|---|
-| `climb` | YES |
+| `climb` | **NO** |
 | `go up` | **NO** |
 | `ascend` | **NO** |
-| `climb up` | YES |
+| `climb up` | **NO** |
 
 ---
 
@@ -2217,7 +2266,7 @@ Total gaps found: **218**
 
 **Available exits:**
 - `go_sw` (GO SOUTHWEST) -> `winding`
-- `go_jump` (JUMP) -> `nomake`
+- `go_jump` (JUMP) -> `__blocked__`
 
 **Cue phrase:** "corridor"
 

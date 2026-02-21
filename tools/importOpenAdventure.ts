@@ -277,6 +277,17 @@ function hasGrateOpenRequired(cond: any): boolean {
   return false;
 }
 
+const OBJECT_STATE_MAP: Record<string, number> = {
+  SNAKE_BLOCKS: 0,
+  UNBRIDGED: 0,
+  BRIDGED: 1,
+  PLANT_BELLOWING: 1,
+  PLANT_GROWN: 2,
+  DRAGON_BARS: 0,
+  DOOR_RUSTED: 0,
+  GRATE_CLOSED: 0,
+};
+
 function yamlCondToConditionalRoute(
   cond: any,
   actionType: string,
@@ -301,9 +312,10 @@ function yamlCondToConditionalRoute(
   }
   if (condType === "not") {
     const obj = cond[1];
-    const state = cond[2];
+    const stateName = cond[2];
+    const stateNum = OBJECT_STATE_MAP[stateName] ?? 0;
     return {
-      condition: { type: "not", object: toItemId(obj), state: state },
+      condition: { type: "not", object: toItemId(obj), state: String(stateNum) },
       ...(destSceneId ? { to: destSceneId } : {}),
       ...(msgText ? { message: msgText } : {}),
     };
@@ -615,17 +627,21 @@ function main() {
           defaultDest = toSceneId(unconditionalGotos[0].target);
         }
 
-        if (!defaultDest && conditionalEntries.length > 0) {
-          const lastConditionalGoto = [...conditionalEntries].reverse().find(e => e.actionType === "goto");
-          if (lastConditionalGoto) {
-            defaultDest = toSceneId(lastConditionalGoto.target);
-          }
-        }
-
-        if (!defaultDest) {
-          if (unconditionalSpeaks.length > 0) {
-            const msgId = unconditionalSpeaks[0].target;
-            const msgText = normaliseText(messageTable[msgId] || `[${msgId}] You can't go that way.`);
+        if (!defaultDest && unconditionalSpeaks.length > 0) {
+          const msgId = unconditionalSpeaks[0].target;
+          const msgText = normaliseText(messageTable[msgId] || `[${msgId}] You can't go that way.`);
+          if (conditionalRoutes.length > 0) {
+            const moveAction: Action = {
+              id: actionId,
+              label: label,
+              type: "move",
+              to: "__blocked__",
+              conditionalRoutes: conditionalRoutes,
+              message: msgText,
+            };
+            if (requiresFlag) moveAction.requiresFlag = requiresFlag;
+            actions.push(moveAction);
+          } else {
             actions.push({
               id: `say_${msgId.toLowerCase()}_${verb}`,
               label: label,
@@ -634,6 +650,14 @@ function main() {
               uiHint: "hidden",
             });
           }
+          continue;
+        }
+
+        if (!defaultDest && conditionalRoutes.length > 0) {
+          continue;
+        }
+
+        if (!defaultDest) {
           continue;
         }
 
