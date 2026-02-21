@@ -5,6 +5,18 @@ import { parse } from "yaml";
 // ============================================================
 // TYPE DEFINITIONS
 // ============================================================
+interface ConditionalRoute {
+  condition: {
+    type: "carry" | "not" | "with" | "pct";
+    item?: string;
+    object?: string;
+    state?: string;
+    percent?: number;
+  };
+  to?: string;
+  message?: string;
+}
+
 interface Action {
   id: string;
   label: string;
@@ -19,6 +31,7 @@ interface Action {
   requiresFlag?: string;
   message?: string;
   uiHint?: "auto" | "nav" | "hidden";
+  conditionalRoutes?: ConditionalRoute[];
 }
 
 interface SceneDescription {
@@ -264,6 +277,54 @@ function hasGrateOpenRequired(cond: any): boolean {
   return false;
 }
 
+function yamlCondToConditionalRoute(
+  cond: any,
+  actionType: string,
+  target: string,
+  messageTable: Record<string, string>
+): ConditionalRoute | null {
+  if (!cond || !Array.isArray(cond) || cond.length < 2) return null;
+  if (hasGrateOpenRequired(cond)) return null;
+
+  const condType = cond[0];
+  const destSceneId = actionType === "goto" ? toSceneId(target) : undefined;
+  const msgText = actionType === "speak"
+    ? normaliseText(messageTable[target] || `[${target}] You can't go that way.`)
+    : undefined;
+
+  if (condType === "carry") {
+    return {
+      condition: { type: "carry", item: toItemId(cond[1]) },
+      ...(destSceneId ? { to: destSceneId } : {}),
+      ...(msgText ? { message: msgText } : {}),
+    };
+  }
+  if (condType === "not") {
+    const obj = cond[1];
+    const state = cond[2];
+    return {
+      condition: { type: "not", object: toItemId(obj), state: state },
+      ...(destSceneId ? { to: destSceneId } : {}),
+      ...(msgText ? { message: msgText } : {}),
+    };
+  }
+  if (condType === "with") {
+    return {
+      condition: { type: "with", object: toItemId(cond[1]) },
+      ...(destSceneId ? { to: destSceneId } : {}),
+      ...(msgText ? { message: msgText } : {}),
+    };
+  }
+  if (condType === "pct") {
+    return {
+      condition: { type: "pct", percent: cond[1] },
+      ...(destSceneId ? { to: destSceneId } : {}),
+      ...(msgText ? { message: msgText } : {}),
+    };
+  }
+  return null;
+}
+
 // ============================================================
 // MAIN FUNCTION
 // ============================================================
@@ -434,93 +495,164 @@ function main() {
     let hasDefaultTravel = false;
 
     if (loc.travel) {
+      interface TravelEntry {
+        actionType: string;
+        target: string;
+        cond: any;
+      }
+      const verbTravelGroups: Map<string, TravelEntry[]> = new Map();
+      const defaultTravels: TravelEntry[] = [];
+      const standaloneSpeak: { verb: string; msgId: string; msgText: string; cond: any }[] = [];
+
       for (const travel of loc.travel) {
         if (!travel.action) continue;
         const [actionType, target] = travel.action;
         const verbs: string[] = travel.verbs || [];
-        const cond = travel.cond;
+        const cond = travel.cond || null;
 
-        // Check for requiresFlag based on condition
-        let requiresFlag: string | undefined;
-        if (hasGrateOpenRequired(cond)) {
-          requiresFlag = "grateOpen";
+        if (verbs.length === 0) {
+          defaultTravels.push({ actionType, target, cond });
+          continue;
         }
 
-        // 4A) DEFAULT TRAVEL (verbs: [])
-        if (verbs.length === 0 && actionType === "goto" && !hasDefaultTravel) {
+        if (actionType === "special") {
+          complexTravelRules.push(`${locId}: special action not modeled`);
+          continue;
+        }
+
+        for (const verb of verbs) {
+          canonTravelVerbs.add(verb.toLowerCase());
+
+          const dirInfo = DIRECTION_MAP[verb];
+          const verbLower = safeVerbId(verb);
+          const actionId = dirInfo ? dirInfo.actionId : `go_${verbLower}`;
+
+          if (!verbTravelGroups.has(actionId)) {
+            verbTravelGroups.set(actionId, []);
+          }
+          verbTravelGroups.get(actionId)!.push({ actionType, target, cond });
+        }
+      }
+
+      for (const dt of defaultTravels) {
+        if (dt.actionType === "goto" && !hasDefaultTravel) {
           hasDefaultTravel = true;
-          const destSceneId = toSceneId(target);
-          actions.push({
+          const destSceneId = toSceneId(dt.target);
+          const defaultAction: Action = {
             id: "go_default",
             label: "CONTINUE",
             type: "move",
             to: destSceneId,
-          });
-          scenesWithDefaultTravel.push(`${sceneId} -> ${destSceneId}`);
-          continue;
-        }
-
-        // 4D) SPEAK ACTIONS (message-only, hidden from UI pills)
-        if (actionType === "speak") {
-          const msgId = target;
-          const msgText = normaliseText(messageTable[msgId] || `[${msgId}] You can't go that way.`);
-          
-          for (const verb of verbs) {
-            const verbLower = safeVerbId(verb);
-            const actionId = `say_${msgId.toLowerCase()}_${verbLower}`;
-            
-            if (!seenActionIds.has(actionId)) {
-              seenActionIds.add(actionId);
-              actions.push({
-                id: actionId,
-                label: getVerbLabel(verb),
-                type: "event",
-                message: msgText,
-                uiHint: "hidden",
-              });
+          };
+          if (dt.cond) {
+            const cr = yamlCondToConditionalRoute(dt.cond, dt.actionType, dt.target, messageTable);
+            if (cr) {
+              defaultAction.conditionalRoutes = [cr];
+              defaultAction.to = destSceneId;
             }
           }
+          actions.push(defaultAction);
+          scenesWithDefaultTravel.push(`${sceneId} -> ${destSceneId}`);
+        }
+      }
+
+      for (const [actionId, entries] of verbTravelGroups) {
+        if (seenActionIds.has(actionId)) continue;
+        seenActionIds.add(actionId);
+
+        const firstVerb = entries[0];
+        const verb = actionId.replace(/^go_/, "");
+        const dirInfo = Object.values(DIRECTION_MAP).find(d => d.actionId === actionId);
+        const label = dirInfo ? dirInfo.label : getVerbLabel(verb);
+
+        const conditionalEntries = entries.filter(e => e.cond && !hasGrateOpenRequired(e.cond));
+        const unconditionalGotos = entries.filter(e => !e.cond && e.actionType === "goto");
+        const grateEntries = entries.filter(e => e.cond && hasGrateOpenRequired(e.cond) && e.actionType === "goto");
+        const unconditionalSpeaks = entries.filter(e => !e.cond && e.actionType === "speak");
+
+        if (unconditionalSpeaks.length > 0 && unconditionalGotos.length === 0 && conditionalEntries.length === 0) {
+          const msgId = unconditionalSpeaks[0].target;
+          const msgText = normaliseText(messageTable[msgId] || `[${msgId}] You can't go that way.`);
+          actions.push({
+            id: `say_${msgId.toLowerCase()}_${verb}`,
+            label: label,
+            type: "event",
+            message: msgText,
+            uiHint: "hidden",
+          });
           continue;
         }
 
-        // Skip non-goto actions
-        if (actionType !== "goto") {
-          if (actionType === "special") {
-            complexTravelRules.push(`${locId}: special action not modeled`);
-          }
-          continue;
-        }
-
-        // 4B) ALL VERB TOKENS -> MOVE actions
-        const destSceneId = toSceneId(target);
-        
-        for (const verb of verbs) {
-          // Collect canonical verb for lexicon
-          canonTravelVerbs.add(verb.toLowerCase());
-          
-          const dirInfo = DIRECTION_MAP[verb];
-          const verbLower = safeVerbId(verb);
-          const actionId = dirInfo ? dirInfo.actionId : `go_${verbLower}`;
-          const label = dirInfo ? dirInfo.label : getVerbLabel(verb);
-          
-          // Skip if we already have this action (prefer first occurrence)
-          if (seenActionIds.has(actionId)) continue;
-          seenActionIds.add(actionId);
-          
-          const moveAction: Action = {
+        if (grateEntries.length > 0 && unconditionalGotos.length === 0 && conditionalEntries.length === 0) {
+          const destSceneId = toSceneId(grateEntries[0].target);
+          actions.push({
             id: actionId,
             label: label,
             type: "move",
             to: destSceneId,
-          };
-
-          // 4C) CONDITIONAL TRAVEL: GRATE_CLOSED
-          if (requiresFlag) {
-            moveAction.requiresFlag = requiresFlag;
-          }
-
-          actions.push(moveAction);
+            requiresFlag: "grateOpen",
+          });
+          continue;
         }
+
+        const conditionalRoutes: ConditionalRoute[] = [];
+        let defaultDest: string | undefined;
+        let requiresFlag: string | undefined;
+
+        if (grateEntries.length > 0) {
+          defaultDest = toSceneId(grateEntries[0].target);
+          requiresFlag = "grateOpen";
+        }
+
+        for (const entry of conditionalEntries) {
+          const cr = yamlCondToConditionalRoute(entry.cond, entry.actionType, entry.target, messageTable);
+          if (cr) {
+            conditionalRoutes.push(cr);
+          }
+        }
+
+        if (unconditionalGotos.length > 0) {
+          defaultDest = toSceneId(unconditionalGotos[0].target);
+        }
+
+        if (!defaultDest && conditionalEntries.length > 0) {
+          const lastConditionalGoto = [...conditionalEntries].reverse().find(e => e.actionType === "goto");
+          if (lastConditionalGoto) {
+            defaultDest = toSceneId(lastConditionalGoto.target);
+          }
+        }
+
+        if (!defaultDest) {
+          if (unconditionalSpeaks.length > 0) {
+            const msgId = unconditionalSpeaks[0].target;
+            const msgText = normaliseText(messageTable[msgId] || `[${msgId}] You can't go that way.`);
+            actions.push({
+              id: `say_${msgId.toLowerCase()}_${verb}`,
+              label: label,
+              type: "event",
+              message: msgText,
+              uiHint: "hidden",
+            });
+          }
+          continue;
+        }
+
+        const moveAction: Action = {
+          id: actionId,
+          label: label,
+          type: "move",
+          to: defaultDest,
+        };
+
+        if (requiresFlag) {
+          moveAction.requiresFlag = requiresFlag;
+        }
+
+        if (conditionalRoutes.length > 0) {
+          moveAction.conditionalRoutes = conditionalRoutes;
+        }
+
+        actions.push(moveAction);
       }
     }
 
@@ -778,6 +910,18 @@ SPECIAL WORDS: xyzzy, plugh, plover (try them in the right places!)`;
 // Generated: ${new Date().toISOString()}
 // Canonical Open Adventure import with travel mechanics
 
+export interface ConditionalRoute {
+  condition: {
+    type: "carry" | "not" | "with" | "pct";
+    item?: string;
+    object?: string;
+    state?: string;
+    percent?: number;
+  };
+  to?: string;
+  message?: string;
+}
+
 export interface Action {
   id: string;
   label: string;
@@ -792,6 +936,7 @@ export interface Action {
   requiresFlag?: string;
   message?: string;
   uiHint?: "auto" | "nav" | "hidden";
+  conditionalRoutes?: ConditionalRoute[];
 }
 
 export interface SceneDescription {
