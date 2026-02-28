@@ -1408,6 +1408,10 @@ export function useGame() {
     (input: string) => {
       const rawInput = input.trim();
 
+      setMessages((prev) =>
+        prev.filter((m) => m.text !== "Continuing your journey...")
+      );
+
       if (gameState.pendingPrompt) {
         return;
       }
@@ -2693,7 +2697,10 @@ export function useGame() {
           rngSeed: saveData.gameState.rngSeed ?? initialGameState.rngSeed,
         };
         setGameState(migratedState);
-        setMessages(saveData.messages);
+        const filteredMessages = saveData.messages.filter(
+          (m: Message) => m.text !== "Continuing your journey..."
+        );
+        setMessages(filteredMessages);
         addMessage("system", "Continuing your journey...");
       } else {
         const newMessages: Message[] = INTRO_MESSAGES.map((msg) => ({
