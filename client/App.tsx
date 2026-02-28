@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Platform, useColorScheme } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -9,6 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function App() {
   const colorScheme = useColorScheme();
@@ -17,7 +18,7 @@ export default function App() {
 
   useEffect(() => {
     if (Platform.OS === "web") {
-      document.body.style.backgroundColor = theme.backgroundRoot;
+      document.body.style.backgroundColor = theme.backgroundDefault;
       document.documentElement.style.colorScheme = isDark ? "dark" : "light";
 
       const ensureMeta = (name: string, content: string) => {
@@ -41,7 +42,7 @@ export default function App() {
         }
       }
     }
-  }, [isDark, theme.backgroundRoot]);
+  }, [isDark, theme.backgroundRoot, theme.backgroundDefault]);
 
   return (
     <ErrorBoundary>
