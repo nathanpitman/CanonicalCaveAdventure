@@ -66,6 +66,12 @@ import {
   CHEST_HIDE_LOC,
   MESSAGE_HIDE_LOC,
 } from "@/data/dwarves";
+import {
+  initAnalytics,
+  trackScene,
+  trackCommand,
+  trackGameComplete,
+} from "@/analytics";
 
 export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -950,6 +956,8 @@ export function useGame() {
         };
       });
 
+      trackScene(toSceneId);
+
       if (isForcedScene && defaultAction?.to) {
         addMessage("narration", getSceneDescription(toSceneId));
         setTimeout(() => {
@@ -1284,6 +1292,7 @@ export function useGame() {
             }));
 
             if (action.setsFlag === "escaped") {
+              trackGameComplete();
               setGameOver("escaped");
               hapticFeedback("success");
             }
@@ -1445,6 +1454,11 @@ export function useGame() {
 
       if (__DEV__) {
         console.log("[NLP]", parsed.intent, parsed, "->", resolution.type);
+      }
+
+      const commandSucceeded = resolution.type !== "fallback";
+      if (commandSucceeded) {
+        trackCommand(rawInput, true);
       }
 
       switch (resolution.type) {
@@ -2581,6 +2595,7 @@ export function useGame() {
               addMessage("narration", resolved.message);
               decreaseLampLife();
             }
+            trackCommand(rawInput, true);
             checkLampWarning();
             return;
           }
@@ -2593,6 +2608,7 @@ export function useGame() {
           )
         );
         if (eventAction) {
+          trackCommand(rawInput, true);
           handleAction(eventAction);
           return;
         }
@@ -2610,11 +2626,13 @@ export function useGame() {
             addMessage("narration", resolved.message);
             decreaseLampLife();
           }
+          trackCommand(rawInput, true);
           checkLampWarning();
           return;
         }
       }
 
+      trackCommand(rawInput, false);
       addMessage(
         "system",
         `I don't understand "${rawInput}". Try commands like "look", "take lamp", "go east", "go back", or type "help".`
@@ -2695,6 +2713,8 @@ export function useGame() {
 
         setMessages([...newMessages, sceneMessage]);
       }
+      initAnalytics();
+      trackScene(saveData ? saveData.gameState.sceneId : initialGameState.sceneId);
       setIsLoading(false);
     };
 

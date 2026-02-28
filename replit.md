@@ -64,6 +64,35 @@ Do not make changes to the `tools/injectPwaMeta.js` file.
 - **Plover Transport (Special 2):** Drops emerald at current location if carried (prevents emerald smuggling via magic word). Other items unaffected.
 - **Wave Rod:** Works at both eastbank and westbank fissure scenes (not just one side).
 
+## Analytics Layer
+
+A lightweight client-side analytics system (`client/analytics.ts`) tracks game usage and player behavior without any backend runtime requirement.
+
+**Tracked Events:**
+- `session_start`, `scene_entered`, `command_entered`, `command_failed`, `scene_repeat`, `game_completed`, `player_exit`, `frustration_detected`
+
+**Integration Points (in `client/hooks/useGame.ts`):**
+- `initAnalytics()` + `trackScene()` — called on game initialization
+- `trackScene(sceneId)` — called on every scene change in `handleMove`
+- `trackCommand(input, true/false)` — called after command resolution or on unrecognized input
+- `trackGameComplete()` — called when the player escapes (sets `escaped` flag)
+
+**Drop-off & Exit Tracking:**
+- `beforeunload`, `visibilitychange`, and 5-minute inactivity timer automatically call `trackExit()`
+
+**Frustration Detection (silent, analytics-only):**
+- 3+ failed commands in one scene → `reason: "failed_commands"`
+- 2+ repeated visits without progress → `reason: "looping_scene"`
+- 5+ commands without scene change → `reason: "no_progress"`
+
+**Advanced Insights (in-memory, sent on exit):**
+- Total play duration, longest scene time, most failed command, command frequency map
+
+**Configuration:**
+- `EXPO_PUBLIC_ANALYTICS_ENDPOINT` env var (or fallback constant in `client/analytics.ts`) — set to your serverless worker URL
+- GA4 placeholder `G-XXXXXXXXXX` in `web/index.html` — replace with real Measurement ID
+- `window.debugAnalytics()` available in browser console for offline debugging
+
 ## External Dependencies
 
 - **React Native:** Frontend framework.
