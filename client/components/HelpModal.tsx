@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   card: {
     borderTopLeftRadius: BorderRadius["2xl"],
     borderTopRightRadius: BorderRadius["2xl"],
-    maxHeight: "80%",
+    maxHeight: "95%",
   },
   header: {
     flexDirection: "row",
