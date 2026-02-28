@@ -32,10 +32,10 @@ interface CommandInputProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const CONTENT_COLLAPSED_HEIGHT = 68;
+const CONTENT_COLLAPSED_HEIGHT = 68 + Spacing.md;
 const MENU_SPACING = Spacing.md;
 const MENU_BUTTON_HEIGHT = 40;
-const CONTENT_EXPANDED_HEIGHT = CONTENT_COLLAPSED_HEIGHT + MENU_SPACING + MENU_BUTTON_HEIGHT + MENU_SPACING;
+const CONTENT_EXPANDED_HEIGHT = CONTENT_COLLAPSED_HEIGHT + MENU_SPACING + MENU_BUTTON_HEIGHT;
 const DRAG_THRESHOLD = 50;
 
 const PLACEHOLDER_EXAMPLES = [
@@ -356,6 +356,7 @@ export function CommandInput({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: Spacing.lg,
+    paddingBottom: MENU_SPACING,
     borderTopWidth: 1,
     overflow: "hidden",
   },
@@ -407,7 +408,6 @@ const styles = StyleSheet.create({
   menuContainer: {
     flexDirection: "row",
     marginTop: MENU_SPACING,
-    marginBottom: MENU_SPACING,
     gap: Spacing.sm,
   },
   menuButton: {
