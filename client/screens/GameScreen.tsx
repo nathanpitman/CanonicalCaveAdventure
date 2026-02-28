@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -6,9 +6,13 @@ import {
   ActivityIndicator,
   Pressable,
   Platform,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  ViewToken,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Feather } from "@expo/vector-icons";
 
 import { MessageBubble } from "@/components/MessageBubble";
 import { CommandInput } from "@/components/CommandInput";
@@ -20,6 +24,8 @@ import { useGame } from "@/hooks/useGame";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import { Message } from "@/data/gameState";
 import { SCENES } from "@/data/story";
+
+const AT_BOTTOM_THRESHOLD = 80;
 
 export default function GameScreen() {
   const { theme } = useTheme();
@@ -36,19 +42,73 @@ export default function GameScreen() {
   } = useGame();
 
   const [helpVisible, setHelpVisible] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [visibleSceneId, setVisibleSceneId] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
+  const userScrolledRef = useRef(false);
 
   const currentScene = SCENES[gameState.sceneId];
-  const sceneTitle = currentScene?.title || "Unknown";
+  const currentSceneTitle = currentScene?.title || "Unknown";
   const hasLamp = gameState.inventory.includes("lamp");
 
+  const displayedSceneTitle = (() => {
+    if (isAtBottom || !visibleSceneId) return currentSceneTitle;
+    const scene = SCENES[visibleSceneId];
+    return scene?.title || currentSceneTitle;
+  })();
+
   useEffect(() => {
-    if (messages.length > 0) {
+    if (messages.length > 0 && isAtBottom) {
       setTimeout(() => {
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     }
-  }, [messages.length]);
+  }, [messages.length, isAtBottom]);
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+      const distanceFromBottom =
+        contentSize.height - layoutMeasurement.height - contentOffset.y;
+      const atBottom = distanceFromBottom <= AT_BOTTOM_THRESHOLD;
+      setIsAtBottom(atBottom);
+
+      if (!atBottom) {
+        userScrolledRef.current = true;
+      } else {
+        userScrolledRef.current = false;
+      }
+    },
+    []
+  );
+
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50,
+    minimumViewTime: 100,
+  }).current;
+
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (viewableItems.length > 0) {
+        const topItem = viewableItems[0]?.item as Message | undefined;
+        if (topItem?.sceneId) {
+          setVisibleSceneId(topItem.sceneId);
+        }
+      }
+    }
+  ).current;
+
+  const scrollToBottom = useCallback(() => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+    setIsAtBottom(true);
+    userScrolledRef.current = false;
+  }, []);
+
+  const handleContentSizeChange = useCallback(() => {
+    if (!userScrolledRef.current) {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }
+  }, []);
 
   const renderMessage = ({ item, index }: { item: Message; index: number }) => (
     <MessageBubble message={item} index={index} />
@@ -179,23 +239,43 @@ export default function GameScreen() {
       <GameHeader
         lampLimit={gameState.lamp.limit}
         lampLit={gameState.lamp.lit}
-        sceneTitle={sceneTitle}
+        sceneTitle={displayedSceneTitle}
         hasLamp={hasLamp}
         milestonesCompleted={milestonesCompletedCount}
       />
 
       <KeyboardAvoidingView style={styles.content} behavior={Platform.OS === "web" ? undefined : "padding"}>
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.messageList}
-          showsVerticalScrollIndicator={false}
-          onContentSizeChange={() => {
-            flatListRef.current?.scrollToEnd({ animated: true });
-          }}
-        />
+        <View style={styles.listWrapper}>
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.messageList}
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            onContentSizeChange={handleContentSizeChange}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig}
+          />
+
+          {!isAtBottom ? (
+            <Pressable
+              onPress={scrollToBottom}
+              style={[
+                styles.scrollToBottomButton,
+                {
+                  backgroundColor: theme.backgroundSecondary,
+                  borderColor: theme.backgroundTertiary,
+                },
+              ]}
+              testID="scroll-to-bottom"
+            >
+              <Feather name="chevron-down" size={20} color={theme.text} />
+            </Pressable>
+          ) : null}
+        </View>
 
         {renderBottomBar()}
       </KeyboardAvoidingView>
@@ -217,9 +297,38 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  listWrapper: {
+    flex: 1,
+    position: "relative",
+  },
   messageList: {
     padding: Spacing.lg,
     paddingBottom: Spacing.md,
+  },
+  scrollToBottomButton: {
+    position: "absolute",
+    bottom: Spacing.md,
+    alignSelf: "center",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+      web: {
+        boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.3)",
+      },
+    }),
   },
   promptBar: {
     paddingHorizontal: Spacing.lg,

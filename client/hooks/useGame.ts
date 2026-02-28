@@ -186,11 +186,12 @@ export function useGame() {
         type,
         text,
         timestamp: Date.now(),
+        sceneId: gameState.sceneId,
       };
       setMessages((prev) => [...prev, message]);
       return message;
     },
-    []
+    [gameState.sceneId]
   );
 
   const getCurrentScene = useCallback(() => {

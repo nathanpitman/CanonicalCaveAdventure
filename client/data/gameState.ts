@@ -9,6 +9,7 @@ export interface Message {
   type: "narration" | "system" | "action" | "warning";
   text: string;
   timestamp: number;
+  sceneId?: string;
 }
 
 export interface PendingPrompt {
