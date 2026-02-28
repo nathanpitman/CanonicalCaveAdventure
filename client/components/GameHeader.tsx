@@ -36,7 +36,7 @@ export function GameHeader({
           styles.container,
           {
             paddingTop: insets.top + Spacing.xs,
-            backgroundColor: theme.backgroundRoot,
+            backgroundColor: theme.backgroundDefault,
           },
         ]}
       >
@@ -61,7 +61,7 @@ export function GameHeader({
         </View>
       </View>
       <LinearGradient
-        colors={[theme.backgroundRoot, "transparent"]}
+        colors={[theme.backgroundDefault, "transparent"]}
         style={styles.fadeGradient}
         pointerEvents="none"
       />
