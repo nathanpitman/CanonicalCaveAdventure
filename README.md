@@ -1,8 +1,37 @@
-# Canonical Cave Adventure (Game)
+<p align="center">
+  <img src="docs/screenshots/logo.png" alt="Canonical Cave Adventure" width="200">
+</p>
 
-CCA is a reimaging of the classic text adventure *Adventure 2.5* / **Open Adventure** but with a modern touch interface and an improved text parser. This was created by Nathan Pitman as an opportunity to explore what's possible with modern AI led development and a healthy dose of childhood nostalgia.
+<h1 align="center">Canonical Cave Adventure</h1>
 
-This is an original game in terms of code, but it uses the cave structure, objects, and descriptions found in the historical *Adventure* text-adventure — *Open Adventure*’s port of *Adventure 2.5*.
+<p align="center">
+  A modern reimagining of the classic text adventure <em>Adventure 2.5</em> / <strong>Open Adventure</strong><br>
+  with a touch-friendly interface and a forgiving natural language parser.
+</p>
+
+<p align="center">
+  <a href="http://nathanpitman.com/CanonicalCaveAdventure/"><strong>Play Now</strong></a>
+</p>
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/gameplay-dark.png" alt="Dark mode - Opening scene" width="250">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/gameplay-light-building.png" alt="Light mode - Inside the building" width="250">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/gameplay-light-cobble.png" alt="Light mode - Cobble Crawl" width="250">
+</p>
+
+---
+
+## About
+
+CCA is a reimagining of the classic text adventure *Adventure 2.5* / **Open Adventure** but with a modern touch interface and an improved text parser. This was created by Nathan Pitman as an opportunity to explore what's possible with modern AI led development and a healthy dose of childhood nostalgia.
+
+This is an original game in terms of code, but it uses the cave structure, objects, and descriptions found in the historical *Adventure* text-adventure — *Open Adventure*'s port of *Adventure 2.5*.
 
 ---
 
@@ -26,13 +55,13 @@ The standout feature of CCA is its custom-built natural language processing (NLP
 
 **Noun & object synonyms** — Multiple names for the same thing work interchangeably. For example, *"building"*, *"house"*, and *"wellhouse"* all refer to the same location. *"Cavern"* and *"cave"* are equivalent, as are *"crevice"*, *"fissure"*, and *"crack"*.
 
-**Fuzzy matching with typo correction** — A Damerau–Levenshtein edit-distance algorithm tolerates up to 2 character typos. If you mistype a command, the parser auto-corrects and tells you what it did — e.g. *(interpreting 'lampp' as 'lamp')*.
+**Fuzzy matching with typo correction** — A Damerau-Levenshtein edit-distance algorithm tolerates up to 2 character typos. If you mistype a command, the parser auto-corrects and tells you what it did — e.g. *(interpreting 'lampp' as 'lamp')*.
 
 **"Did you mean?" suggestions** — When the parser is less confident about a fuzzy match, it offers a helpful suggestion instead of a dead end — e.g. *"You don't see that here. Did you mean 'keys'?"*
 
 **Singular & plural normalization** — *"keys"* matches *"key"*, *"torches"* matches *"torch"*. The parser automatically generates singular and plural word forms so either version works.
 
-**Structured multi-object commands** — Complex *verb–item–preposition–target* patterns are fully supported: *"unlock the chest with the key"*, *"throw the axe at the dwarf"*, *"pour water on the plant"*, and similar constructions all parse correctly.
+**Structured multi-object commands** — Complex *verb-item-preposition-target* patterns are fully supported: *"unlock the chest with the key"*, *"throw the axe at the dwarf"*, *"pour water on the plant"*, and similar constructions all parse correctly.
 
 **Context-aware action resolution** — The resolver doesn't just parse words — it checks what actions are actually available in the current scene and what items are in your inventory before matching. This prevents impossible actions and provides meaningful feedback.
 
@@ -50,7 +79,7 @@ The standout feature of CCA is its custom-built natural language processing (NLP
 
 This project takes inspiration from:
 
-- **Open Adventure** — a modern C forward-port of the *Adventure 2.5* codebase originally developed by Will Crowther and Don Woods, updated and maintained by Eric S. Raymond and contributors. [oai_citation:1‡LibreGameWiki](https://libregamewiki.org/Open_Adventure?utm_source=chatgpt.com)
+- **Open Adventure** — a modern C forward-port of the *Adventure 2.5* codebase originally developed by Will Crowther and Don Woods, updated and maintained by Eric S. Raymond and contributors. [LibreGameWiki](https://libregamewiki.org/Open_Adventure)
 
 While this project does **not reuse code** from the Open Adventure repository, it references the cave structure and object descriptions that have been historically part of the *Adventure* lineage.
 
@@ -68,12 +97,10 @@ Based on the Open Adventure project (forward-port of Adventure 2.5, originally b
 
 This project was inspired by:
 
-- **Open Adventure** – forward-port of *Adventure 2.5* (1995) under the 2-Clause BSD License. [oai_citation:2‡LibreGameWiki](https://libregamewiki.org/Open_Adventure?utm_source=chatgpt.com)
+- **Open Adventure** — forward-port of *Adventure 2.5* (1995) under the 2-Clause BSD License. [LibreGameWiki](https://libregamewiki.org/Open_Adventure)
 
 ---
 
 ## Contact
 
 If you find bugs, would like to contribute, or have questions about this project, please open an issue or contact me via hello@nathanpitman.com.
-
-Enjoy exploring (and escaping) the caves! 🧭
