@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Modal, ScrollView, Pressable } from "react-native";
+import { View, StyleSheet, Modal, ScrollView, Pressable, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -13,6 +13,79 @@ interface HelpModalProps {
   onClose: () => void;
 }
 
+function renderHelpContent(helpText: string, textColor: string, secondaryColor: string) {
+  const lines = helpText.split("\n");
+  const elements: React.ReactNode[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (line.trim() === "") {
+      elements.push(<View key={`spacer-${i}`} style={styles.sectionSpacer} />);
+      continue;
+    }
+
+    if (line.match(/^[A-Z][A-Z\s]+:/) && !line.startsWith("- ")) {
+      const colonIdx = line.indexOf(":");
+      const heading = line.substring(0, colonIdx);
+      const rest = line.substring(colonIdx + 1).trim();
+
+      elements.push(
+        <View key={`heading-${i}`} style={styles.sectionHeader}>
+          <ThemedText style={[styles.sectionHeaderText, { color: textColor }]}>
+            {heading}
+          </ThemedText>
+          {rest.length > 0 ? (
+            <ThemedText style={[styles.bodyText, { color: secondaryColor }]}>
+              {rest}
+            </ThemedText>
+          ) : null}
+        </View>
+      );
+      continue;
+    }
+
+    if (line.startsWith("- ")) {
+      const content = line.substring(2);
+      const colonIdx = content.indexOf(":");
+      let command = "";
+      let description = "";
+
+      if (colonIdx > 0) {
+        command = content.substring(0, colonIdx);
+        description = content.substring(colonIdx + 1).trim();
+      } else {
+        description = content;
+      }
+
+      elements.push(
+        <View key={`bullet-${i}`} style={styles.bulletItem}>
+          <Text style={[styles.bulletDot, { color: secondaryColor }]}>{"\u2022"}</Text>
+          <ThemedText style={[styles.bulletText, { color: textColor }]}>
+            {command.length > 0 ? (
+              <>
+                <Text style={styles.commandName}>{command}</Text>
+                <Text style={{ color: secondaryColor }}>: {description}</Text>
+              </>
+            ) : (
+              <Text style={{ color: secondaryColor }}>{description}</Text>
+            )}
+          </ThemedText>
+        </View>
+      );
+      continue;
+    }
+
+    elements.push(
+      <ThemedText key={`text-${i}`} style={[styles.bodyText, { color: secondaryColor }]}>
+        {line}
+      </ThemedText>
+    );
+  }
+
+  return elements;
+}
+
 export function HelpModal({ visible, onClose }: HelpModalProps) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
@@ -20,9 +93,9 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
   if (!visible) return null;
 
   return (
-    <Modal 
-      visible={visible} 
-      transparent 
+    <Modal
+      visible={visible}
+      transparent
       animationType="fade"
       onRequestClose={onClose}
     >
@@ -50,9 +123,9 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
             contentContainerStyle={styles.contentContainer}
             showsVerticalScrollIndicator={false}
           >
-            <ThemedText style={[styles.helpText, { color: theme.text }]}>
-              {HELP_TEXT}
-            </ThemedText>
+            <View style={styles.helpContent}>
+              {renderHelpContent(HELP_TEXT, theme.text, theme.textSecondary)}
+            </View>
 
             <View style={styles.tipsSection}>
               <ThemedText
@@ -61,6 +134,12 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
               >
                 Tips
               </ThemedText>
+              <View style={styles.tip}>
+                <Feather name="compass" size={16} color={theme.primary} />
+                <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
+                  Not sure where to go? Try typing "directions" for advice on your options.
+                </ThemedText>
+              </View>
               <View style={styles.tip}>
                 <Feather name="zap" size={16} color={theme.primary} />
                 <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
@@ -108,11 +187,44 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: Spacing.xl,
   },
-  helpText: {
-    fontFamily: "monospace",
+  helpContent: {
+    marginBottom: Spacing.xl,
+  },
+  sectionSpacer: {
+    height: Spacing.lg,
+  },
+  sectionHeader: {
+    marginBottom: Spacing.sm,
+  },
+  sectionHeaderText: {
+    fontSize: 15,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  bulletItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingLeft: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  bulletDot: {
+    fontSize: 16,
+    lineHeight: 22,
+    marginRight: Spacing.sm,
+  },
+  bulletText: {
+    flex: 1,
     fontSize: 14,
     lineHeight: 22,
-    marginBottom: Spacing.xl,
+  },
+  commandName: {
+    fontWeight: "700",
+  },
+  bodyText: {
+    fontSize: 14,
+    lineHeight: 22,
+    marginBottom: Spacing.xs,
   },
   tipsSection: {
     gap: Spacing.md,
