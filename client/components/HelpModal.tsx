@@ -143,13 +143,13 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
               <View style={styles.tip}>
                 <Feather name="zap" size={16} color={theme.primary} />
                 <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
-                  Watch your lamp life - when it runs out, you're in trouble.
+                  Watch your lamp life - when it runs out, you're in real trouble if you're in the caves.
                 </ThemedText>
               </View>
               <View style={styles.tip}>
                 <Feather name="map" size={16} color={theme.primary} />
                 <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
-                  Explore thoroughly. Some items are essential for escape.
+                  Explore thoroughly. Some items are essential to progress through the adventure.
                 </ThemedText>
               </View>
             </View>
