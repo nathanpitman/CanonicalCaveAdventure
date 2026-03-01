@@ -14,7 +14,7 @@ import {
 
 export interface ParsedCommand {
   raw: string;
-  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "blast" | "quit" | "unknown";
+  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "blast" | "quit" | "directions" | "unknown";
   verb?: string;
   itemPhrase?: string;
   targetPhrase?: string;
@@ -96,6 +96,10 @@ function tryMeta(text: string, tokens: string[], out: ParsedCommand): boolean {
   }
   if (resolved === "help") {
     out.intent = "help";
+    return true;
+  }
+  if (resolved === "directions") {
+    out.intent = "directions";
     return true;
   }
   if (resolved === "new") {

@@ -129,6 +129,9 @@ export const VERB_SYNONYMS: Record<string, string> = {
   "back": "back", "go back": "back", "return": "back", "retreat": "back",
   "turn back": "back", "retrace": "back",
   "new": "new", "new game": "new", "restart": "new", "start over": "new",
+  "directions": "directions", "exits": "directions", "where can i go": "directions",
+  "which way": "directions", "paths": "directions", "ways": "directions",
+  "available exits": "directions", "show exits": "directions",
 };
 
 export const PREPOSITIONS = new Set([

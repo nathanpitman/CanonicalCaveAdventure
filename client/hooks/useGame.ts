@@ -1492,6 +1492,40 @@ export function useGame() {
           }
           return;
 
+        case "directions": {
+          if (isCurrentlyDark()) {
+            addMessage("system", "It is pitch dark. You can't see any exits.");
+            return;
+          }
+          const dirActions = getAvailableActions().filter(
+            (a) => a.type === "move" && a.id !== "go_default" && a.id !== "look"
+          );
+          if (dirActions.length === 0) {
+            addMessage("system", "There are no obvious exits.");
+          } else {
+            const labelMap: Record<string, string> = {
+              "GO NORTH": "North", "GO SOUTH": "South", "GO EAST": "East", "GO WEST": "West",
+              "GO NE": "Northeast", "GO NW": "Northwest", "GO SE": "Southeast", "GO SW": "Southwest",
+              "GO UP": "Up", "GO DOWN": "Down", "GO IN": "Inside", "GO OUT": "Outside",
+              "GO UPSTREAM": "Upstream", "GO DOWNSTREAM": "Downstream",
+              "GO LEFT": "Left", "GO RIGHT": "Right",
+              "GO ACROSS": "Across", "GO OVER": "Over",
+            };
+            const seen = new Set<string>();
+            const directions: string[] = [];
+            for (const action of dirActions) {
+              const label = action.label.toUpperCase();
+              const friendly = labelMap[label] || action.label.replace(/^GO\s+/i, "").replace(/\b\w/g, (c) => c.toUpperCase());
+              if (!seen.has(friendly)) {
+                seen.add(friendly);
+                directions.push(friendly);
+              }
+            }
+            addMessage("system", `From here you can go: ${directions.join(", ")}.`);
+          }
+          return;
+        }
+
         case "help":
           addMessage("system", HELP_TEXT);
           return;

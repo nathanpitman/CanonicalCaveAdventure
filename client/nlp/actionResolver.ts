@@ -44,6 +44,7 @@ export type Resolution =
   | { type: "close"; targetPhrase?: string }
   | { type: "quit" }
   | { type: "blast" }
+  | { type: "directions" }
   | { type: "fallback" };
 
 export interface ResolverContext {
@@ -170,6 +171,8 @@ export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution
       return { type: "help" };
     case "back":
       return { type: "back" };
+    case "directions":
+      return { type: "directions" };
     case "new":
       return { type: "new" };
     case "lamp_on":
