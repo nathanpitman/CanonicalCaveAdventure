@@ -1,4 +1,4 @@
-// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
+// AUTO-GENERATED FROM import/adventure.yaml - DO NOT EDIT
 // Generated: 2026-02-21T22:34:21.988Z
 // Canonical Open Adventure import with travel mechanics
 

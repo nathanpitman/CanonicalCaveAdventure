@@ -341,9 +341,9 @@ function yamlCondToConditionalRoute(
 // MAIN FUNCTION
 // ============================================================
 function main() {
-  const yamlPath = path.resolve("adventure.yaml");
+  const yamlPath = path.resolve("import/adventure.yaml");
   if (!fs.existsSync(yamlPath)) {
-    console.error("adventure.yaml not found at", yamlPath);
+    console.error("import/adventure.yaml not found at", yamlPath);
     process.exit(1);
   }
 
@@ -1074,7 +1074,7 @@ DIRECTIONS: north (n), south (s), east (e), west (w), up (u), down (d), in, out,
 
 SPECIAL WORDS: xyzzy, plugh, plover (try them in the right places!)`;
 
-  const output = `// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT
+  const output = `// AUTO-GENERATED FROM import/adventure.yaml - DO NOT EDIT
 // Generated: ${new Date().toISOString()}
 // Canonical Open Adventure import with travel mechanics
 
@@ -1290,7 +1290,7 @@ export const SCENES: Record<string, Scene> = ${JSON.stringify(SCENES, null, 2)};
   const defaultClass = SCORE_CLASSES.find(c => c.threshold === 0);
   const defaultClassFallback = classesRaw.find((c: any) => c.threshold === 0 && !c.message);
 
-  const canonObjectsOutput = `// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
+  const canonObjectsOutput = `// AUTO-GENERATED FROM import/adventure.yaml - DO NOT EDIT MANUALLY
 // Generated: ${new Date().toISOString()}
 // Run: npx tsx tools/importOpenAdventure.ts to regenerate
 
@@ -1576,7 +1576,7 @@ ${scoreClassLines.join("\n")}
     messageHideLoc = mazeEnds[chestIdx + 1];
   }
 
-  const generatedConstantsOutput = `// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
+  const generatedConstantsOutput = `// AUTO-GENERATED FROM import/adventure.yaml - DO NOT EDIT MANUALLY
 // Generated: ${new Date().toISOString()}
 // Run: npx tsx tools/importOpenAdventure.ts to regenerate
 

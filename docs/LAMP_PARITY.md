@@ -1,6 +1,6 @@
 # Lamp Parity Checklist
 
-## Reference Spec (from Open Adventure / adventure.yaml)
+## Reference Spec (from Open Adventure / import/adventure.yaml)
 
 ### Lamp Object
 - **Synonyms**: lamp, lantern (YAML words: "lamp", "lante")
@@ -61,7 +61,7 @@
 ### 3. Movement-in-Darkness Death (NEW)
 - When moving in a dark location (lamp off/dead), 35% chance of pit death
 - Integrates with obituary/reincarnation system (triggerDeath)
-- Death message: canonical pit death from adventure.yaml
+- Death message: canonical pit death from import/adventure.yaml
 
 ### 4. Canonical Warning Messages (FIXED)
 - Replaced generic "Your lamp is getting dim" with multi-stage canonical messages

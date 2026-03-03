@@ -1,4 +1,4 @@
-// AUTO-GENERATED FROM adventure.yaml - DO NOT EDIT MANUALLY
+// AUTO-GENERATED FROM import/adventure.yaml - DO NOT EDIT MANUALLY
 // Generated: 2026-02-21T22:34:21.992Z
 // Run: npx tsx tools/importOpenAdventure.ts to regenerate
 

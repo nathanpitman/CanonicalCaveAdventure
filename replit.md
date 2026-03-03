@@ -30,11 +30,11 @@ Do not make changes to the `tools/injectPwaMeta.js` file.
 - **Natural Language Processing (NLP):** A dedicated NLP layer (`commandParser.ts`, `actionResolver.ts`) handles user input, transforming raw strings into game actions, supporting complex phrases and typo tolerance (Damerau-Levenshtein distance). Includes `NARRATIVE_SYNONYMS` in `lexicon.ts` mapping ~50 natural language phrases (downstream, upstream, follow stream, etc.) to canonical action tokens (downs, upstr, bed, etc.).
 - **Narrative Exit Audit:** `tools/auditNarrativeExits.ts` scans all 183 scenes for narrative cue phrases in descriptions, tests whether they resolve to available exits, and generates gap reports (`docs/narrative-exit-audit.json`, `docs/narrative-exit-audit.md`). Runs automatically after YAML imports via `importOpenAdventure.ts`.
 - **Game Content Management:** All scenes, items, and game content are structured in `data/story.ts`, imported from a canonical adventure YAML file. The YAML importer (`tools/importOpenAdventure.ts`) preserves conditional travel rules (carry/not/with/pct conditions) as `conditionalRoutes` on scene actions, converting YAML state names to numeric values via `OBJECT_STATE_MAP`. This ensures conditional routing (e.g., pittop descent, fissure crossing) survives re-imports.
-- **Data-Driven Architecture:** The game is designed to be fully data-driven from `adventure.yaml`. The importer generates three files:
+- **Data-Driven Architecture:** The game is designed to be fully data-driven from `import/adventure.yaml`. The importer generates three files:
   - `generatedStory.ts`: Scenes, items, hints, obituaries, turn thresholds, lamp messages, hint conditions, canonical objects/verbs.
   - `canonObjects.ts`: Object start locations, treasure config, NPC locations, scoring functions (calculateScore, getScoreClass), hint penalties — all derived from YAML.
   - `generatedConstants.ts`: Object state constants, dwarf config (start locs, count, pirate index), direction/noun synonyms from YAML motions/objects vocabulary, maze scene IDs from location conditions, score classes, story messages.
-  Consuming files (`canonConstants.ts`, `dwarves.ts`, `lexicon.ts`, `progressMilestones.ts`) re-export from generated data, adding only non-YAML extras (e.g., extra direction synonyms, lamp timing constants). Swapping `adventure.yaml` for a different story file and re-running the importer should produce a working game without manual code changes.
+  Consuming files (`canonConstants.ts`, `dwarves.ts`, `lexicon.ts`, `progressMilestones.ts`) re-export from generated data, adding only non-YAML extras (e.g., extra direction synonyms, lamp timing constants). Swapping `import/adventure.yaml` for a different story file and re-running the importer should produce a working game without manual code changes.
 - **Persistent State:** Game progress is automatically saved locally using AsyncStorage after every state change.
 - **Modular Component Design:** UI elements are broken down into reusable components (e.g., `ActionButton`, `MessageBubble`, `TorchIndicator`).
 - **PWA Support:** Configured for Progressive Web App (PWA) capabilities, including manifest, icons, and Apple meta tags for "Add to Home Screen" on iOS.
@@ -100,4 +100,4 @@ A lightweight client-side analytics system (`client/analytics.ts`) tracks game u
 - **Express.js:** Web application framework for the development backend.
 - **AsyncStorage:** Local persistent storage for game saves on the client.
 - **GitHub Pages:** Static site hosting for the client-side game, deployed via GitHub Actions.
-- **Open Adventure (Colossal Cave Adventure) Content:** The game's narrative, scenes, and items are imported from the canonical `adventure.yaml` structure.
+- **Open Adventure (Colossal Cave Adventure) Content:** The game's narrative, scenes, and items are imported from the canonical `import/adventure.yaml` structure.
