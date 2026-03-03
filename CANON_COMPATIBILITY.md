@@ -36,20 +36,16 @@ This document describes the compatibility between this implementation and the ca
 | Arbitrary messages | ✅ Full | Resolved from YAML `arbitrary_messages` |
 | Speak action messages | ✅ Full | Displayed when blocked paths are attempted |
 
-## Partially Supported Features
+## Special Actions
 
-### Special Actions
+All canonical `special` travel actions have been implemented:
 
-Some locations have `special` travel actions which represent complex game logic:
-
-| Location | Feature | Status |
-|----------|---------|--------|
-| LOC_Y2 | Special action | ⚠️ Not modeled |
-| LOC_ALCOVE | Special action | ⚠️ Not modeled |
-| LOC_PLOVER | Special action | ⚠️ Not modeled |
-| LOC_SWCHASM | Special action | ⚠️ Not modeled |
-
-These special actions typically involve complex state checks or probability-based outcomes. The game remains playable without them, but some advanced puzzle mechanics may not work exactly as in the original.
+| Location | Feature | Status | Notes |
+|----------|---------|--------|-------|
+| LOC_Y2 | Hollow voice | ✅ Full | Probability-based "A hollow voice says 'PLUGH'" via LCG (25% chance on entry) |
+| LOC_ALCOVE | Tight passage | ✅ Full | Blocks passage if carrying items other than the emerald |
+| LOC_PLOVER | Plover transport | ✅ Full | SAY PLOVER teleports between y2 and plover; emerald drops on transport |
+| LOC_SWCHASM | Troll bridge | ✅ Full | Troll blocks crossing; pay with treasure or throw bear to remove |
 
 ### Broken Links
 
@@ -129,14 +125,24 @@ The parser supports:
 - **Item count**: 25
 - **Start scene**: `start` (Front Of Building)
 - **Broken links**: 5 (all death scenes → nowhere)
-- **Unmodeled special actions**: 6
+- **Unmodeled special actions**: 0
 
-## Future Improvements
+## Implemented Canon Features
 
-To achieve 100% canon compatibility:
+The following major systems have been fully implemented:
 
-1. Model `special` actions with their probability/state logic
-2. Implement dwarf/pirate encounter mechanics
-3. Add lamp timer with proper oil refill mechanics
-4. Implement treasure scoring system
-5. Add more complex object interactions (wave rod, etc.)
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Special actions (Y2, Alcove, Plover, SW Chasm) | ✅ Full | See Special Actions table above |
+| Dwarf/pirate encounters | ✅ Full | Dwarf movement AI, knife throwing with progressive accuracy, axe combat, pirate treasure theft to maze chest |
+| Lamp timer and refill | ✅ Full | 330-turn limit, multi-stage warnings, battery replacement (+2500 turns), oil bottle/urn/door mechanics |
+| Treasure scoring | ✅ Full | `calculateScore` with deposit bonuses, exploration/survival/completion/endgame points, hint and turn penalties, scoring classes |
+| Wave rod / crystal bridge | ✅ Full | Toggles bridge at fissure; endgame mirror shatter; rod/bird interaction |
+| Dragon encounter | ✅ Full | "With what? Your bare hands?" prompt; confirmation kills dragon, reveals rug |
+| Cave closing / endgame | ✅ Full | clock1/clock2 timers, property reset, transport to NE/SW repository, blast command with victory/defeat outcomes |
+| Bear and chain | ✅ Full | Feed bear to tame, unlock chain with keys, throw bear at troll |
+| Plant watering | ✅ Full | Three-stage growth cycle (tiny → 12-foot beanstalk → gigantic → shriveled) |
+| Vending machine | ✅ Full | Drop coins at deadend13 to receive fresh batteries |
+| Troll bridge | ✅ Full | Pay with treasure or throw bear; feeding troll returns avarice quip |
+| Clam and oyster | ✅ Full | Open clam with trident to reveal pearl; clam transforms to oyster |
+| Bird and snake | ✅ Full | Drop bird in kinghall to chase snake away; rod prevents bird capture |
