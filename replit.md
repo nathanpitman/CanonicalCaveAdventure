@@ -91,6 +91,7 @@ A lightweight client-side analytics system (`client/analytics.ts`) tracks game u
 **Configuration:**
 - GA4 Measurement ID `G-BDL8T2GJM8` injected into `dist/index.html` by the post-build script `tools/injectPwaMeta.js` (Expo export strips custom scripts from `web/index.html`, so GA4 tags must be injected post-build)
 - All events are sent exclusively via `gtag()` to Google Analytics 4
+- `document.title` updates dynamically on each scene change to `"Canonical / {Scene Title}"` for meaningful GA4 page title tracking
 - `window.debugAnalytics()` available in browser console for local debugging of in-memory analytics state
 
 ## External Dependencies

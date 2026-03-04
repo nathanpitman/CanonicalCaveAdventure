@@ -957,7 +957,7 @@ export function useGame() {
         };
       });
 
-      trackScene(toSceneId);
+      trackScene(toSceneId, SCENES[toSceneId]?.title);
 
       if (isForcedScene && defaultAction?.to) {
         addMessage("narration", getSceneDescription(toSceneId));
@@ -2756,7 +2756,8 @@ export function useGame() {
         setMessages([...newMessages, sceneMessage]);
       }
       initAnalytics();
-      trackScene(saveData ? saveData.gameState.sceneId : initialGameState.sceneId);
+      const initSceneId = saveData ? saveData.gameState.sceneId : initialGameState.sceneId;
+      trackScene(initSceneId, SCENES[initSceneId]?.title);
       setIsLoading(false);
     };
 

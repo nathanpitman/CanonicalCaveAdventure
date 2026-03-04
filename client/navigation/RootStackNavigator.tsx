@@ -21,7 +21,7 @@ export default function RootStackNavigator() {
       <Stack.Screen
         name="Game"
         component={GameScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, title: "Canonical" }}
       />
       <Stack.Screen
         name="Inventory"

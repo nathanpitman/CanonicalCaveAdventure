@@ -204,7 +204,7 @@ export function initAnalytics(): void {
   resetInactivityTimer();
 }
 
-export function trackScene(sceneId: string): void {
+export function trackScene(sceneId: string, sceneTitle?: string): void {
   if (!state.initialized) return;
 
   updateSceneTime();
@@ -228,9 +228,14 @@ export function trackScene(sceneId: string): void {
   }
   state.sceneDropOff[sceneId].enters++;
 
+  const pageTitle = sceneTitle ? `Canonical / ${sceneTitle}` : "Canonical";
+  if (Platform.OS === "web" && typeof document !== "undefined") {
+    document.title = pageTitle;
+  }
+
   const isRepeat = state.sceneVisitCounts[sceneId] > 1;
   const eventType = isRepeat ? "scene_repeat" : "scene_entered";
-  trackGA(eventType, { scene: sceneId, previousScene });
+  trackGA(eventType, { scene: sceneId, previousScene, page_title: pageTitle });
 
   checkFrustration();
   resetInactivityTimer();
