@@ -89,9 +89,9 @@ A lightweight client-side analytics system (`client/analytics.ts`) tracks game u
 - Total play duration, longest scene time, most failed command, command frequency map
 
 **Configuration:**
-- `EXPO_PUBLIC_ANALYTICS_ENDPOINT` env var (or fallback constant in `client/analytics.ts`) — set to your serverless worker URL
-- GA4 placeholder `G-XXXXXXXXXX` in `web/index.html` — replace with real Measurement ID
-- `window.debugAnalytics()` available in browser console for offline debugging
+- GA4 Measurement ID `G-BDL8T2GJM8` configured in `web/index.html`
+- All events are sent exclusively via `gtag()` to Google Analytics 4
+- `window.debugAnalytics()` available in browser console for local debugging of in-memory analytics state
 
 ## External Dependencies
 

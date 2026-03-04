@@ -1,24 +1,10 @@
 import { Platform, AppState } from "react-native";
 import type { AppStateStatus } from "react-native";
 
-const ANALYTICS_ENDPOINT =
-  Platform.OS === "web" && typeof process !== "undefined" && process.env?.EXPO_PUBLIC_ANALYTICS_ENDPOINT
-    ? process.env.EXPO_PUBLIC_ANALYTICS_ENDPOINT
-    : "https://your-worker-url.com/log";
 const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
 const FRUSTRATION_FAIL_THRESHOLD = 3;
 const FRUSTRATION_LOOP_THRESHOLD = 2;
 const FRUSTRATION_NO_PROGRESS_THRESHOLD = 5;
-
-interface AnalyticsEvent {
-  sessionId: string;
-  timestamp: string;
-  scene: string;
-  moveCount: number;
-  failedCommandCount: number;
-  eventType: string;
-  metadata?: Record<string, unknown>;
-}
 
 interface SceneDropOff {
   enters: number;
@@ -92,41 +78,6 @@ function getOrCreateSessionId(): string {
   return generateSessionId();
 }
 
-function buildEvent(eventType: string, metadata?: Record<string, unknown>): AnalyticsEvent {
-  return {
-    sessionId: state.sessionId,
-    timestamp: new Date().toISOString(),
-    scene: state.currentScene,
-    moveCount: state.moveCount,
-    failedCommandCount: state.totalFailedCommands,
-    eventType,
-    ...(metadata ? { metadata } : {}),
-  };
-}
-
-function sendEvent(event: AnalyticsEvent, useBeacon = false): void {
-  const payload = JSON.stringify(event);
-  try {
-    if (
-      useBeacon &&
-      Platform.OS === "web" &&
-      typeof navigator !== "undefined" &&
-      typeof navigator.sendBeacon === "function"
-    ) {
-      navigator.sendBeacon(ANALYTICS_ENDPOINT, payload);
-      return;
-    }
-    fetch(ANALYTICS_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: payload,
-      keepalive: true,
-    }).catch(() => {});
-  } catch {
-    // fail silently
-  }
-}
-
 function trackGA(eventName: string, params?: Record<string, unknown>): void {
   if (Platform.OS !== "web") return;
   try {
@@ -135,7 +86,6 @@ function trackGA(eventName: string, params?: Record<string, unknown>): void {
       (w.gtag as Function)("event", eventName, params ?? {});
     }
   } catch {
-    // fail silently
   }
 }
 
@@ -168,21 +118,15 @@ function checkFrustration(): void {
   const sceneId = state.currentScene;
 
   if ((state.sceneFailStreaks[sceneId] || 0) >= FRUSTRATION_FAIL_THRESHOLD) {
-    const event = buildEvent("frustration_detected", { reason: "failed_commands" });
-    sendEvent(event);
     trackGA("frustration_detected", { reason: "failed_commands", scene: sceneId });
     state.sceneFailStreaks[sceneId] = 0;
   }
 
   if (detectLoopingScenes(sceneId)) {
-    const event = buildEvent("frustration_detected", { reason: "looping_scene" });
-    sendEvent(event);
     trackGA("frustration_detected", { reason: "looping_scene", scene: sceneId });
   }
 
   if (state.commandsSinceSceneChange >= FRUSTRATION_NO_PROGRESS_THRESHOLD) {
-    const event = buildEvent("frustration_detected", { reason: "no_progress" });
-    sendEvent(event);
     trackGA("frustration_detected", { reason: "no_progress", scene: sceneId });
     state.commandsSinceSceneChange = 0;
   }
@@ -244,7 +188,6 @@ function setupNativeListeners(): void {
 
   const subscription = AppState.addEventListener("change", handleAppStateChange);
   if (subscription && typeof subscription.remove === "function") {
-    // subscription cleanup is handled by React Native lifecycle
   }
 }
 
@@ -254,8 +197,6 @@ export function initAnalytics(): void {
   state.startTime = Date.now();
   state.initialized = true;
 
-  const event = buildEvent("session_start");
-  sendEvent(event);
   trackGA("session_start");
 
   setupWebListeners();
@@ -289,9 +230,7 @@ export function trackScene(sceneId: string): void {
 
   const isRepeat = state.sceneVisitCounts[sceneId] > 1;
   const eventType = isRepeat ? "scene_repeat" : "scene_entered";
-  const event = buildEvent(eventType, { scene: sceneId, previousScene });
-  sendEvent(event);
-  trackGA(eventType, { scene: sceneId });
+  trackGA(eventType, { scene: sceneId, previousScene });
 
   checkFrustration();
   resetInactivityTimer();
@@ -305,8 +244,6 @@ export function trackCommand(input: string, success: boolean): void {
   state.commandsSinceSceneChange++;
 
   if (success) {
-    const event = buildEvent("command_entered", { command: normalized });
-    sendEvent(event);
     trackGA("command_entered", { command: normalized });
   } else {
     state.totalFailedCommands++;
@@ -327,8 +264,6 @@ export function trackCommand(input: string, success: boolean): void {
       state.sceneDropOff[state.currentScene].failures++;
     }
 
-    const event = buildEvent("command_failed", { command: normalized });
-    sendEvent(event);
     trackGA("command_failed", { command: normalized });
 
     checkFrustration();
@@ -341,9 +276,6 @@ export function trackGameComplete(): void {
   if (!state.initialized) return;
 
   updateSceneTime();
-  const summary = buildSummary();
-  const event = buildEvent("game_completed", summary);
-  sendEvent(event);
   trackGA("game_completed", { totalMoves: state.moveCount });
 }
 
@@ -356,9 +288,6 @@ export function trackExit(reason = "unknown"): void {
     state.sceneDropOff[state.currentScene].exits++;
   }
 
-  const summary = buildSummary();
-  const event = buildEvent("player_exit", { reason, ...summary });
-  sendEvent(event, true);
   trackGA("player_exit", { reason, scene: state.currentScene });
 }
 
