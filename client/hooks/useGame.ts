@@ -438,7 +438,11 @@ export function useGame() {
       case "flag_true":
         return !!gs.flags[cond.flag as string];
       case "not_carrying":
-        return !gs.inventory.includes(cond.item as string);
+        if (!gs.inventory.includes(cond.item as string)) {
+          const itemLoc = gs.objectLocations[cond.item as string];
+          return itemLoc === gs.sceneId;
+        }
+        return false;
       case "carrying":
         return gs.inventory.includes(cond.item as string);
       case "treasure_count": {
@@ -598,21 +602,33 @@ export function useGame() {
         const obituary = OBITUARIES[prompt.obituaryIndex || 0];
         addMessage("narration", obituary.yesResponse);
 
-        setGameState(prev => ({
-          ...prev,
-          pendingPrompt: null,
-          sceneId: "building",
-          previousSceneId: null,
-          inventory: [],
-          lamp: {
-            ...prev.lamp,
-            lit: false,
-          },
-          deathState: {
-            ...prev.deathState,
-            numdie: prev.deathState.numdie + 1,
-          },
-        }));
+        setGameState(prev => {
+          const newObjLocs = { ...prev.objectLocations };
+          const newObjStates = { ...prev.objectStates };
+          for (const itemId of prev.inventory) {
+            newObjLocs[itemId] = prev.sceneId;
+            if (itemId === "bird") {
+              newObjStates.bird = 0;
+            }
+          }
+          return {
+            ...prev,
+            pendingPrompt: null,
+            sceneId: "building",
+            previousSceneId: null,
+            inventory: [],
+            objectLocations: newObjLocs,
+            objectStates: newObjStates,
+            lamp: {
+              ...prev.lamp,
+              lit: false,
+            },
+            deathState: {
+              ...prev.deathState,
+              numdie: prev.deathState.numdie + 1,
+            },
+          };
+        });
 
         setTimeout(() => {
           addMessage("narration", getSceneDescription("building"));
@@ -1674,6 +1690,11 @@ export function useGame() {
             }
           }
           if (takeId === "bird") {
+            if (gameState.objectLocations["bird"] !== gameState.sceneId) {
+              addMessage("system", "You don't see that here.");
+              decreaseLampLife();
+              return;
+            }
             if (gameState.inventory.includes("rod")) {
               addMessage("narration", "The bird was unafraid when you entered, but as you approach it becomes disturbed and you cannot catch it.");
               decreaseLampLife();
@@ -1700,6 +1721,11 @@ export function useGame() {
             return;
           }
           if (takeId === "chain") {
+            if (gameState.objectLocations["chain"] !== gameState.sceneId) {
+              addMessage("system", "You don't see that here.");
+              decreaseLampLife();
+              return;
+            }
             addMessage("system", "The chain is locked to the wall. You'll need to unlock it first.");
             decreaseLampLife();
             return;
