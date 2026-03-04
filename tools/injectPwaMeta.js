@@ -13,6 +13,15 @@ let html = fs.readFileSync(indexPath, 'utf-8');
 
 const basePath = '/CanonicalCaveAdventure';
 
+const ga4Tags = `
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDL8T2GJM8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BDL8T2GJM8');
+    </script>`;
+
 const metaTags = `
     <link rel="manifest" href="${basePath}/manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="${basePath}/apple-touch-icon.png">
@@ -30,7 +39,7 @@ if (html.includes('apple-mobile-web-app-capable')) {
   process.exit(0);
 }
 
-html = html.replace('</head>', metaTags + '\n  </head>');
+html = html.replace('</head>', ga4Tags + metaTags + '\n  </head>');
 
 html = html.replace(
   /(<meta\s+name="viewport"\s+content="[^"]*)/,

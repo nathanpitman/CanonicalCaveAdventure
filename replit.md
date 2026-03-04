@@ -89,7 +89,7 @@ A lightweight client-side analytics system (`client/analytics.ts`) tracks game u
 - Total play duration, longest scene time, most failed command, command frequency map
 
 **Configuration:**
-- GA4 Measurement ID `G-BDL8T2GJM8` configured in `web/index.html`
+- GA4 Measurement ID `G-BDL8T2GJM8` injected into `dist/index.html` by the post-build script `tools/injectPwaMeta.js` (Expo export strips custom scripts from `web/index.html`, so GA4 tags must be injected post-build)
 - All events are sent exclusively via `gtag()` to Google Analytics 4
 - `window.debugAnalytics()` available in browser console for local debugging of in-memory analytics state
 
