@@ -161,13 +161,13 @@ function formatExitHint(actions: Action[]): string | null {
   if (directions.length === 0) return null;
 
   if (directions.length === 1) {
-    return `A path leads ${directions[0]}.`;
+    return `Paths: ${directions[0]}.`;
   }
   if (directions.length === 2) {
-    return `Paths lead ${directions[0]} and ${directions[1]}.`;
+    return `Paths: ${directions[0]} and ${directions[1]}.`;
   }
   const last = directions.pop()!;
-  return `Paths lead ${directions.join(", ")}, and ${last}.`;
+  return `Paths: ${directions.join(", ")}, and ${last}.`;
 }
 
 export function useGame() {
