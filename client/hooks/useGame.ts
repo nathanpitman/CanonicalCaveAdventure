@@ -110,6 +110,11 @@ const COMPASS_IDS = new Set([
   "go_left", "go_right",
 ]);
 
+const GENERIC_MOVE_IDS = new Set([
+  "go_enter", "go_in", "go_out", "go_climb", "go_crawl",
+  "go_cross", "go_jump", "go_view", "go_over",
+]);
+
 function resolveExitLabel(action: Action): string {
   const label = action.label.toUpperCase();
   let friendly = EXIT_LABEL_MAP[label] ||
@@ -143,8 +148,13 @@ function formatExitHint(actions: Action[]): string | null {
     if (group.length === 1) {
       deduped.push(group[0]);
     } else {
-      const descriptive = group.find((a) => !COMPASS_IDS.has(a.id));
-      deduped.push(descriptive || group[0]);
+      const specific = group.find((a) => !COMPASS_IDS.has(a.id) && !GENERIC_MOVE_IDS.has(a.id));
+      if (specific) {
+        deduped.push(specific);
+      } else {
+        const compass = group.find((a) => COMPASS_IDS.has(a.id));
+        deduped.push(compass || group[0]);
+      }
     }
   }
 
