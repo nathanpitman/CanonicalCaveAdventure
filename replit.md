@@ -92,6 +92,13 @@ A lightweight client-side analytics system (`client/analytics.ts`) tracks game u
 **Advanced Insights (in-memory, sent on exit):**
 - Total play duration, longest scene time, most failed command, command frequency map
 
+**App Versioning:**
+- `APP_VERSION` constant in `client/analytics.ts` uses YYYYMMDD format (e.g., `"20260305"`)
+- Set as a GA4 user property (`app_version`) on session init — automatically attached to every event
+- Also sent as a parameter on `session_start` for easy event-level filtering
+- Update the constant to the current date whenever a meaningful change is deployed
+- Register `app_version` as a User-scoped custom dimension in GA4 admin (Admin → Custom definitions) to enable filtering/segmentation in reports
+
 **Configuration:**
 - GA4 Measurement ID `G-BDL8T2GJM8` injected into `dist/index.html` by the post-build script `tools/injectPwaMeta.js` (Expo export strips custom scripts from `web/index.html`, so GA4 tags must be injected post-build)
 - All events are sent exclusively via `gtag()` to Google Analytics 4

@@ -1,6 +1,8 @@
 import { Platform, AppState } from "react-native";
 import type { AppStateStatus } from "react-native";
 
+const APP_VERSION = "20260305";
+
 const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000;
 const FRUSTRATION_FAIL_THRESHOLD = 3;
 const FRUSTRATION_LOOP_THRESHOLD = 2;
@@ -197,7 +199,16 @@ export function initAnalytics(): void {
   state.startTime = Date.now();
   state.initialized = true;
 
-  trackGA("session_start");
+  if (Platform.OS === "web") {
+    try {
+      const w = globalThis as unknown as Record<string, unknown>;
+      if (typeof w.gtag === "function") {
+        (w.gtag as Function)("set", "user_properties", { app_version: APP_VERSION });
+      }
+    } catch {}
+  }
+
+  trackGA("session_start", { app_version: APP_VERSION });
 
   setupWebListeners();
   setupNativeListeners();
