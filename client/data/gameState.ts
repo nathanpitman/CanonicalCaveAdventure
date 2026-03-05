@@ -6,7 +6,7 @@ import { DwarfSystemState, buildInitialDwarfState } from "./dwarves";
 
 export interface Message {
   id: string;
-  type: "narration" | "system" | "action" | "warning";
+  type: "narration" | "system" | "action" | "warning" | "nav-hint";
   text: string;
   timestamp: number;
   sceneId?: string;

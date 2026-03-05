@@ -74,6 +74,46 @@ import {
   trackHelpOpened,
 } from "@/analytics";
 
+const EXIT_LABEL_MAP: Record<string, string> = {
+  "GO NORTH": "north", "GO SOUTH": "south", "GO EAST": "east", "GO WEST": "west",
+  "GO NE": "northeast", "GO NW": "northwest", "GO SE": "southeast", "GO SW": "southwest",
+  "GO UP": "up", "GO DOWN": "down", "GO IN": "inside", "GO OUT": "outside",
+  "GO UPSTREAM": "upstream", "GO DOWNSTREAM": "downstream",
+  "GO LEFT": "left", "GO RIGHT": "right",
+  "GO ACROSS": "across", "GO OVER": "over",
+};
+
+function formatExitHint(actions: Action[]): string | null {
+  const moveActions = actions.filter(
+    (a) => a.type === "move" && a.id !== "go_default" && a.id !== "look"
+  );
+  if (moveActions.length === 0) return null;
+
+  const seen = new Set<string>();
+  const directions: string[] = [];
+  for (const action of moveActions) {
+    const label = action.label.toUpperCase();
+    const friendly =
+      EXIT_LABEL_MAP[label] ||
+      action.label.replace(/^GO\s+/i, "").toLowerCase();
+    if (!seen.has(friendly)) {
+      seen.add(friendly);
+      directions.push(friendly);
+    }
+  }
+
+  if (directions.length === 0) return null;
+
+  if (directions.length === 1) {
+    return `A path leads ${directions[0]}.`;
+  }
+  if (directions.length === 2) {
+    return `Paths lead ${directions[0]} and ${directions[1]}.`;
+  }
+  const last = directions.pop()!;
+  return `Paths lead ${directions.join(", ")}, and ${last}.`;
+}
+
 export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -403,6 +443,28 @@ export function useGame() {
     });
   }, [gameState, getCurrentScene]);
 
+  const addExitHint = useCallback(
+    (sceneId: string) => {
+      if (isLocationDark(sceneId) && !gameState.lamp.lit) return;
+      const scene = SCENES[sceneId];
+      if (!scene) return;
+      const removedIds = gameState.removedActions[sceneId] || [];
+      const availableActions = scene.actions.filter((action) => {
+        if (removedIds.includes(action.id)) return false;
+        if (action.requiresItem && !gameState.inventory.includes(action.requiresItem))
+          return false;
+        if ((action as any).requiresFlag && !gameState.flags[(action as any).requiresFlag])
+          return false;
+        return true;
+      });
+      const hint = formatExitHint(availableActions);
+      if (hint) {
+        addMessage("nav-hint", hint);
+      }
+    },
+    [isLocationDark, gameState.lamp.lit, gameState.removedActions, gameState.inventory, gameState.flags, addMessage]
+  );
+
   const decreaseLampLife = useCallback(() => {
     setGameState((prev) => {
       if (!prev.lamp.lit || prev.lamp.limit < 0) {
@@ -633,6 +695,7 @@ export function useGame() {
 
         setTimeout(() => {
           addMessage("narration", getSceneDescription("building"));
+          addExitHint("building");
         }, 500);
       } else {
         setGameState(prev => ({
@@ -642,7 +705,7 @@ export function useGame() {
         setGameOver("died");
       }
     }
-  }, [gameState.pendingPrompt, addMessage, getSceneDescription]);
+  }, [gameState.pendingPrompt, addMessage, addExitHint, getSceneDescription]);
 
   const checkTurnThresholds = useCallback(() => {
     for (const threshold of TURN_THRESHOLDS) {
@@ -986,6 +1049,7 @@ export function useGame() {
 
       decreaseLampLife();
       addMessage("narration", getSceneDescription(toSceneId));
+      addExitHint(toSceneId);
 
       if (deathSceneIds.includes(toSceneId)) {
         triggerDeath();
@@ -1002,7 +1066,7 @@ export function useGame() {
       processDwarves();
       checkCaveClosure();
     },
-    [addMessage, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure, gameState.sceneId, gameState.flags, gameState.inventory]
+    [addMessage, addExitHint, decreaseLampLife, hapticFeedback, getSceneDescription, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure, gameState.sceneId, gameState.flags, gameState.inventory]
   );
 
   const handleGoBack = useCallback(() => {
@@ -1051,11 +1115,12 @@ export function useGame() {
 
     decreaseLampLife();
     addMessage("narration", getSceneDescription(targetSceneId));
+    addExitHint(targetSceneId);
     hapticFeedback("light");
     checkLampWarning();
     processDwarves();
     checkCaveClosure();
-  }, [gameState.previousSceneId, gameState.sceneId, addMessage, decreaseLampLife, getSceneDescription, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure]);
+  }, [gameState.previousSceneId, gameState.sceneId, addMessage, decreaseLampLife, getSceneDescription, addExitHint, hapticFeedback, checkLampWarning, isCurrentlyDark, gameOver, triggerDeath, processDwarves, checkCaveClosure]);
 
   const handleTakeItem = useCallback(
     (itemId: string, actionId: string) => {
@@ -1272,6 +1337,7 @@ export function useGame() {
         case "command":
           if (action.command === "look") {
             addMessage("narration", getSceneDescription(gameState.sceneId));
+            addExitHint(gameState.sceneId);
           }
           decreaseLampLife();
           break;
@@ -1418,9 +1484,21 @@ export function useGame() {
       timestamp: Date.now(),
     };
 
-    setMessages([...newMessages, sceneMessage]);
+    const startMessages: Message[] = [...newMessages, sceneMessage];
+    if (startScene && !isLocationDark(initialGameState.sceneId)) {
+      const hint = formatExitHint(startScene.actions);
+      if (hint) {
+        startMessages.push({
+          id: generateMessageId(),
+          type: "nav-hint",
+          text: hint,
+          timestamp: Date.now(),
+        });
+      }
+    }
+    setMessages(startMessages);
     hapticFeedback("medium");
-  }, [hapticFeedback]);
+  }, [hapticFeedback, isLocationDark]);
 
   const parseCommand = useCallback(
     (input: string) => {
@@ -1451,6 +1529,7 @@ export function useGame() {
               },
             }));
             addMessage("narration", getSceneDescription(targetSceneId, true));
+            addExitHint(targetSceneId);
             return;
           } else {
             addMessage("action", rawInput);
@@ -1486,6 +1565,7 @@ export function useGame() {
       switch (resolution.type) {
         case "look":
           addMessage("narration", getSceneDescription(gameState.sceneId));
+          addExitHint(gameState.sceneId);
           decreaseLampLife();
           checkLampWarning();
           return;
@@ -2724,6 +2804,7 @@ export function useGame() {
       isLocationDark,
       hapticFeedback,
       getSceneDescription,
+      addExitHint,
       resolveActionDestination,
     ]
   );
@@ -2781,7 +2862,19 @@ export function useGame() {
           timestamp: Date.now(),
         };
 
-        setMessages([...newMessages, sceneMessage]);
+        const initMessages: Message[] = [...newMessages, sceneMessage];
+        if (startScene && !isLocationDark(initialGameState.sceneId)) {
+          const hint = formatExitHint(startScene.actions);
+          if (hint) {
+            initMessages.push({
+              id: generateMessageId(),
+              type: "nav-hint",
+              text: hint,
+              timestamp: Date.now(),
+            });
+          }
+        }
+        setMessages(initMessages);
       }
       initAnalytics();
       const initSceneId = saveData ? saveData.gameState.sceneId : initialGameState.sceneId;

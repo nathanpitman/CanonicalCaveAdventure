@@ -72,6 +72,21 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
     );
   }
 
+  if (message.type === "nav-hint") {
+    return (
+      <Animated.View style={[styles.navHintRow, animatedStyle]}>
+        <ThemedText
+          style={[
+            styles.navHintText,
+            { color: theme.textSecondary },
+          ]}
+        >
+          {message.text}
+        </ThemedText>
+      </Animated.View>
+    );
+  }
+
   const getMessageStyles = () => {
     switch (message.type) {
       case "narration":
@@ -183,5 +198,19 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     lineHeight: 24,
+  },
+  navHintRow: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginBottom: Spacing.md,
+    marginTop: -Spacing.sm,
+    paddingRight: Spacing["3xl"],
+    paddingLeft: Spacing.sm,
+    opacity: 0.7,
+  },
+  navHintText: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontStyle: "italic",
   },
 });

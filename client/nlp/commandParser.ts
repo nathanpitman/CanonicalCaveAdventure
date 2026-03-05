@@ -140,7 +140,7 @@ function tryMagicWord(text: string, tokens: string[], out: ParsedCommand): boole
 }
 
 function tryStructuredUse(text: string, out: ParsedCommand): boolean {
-  const useWithTarget = /^(use|apply|activate)\s+(.+?)\s+(to|on|with|using|into|onto|at)\s+(.+)$/;
+  const useWithTarget = /^(use|apply|activate|employ|utilize|operate|wield|try|engage|interact)\s+(.+?)\s+(to|on|with|using|into|onto|at)\s+(.+)$/;
   const m1 = text.match(useWithTarget);
   if (m1) {
     const itemRaw = stripArticles(m1[2]);
@@ -154,7 +154,7 @@ function tryStructuredUse(text: string, out: ParsedCommand): boolean {
     return true;
   }
 
-  const useToVerb = /^(use|apply|activate)\s+(.+?)\s+to\s+(open|unlock|lift|break|light|pour|push|pull|turn|insert|close|lock|smash|cut|fill|empty)\s+(.+)$/;
+  const useToVerb = /^(use|apply|activate|employ|utilize|operate|wield|try|engage|interact)\s+(.+?)\s+to\s+(open|unlock|lift|break|light|pour|push|pull|turn|insert|close|lock|smash|cut|fill|empty)\s+(.+)$/;
   const m2 = text.match(useToVerb);
   if (m2) {
     const itemRaw = stripArticles(m2[2]);
@@ -168,7 +168,7 @@ function tryStructuredUse(text: string, out: ParsedCommand): boolean {
     return true;
   }
 
-  const verbTargetWith = /^(unlock|open|lift|break|light|pour|push|pull|turn|insert|close|lock|smash|cut|fill|empty|drink)\s+(.+?)\s+(with|using|from)\s+(.+)$/;
+  const verbTargetWith = /^(unlock|open|lift|break|light|pour|push|pull|turn|insert|close|lock|smash|cut|fill|empty|drink|pry|force|unseal|shatter|crack|wreck|crush|bust|demolish|ignite|kindle|dump|spill|splash|shove|nudge|yank|tug|drag|haul|slam|seal|fasten|slash|carve|chop|slice|sever|swig|chug|imbibe|slurp)\s+(.+?)\s+(with|using|from)\s+(.+)$/;
   const m3 = text.match(verbTargetWith);
   if (m3) {
     const targetRaw = stripArticles(m3[2]);
@@ -182,7 +182,7 @@ function tryStructuredUse(text: string, out: ParsedCommand): boolean {
     return true;
   }
 
-  const singleVerbItem = /^(light|drink|pour|eat|burn|rub|wave|read|fill|empty)\s+(.+)$/;
+  const singleVerbItem = /^(light|drink|pour|eat|burn|rub|wave|read|fill|empty|ignite|kindle|spark|swig|chug|imbibe|slurp|sample|dump|spill|splash|tip|munch|chew|bite|nibble|taste|snack|feast|swallow|ingest|polish|buff|stroke|caress|wipe|clean|massage|shine|decipher|translate|brandish|flourish|load)\s+(.+)$/;
   const m4 = text.match(singleVerbItem);
   if (m4) {
     const itemRaw = stripArticles(m4[2]);
@@ -212,7 +212,7 @@ function tryNarrativeSynonym(text: string, out: ParsedCommand): boolean {
 function tryMovement(text: string, tokens: string[], out: ParsedCommand): boolean {
   if (tryNarrativeSynonym(text, out)) return true;
 
-  const goToPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb|follow)\s+(to|toward|towards|into)\s+(.+)$/;
+  const goToPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb|follow|sprint|dash|wander|venture|explore|trek|hike|stride)\s+(to|toward|towards|into)\s+(.+)$/;
   const goToMatch = text.match(goToPattern);
   if (goToMatch) {
     const noun = stripArticles(goToMatch[3]);
@@ -230,7 +230,7 @@ function tryMovement(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const dirPrefixPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb|follow)\s+(.+)$/;
+  const dirPrefixPattern = /^(go|move|walk|head|travel|proceed|run|crawl|climb|follow|sprint|dash|wander|venture|explore|trek|hike|stride)\s+(.+)$/;
   const dirMatch = text.match(dirPrefixPattern);
   if (dirMatch) {
     const rest = dirMatch[2].replace(/ward(s)?$/i, "");
@@ -280,7 +280,7 @@ function tryMovement(text: string, tokens: string[], out: ParsedCommand): boolea
 }
 
 function tryTake(text: string, out: ParsedCommand): boolean {
-  const takePattern = /^(take|get|grab|pick up|collect|pick|acquire|snag|retrieve)\s+(.+)$/;
+  const takePattern = /^(take|get|grab|pick up|collect|pick|acquire|snag|retrieve|catch|capture|nab|snatch|seize|steal|swipe|pocket|pluck|gather|obtain|hold|carry|fetch|claim)\s+(.+)$/;
   const m = text.match(takePattern);
   if (m) {
     const itemRaw = stripArticles(m[2]);
@@ -296,7 +296,7 @@ function tryTake(text: string, out: ParsedCommand): boolean {
 }
 
 function trySimpleUse(text: string, out: ParsedCommand): boolean {
-  const usePattern = /^(use|activate|apply|consume)\s+(.+)$/;
+  const usePattern = /^(use|activate|apply|consume|employ|utilize|operate|wield|engage|interact|try)\s+(.+)$/;
   const m = text.match(usePattern);
   if (m) {
     const itemRaw = stripArticles(m[2]);
@@ -312,7 +312,7 @@ function trySimpleUse(text: string, out: ParsedCommand): boolean {
 }
 
 function tryDrop(text: string, out: ParsedCommand): boolean {
-  const dropPattern = /^(drop|put down|discard|release|dump|leave|set down)\s+(.+)$/;
+  const dropPattern = /^(drop|put down|discard|release|dump|leave|set down|abandon|toss|ditch|throw away|lay down|place|deposit|leave behind|get rid of)\s+(.+)$/;
   const m = text.match(dropPattern);
   if (m) {
     const itemRaw = stripArticles(m[2]);
@@ -341,7 +341,7 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const attackPattern = /^(attack|kill|fight|hit|strike|slay)\s*(.*)$/;
+  const attackPattern = /^(attack|kill|fight|hit|strike|slay|punch|stab|hack|bash|whack|assault|battle|destroy)\s*(.*)$/;
   const am = text.match(attackPattern);
   if (am) {
     out.intent = "attack";
@@ -354,7 +354,7 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const throwPattern = /^(throw|toss)\s+(.+?)(?:\s+(at|to|toward|towards|across)\s+(.+))?$/;
+  const throwPattern = /^(throw|toss|fling|hurl|lob|launch|chuck|pitch|heave)\s+(.+?)(?:\s+(at|to|toward|towards|across)\s+(.+))?$/;
   const tm = text.match(throwPattern);
   if (tm) {
     const itemRaw = stripArticles(tm[2]);
@@ -370,21 +370,21 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const feedPattern = /^feed\s+(.+?)(?:\s+to\s+(.+))?$/;
+  const feedPattern = /^(feed|offer|hand|pass|give)\s+(.+?)(?:\s+to\s+(.+))?$/;
   const fm = text.match(feedPattern);
   if (fm) {
     out.intent = "feed";
     out.verb = "feed";
-    out.itemPhrase = stripArticles(fm[1]);
-    out.itemToken = resolveItemId(fm[1]) || undefined;
-    if (fm[2]) {
-      out.targetPhrase = stripArticles(fm[2]);
-      out.targetToken = resolveItemId(fm[2]) || undefined;
+    out.itemPhrase = stripArticles(fm[2]);
+    out.itemToken = resolveItemId(fm[2]) || undefined;
+    if (fm[3]) {
+      out.targetPhrase = stripArticles(fm[3]);
+      out.targetToken = resolveItemId(fm[3]) || undefined;
     }
     return true;
   }
 
-  const wavePattern = /^(wave|shake|swing)\s+(.+)$/;
+  const wavePattern = /^(wave|shake|swing|brandish|flourish)\s+(.+)$/;
   const wm = text.match(wavePattern);
   if (wm) {
     out.intent = "wave";
@@ -401,17 +401,17 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
       out.verb = "blast";
       return true;
     }
-    if (t === "attack" || t === "kill" || t === "fight") {
+    if (t === "attack" || t === "kill" || t === "fight" || t === "punch" || t === "stab" || t === "bash" || t === "whack" || t === "assault" || t === "battle" || t === "destroy") {
       out.intent = "attack";
       out.verb = "attack";
       return true;
     }
-    if (t === "drop" || t === "discard" || t === "dump") {
+    if (t === "drop" || t === "discard" || t === "dump" || t === "abandon" || t === "ditch" || t === "deposit") {
       out.intent = "drop";
       out.verb = "drop";
       return true;
     }
-    if (t === "throw" || t === "toss") {
+    if (t === "throw" || t === "toss" || t === "fling" || t === "hurl" || t === "lob" || t === "chuck" || t === "heave") {
       out.intent = "throw";
       out.verb = "throw";
       return true;
@@ -422,7 +422,7 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     }
   }
 
-  const waterPattern = /^(water|pour)\s*(.*)$/;
+  const waterPattern = /^(water|pour|dump|spill|splash|tip)\s*(.*)$/;
   const wpm = text.match(waterPattern);
   if (wpm) {
     out.intent = "pour";
@@ -435,12 +435,12 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const fillPattern = /^fill\s*(.*)$/;
+  const fillPattern = /^(fill|load|top off)\s*(.*)$/;
   const flm = text.match(fillPattern);
   if (flm) {
     out.intent = "fill";
     out.verb = "fill";
-    const target = stripArticles(flm[1] || "");
+    const target = stripArticles(flm[2] || "");
     if (target) {
       out.targetPhrase = target;
       out.targetToken = resolveItemId(target) || undefined;
@@ -448,7 +448,7 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const openPattern = /^(open|pry|crack)\s*(.*)$/;
+  const openPattern = /^(open|pry|force|unseal)\s*(.*)$/;
   const om = text.match(openPattern);
   if (om) {
     out.intent = "open";
@@ -474,7 +474,7 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const drinkPattern = /^(drink|quaff|sip|gulp)\s*(.*)$/;
+  const drinkPattern = /^(drink|quaff|sip|gulp|swig|chug|imbibe|slurp|sample)\s*(.*)$/;
   const dm = text.match(drinkPattern);
   if (dm) {
     out.intent = "drink";
@@ -487,12 +487,12 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const readPattern = /^read\s*(.*)$/;
+  const readPattern = /^(read|decipher|translate)\s*(.*)$/;
   const rm = text.match(readPattern);
   if (rm) {
     out.intent = "read";
     out.verb = "read";
-    const target = stripArticles(rm[1] || "");
+    const target = stripArticles(rm[2] || "");
     if (target) {
       out.targetPhrase = target;
       out.targetToken = resolveItemId(target) || undefined;
@@ -531,7 +531,7 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const eatPattern = /^(eat|devour|consume)\s*(.*)$/;
+  const eatPattern = /^(eat|devour|consume|munch|chew|bite|nibble|taste|snack|dine|feast|swallow|ingest)\s*(.*)$/;
   const em = text.match(eatPattern);
   if (em) {
     out.intent = "eat";
@@ -544,12 +544,12 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const rubPattern = /^rub\s*(.*)$/;
+  const rubPattern = /^(rub|polish|buff|stroke|caress|wipe|clean|massage|shine)\s*(.*)$/;
   const rbm = text.match(rubPattern);
   if (rbm) {
     out.intent = "rub";
     out.verb = "rub";
-    const target = stripArticles(rbm[1] || "");
+    const target = stripArticles(rbm[2] || "");
     if (target) {
       out.targetPhrase = target;
       out.targetToken = resolveItemId(target) || undefined;
@@ -557,7 +557,7 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     return true;
   }
 
-  const closePattern = /^(close|shut|lock)\s*(.*)$/;
+  const closePattern = /^(close|shut|lock|slam|seal|bar|fasten)\s*(.*)$/;
   const cm = text.match(closePattern);
   if (cm) {
     out.intent = "close";
@@ -604,32 +604,32 @@ function trySingleToken(tokens: string[], out: ParsedCommand): boolean {
     return true;
   }
 
-  if (token === "water" || token === "pour") {
+  if (token === "water" || token === "pour" || token === "dump" || token === "spill" || token === "splash" || token === "tip") {
     out.intent = "pour";
     out.verb = "pour";
     return true;
   }
-  if (token === "fill") {
+  if (token === "fill" || token === "load") {
     out.intent = "fill";
     out.verb = "fill";
     return true;
   }
-  if (token === "open") {
+  if (token === "open" || token === "pry" || token === "force" || token === "unseal") {
     out.intent = "open";
     out.verb = "open";
     return true;
   }
-  if (token === "unlock" || token === "unchain") {
+  if (token === "unlock" || token === "unchain" || token === "unseal") {
     out.intent = "unlock";
     out.verb = "unlock";
     return true;
   }
-  if (token === "drink") {
+  if (token === "drink" || token === "swig" || token === "chug" || token === "imbibe" || token === "slurp" || token === "sample") {
     out.intent = "drink";
     out.verb = "drink";
     return true;
   }
-  if (token === "read") {
+  if (token === "read" || token === "decipher" || token === "translate") {
     out.intent = "read";
     out.verb = "read";
     return true;
@@ -638,17 +638,17 @@ function trySingleToken(tokens: string[], out: ParsedCommand): boolean {
     out.intent = "yes";
     return true;
   }
-  if (token === "eat" || token === "devour") {
+  if (token === "eat" || token === "devour" || token === "munch" || token === "chew" || token === "nibble" || token === "snack" || token === "feast" || token === "dine") {
     out.intent = "eat";
     out.verb = "eat";
     return true;
   }
-  if (token === "rub") {
+  if (token === "rub" || token === "polish" || token === "buff" || token === "wipe" || token === "clean" || token === "massage" || token === "shine") {
     out.intent = "rub";
     out.verb = "rub";
     return true;
   }
-  if (token === "close" || token === "shut" || token === "lock") {
+  if (token === "close" || token === "shut" || token === "lock" || token === "slam" || token === "seal" || token === "fasten") {
     out.intent = "close";
     out.verb = token;
     return true;
