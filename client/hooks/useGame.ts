@@ -71,6 +71,7 @@ import {
   trackScene,
   trackCommand,
   trackGameComplete,
+  trackHelpOpened,
 } from "@/analytics";
 
 export function useGame() {
@@ -1543,6 +1544,7 @@ export function useGame() {
         }
 
         case "help":
+          trackHelpOpened();
           addMessage("system", HELP_TEXT);
           return;
 
