@@ -284,6 +284,16 @@ export function trackGameComplete(): void {
   trackGA("game_completed", { totalMoves: state.moveCount });
 }
 
+export function trackHelpOpened(): void {
+  if (!state.initialized) return;
+  trackGA("help_opened", { scene: state.currentScene });
+}
+
+export function trackRestartGame(): void {
+  if (!state.initialized) return;
+  trackGA("game_restarted", { scene: state.currentScene, totalMoves: state.moveCount });
+}
+
 export function trackExit(reason = "unknown"): void {
   if (!state.initialized) return;
 

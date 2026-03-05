@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius } from "@/constants/theme";
+import { trackHelpOpened, trackRestartGame } from "@/analytics";
 
 interface CommandInputProps {
   onSubmit: (command: string) => void;
@@ -148,6 +149,7 @@ export function CommandInput({
 
   const handleConfirmRestart = () => {
     setShowConfirm(false);
+    trackRestartGame();
     onRestart();
   };
 
@@ -156,6 +158,7 @@ export function CommandInput({
   };
 
   const handleHelpPress = () => {
+    trackHelpOpened();
     onHelp();
   };
 

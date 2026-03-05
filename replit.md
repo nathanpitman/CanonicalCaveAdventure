@@ -69,13 +69,17 @@ Do not make changes to the `tools/injectPwaMeta.js` file.
 A lightweight client-side analytics system (`client/analytics.ts`) tracks game usage and player behavior without any backend runtime requirement.
 
 **Tracked Events:**
-- `session_start`, `scene_entered`, `command_entered`, `command_failed`, `scene_repeat`, `game_completed`, `player_exit`, `frustration_detected`
+- `session_start`, `scene_entered`, `command_entered`, `command_failed`, `scene_repeat`, `game_completed`, `player_exit`, `frustration_detected`, `help_opened`, `game_restarted`
 
 **Integration Points (in `client/hooks/useGame.ts`):**
 - `initAnalytics()` + `trackScene()` — called on game initialization
 - `trackScene(sceneId)` — called on every scene change in `handleMove`
 - `trackCommand(input, true/false)` — called after command resolution or on unrecognized input
 - `trackGameComplete()` — called when the player escapes (sets `escaped` flag)
+
+**Integration Points (in UI components):**
+- `trackHelpOpened()` — called when Help / How to Play button is pressed (CommandInput, GameMenu)
+- `trackRestartGame()` — called when user confirms Restart Story or Play Again (CommandInput, GameMenu, GameScreen obituary/game-over)
 
 **Drop-off & Exit Tracking:**
 - `beforeunload`, `visibilitychange`, and 5-minute inactivity timer automatically call `trackExit()`

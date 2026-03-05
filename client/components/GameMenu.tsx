@@ -21,6 +21,7 @@ import Animated, {
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius } from "@/constants/theme";
+import { trackHelpOpened, trackRestartGame } from "@/analytics";
 
 interface GameMenuProps {
   visible: boolean;
@@ -98,6 +99,7 @@ export function GameMenu({
 
   const handleConfirmRestart = () => {
     setShowConfirm(false);
+    trackRestartGame();
     onNewGame();
   };
 
@@ -149,7 +151,7 @@ export function GameMenu({
 
           <View style={styles.menuItems}>
             <MenuItem icon="rotate-ccw" label="Restart Story" onPress={handleRestartPress} danger />
-            <MenuItem icon="help-circle" label="Help" onPress={onHelp} />
+            <MenuItem icon="help-circle" label="Help" onPress={() => { trackHelpOpened(); onHelp(); }} />
           </View>
 
           <Pressable

@@ -24,6 +24,7 @@ import { useGame } from "@/hooks/useGame";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import { Message } from "@/data/gameState";
 import { SCENES } from "@/data/story";
+import { trackRestartGame } from "@/analytics";
 
 const AT_BOTTOM_THRESHOLD = 80;
 
@@ -146,7 +147,7 @@ export default function GameScreen() {
             ]}
           >
             <Pressable
-              onPress={handleNewGame}
+              onPress={() => { trackRestartGame(); handleNewGame(); }}
               style={[styles.promptButtonFull, { backgroundColor: theme.primary }]}
               testID="play-again-button"
             >
@@ -174,7 +175,7 @@ export default function GameScreen() {
     if (pendingPrompt) {
       const noLabel = isObituaryPrompt ? "Restart Story" : "No";
       const onNo = isObituaryPrompt
-        ? () => handleNewGame()
+        ? () => { trackRestartGame(); handleNewGame(); }
         : () => handlePromptResponse(false);
 
       return (
