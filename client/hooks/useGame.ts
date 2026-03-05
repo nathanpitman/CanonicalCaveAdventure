@@ -83,19 +83,75 @@ const EXIT_LABEL_MAP: Record<string, string> = {
   "GO ACROSS": "across", "GO OVER": "over",
 };
 
+const SECRET_ACTION_IDS = new Set([
+  "go_xyzzy", "go_plugh", "go_plover", "go_y2",
+]);
+
+const SECRET_LABELS = new Set([
+  "xyzzy", "plugh", "plover", "y2",
+  "fee", "fie", "foe", "foo", "fum",
+]);
+
+const ABBREV_EXPAND: Record<string, string> = {
+  "downs": "downstream", "upstr": "upstream", "forwa": "forward",
+  "entra": "entrance", "barre": "barren room", "secre": "secret passage",
+  "cobbl": "cobble crawl", "debri": "debris room", "depre": "depression",
+  "caver": "cavern", "canyo": "canyon", "fores": "forest",
+  "passa": "passage", "orien": "oriental room", "reser": "reservoir",
+  "bedqu": "bedquilt", "surfa": "surface", "outdo": "outdoors",
+  "inwar": "inward", "upwar": "upward", "strea": "stream",
+  "shell": "shell room", "plove": "plover room",
+};
+
+const COMPASS_IDS = new Set([
+  "go_north", "go_south", "go_east", "go_west",
+  "go_ne", "go_nw", "go_se", "go_sw",
+  "go_up", "go_down", "go_in", "go_out",
+  "go_left", "go_right",
+]);
+
+function resolveExitLabel(action: Action): string {
+  const label = action.label.toUpperCase();
+  let friendly = EXIT_LABEL_MAP[label] ||
+    action.label.replace(/^GO\s+TO\s+/i, "").replace(/^GO\s+/i, "").toLowerCase();
+  const abbrevKey = friendly.trim();
+  if (ABBREV_EXPAND[abbrevKey]) {
+    friendly = ABBREV_EXPAND[abbrevKey];
+  }
+  return friendly;
+}
+
 function formatExitHint(actions: Action[]): string | null {
   const moveActions = actions.filter(
-    (a) => a.type === "move" && a.id !== "go_default" && a.id !== "look"
+    (a) => a.type === "move" &&
+      a.id !== "go_default" && a.id !== "look" &&
+      !SECRET_ACTION_IDS.has(a.id) &&
+      !SECRET_LABELS.has(a.label.toLowerCase())
   );
   if (moveActions.length === 0) return null;
 
+  const byDest = new Map<string, Action[]>();
+  for (const action of moveActions) {
+    const dest = action.to || action.id;
+    const group = byDest.get(dest) || [];
+    group.push(action);
+    byDest.set(dest, group);
+  }
+
+  const deduped: Action[] = [];
+  for (const [, group] of byDest) {
+    if (group.length === 1) {
+      deduped.push(group[0]);
+    } else {
+      const descriptive = group.find((a) => !COMPASS_IDS.has(a.id));
+      deduped.push(descriptive || group[0]);
+    }
+  }
+
   const seen = new Set<string>();
   const directions: string[] = [];
-  for (const action of moveActions) {
-    const label = action.label.toUpperCase();
-    const friendly =
-      EXIT_LABEL_MAP[label] ||
-      action.label.replace(/^GO\s+/i, "").toLowerCase();
+  for (const action of deduped) {
+    const friendly = resolveExitLabel(action);
     if (!seen.has(friendly)) {
       seen.add(friendly);
       directions.push(friendly);
