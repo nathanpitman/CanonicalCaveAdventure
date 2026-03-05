@@ -1165,8 +1165,6 @@ export function useGame() {
       return;
     }
 
-    addMessage("action", "Go back");
-    
     if (isCurrentlyDark() && !gameOver) {
       const pitChance = Math.random();
       if (pitChance < 0.35) {
