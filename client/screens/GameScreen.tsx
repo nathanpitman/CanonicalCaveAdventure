@@ -104,9 +104,9 @@ export default function GameScreen() {
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems.length > 0) {
-        const topItem = viewableItems[0]?.item as Message | undefined;
-        if (topItem?.sceneId) {
-          setVisibleSceneId(topItem.sceneId);
+        const bottomItem = viewableItems[viewableItems.length - 1]?.item as Message | undefined;
+        if (bottomItem?.sceneId) {
+          setVisibleSceneId(bottomItem.sceneId);
         }
       }
     }

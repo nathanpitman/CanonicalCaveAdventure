@@ -525,10 +525,17 @@ export function useGame() {
       });
       const hint = formatExitHint(availableActions);
       if (hint) {
-        addMessage("nav-hint", hint);
+        const message: Message = {
+          id: generateMessageId(),
+          type: "nav-hint",
+          text: hint,
+          timestamp: Date.now(),
+          sceneId: gameState.sceneId,
+        };
+        setMessages((prev) => [...prev.filter((m) => m.type !== "nav-hint"), message]);
       }
     },
-    [isLocationDark, gameState.lamp.lit, gameState.removedActions, gameState.inventory, gameState.flags, addMessage]
+    [isLocationDark, gameState.lamp.lit, gameState.removedActions, gameState.inventory, gameState.flags, gameState.sceneId]
   );
 
   const decreaseLampLife = useCallback(() => {
