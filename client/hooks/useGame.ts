@@ -148,9 +148,9 @@ function formatExitHint(actions: Action[]): string | null {
     if (group.length === 1) {
       deduped.push(group[0]);
     } else {
-      const specific = group.find((a) => !COMPASS_IDS.has(a.id) && !GENERIC_MOVE_IDS.has(a.id));
-      if (specific) {
-        deduped.push(specific);
+      const specifics = group.filter((a) => !COMPASS_IDS.has(a.id) && !GENERIC_MOVE_IDS.has(a.id));
+      if (specifics.length > 0) {
+        deduped.push(...specifics);
       } else {
         const compass = group.find((a) => COMPASS_IDS.has(a.id));
         deduped.push(compass || group[0]);
