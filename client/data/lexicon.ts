@@ -29,8 +29,8 @@ const EXTRA_DIRECTION_SYNONYMS: Record<string, string> = {
   "northwest": "nw",
   "southeast": "se",
   "southwest": "sw",
-  "inward": "in", "inwards": "in", "enter": "in",
-  "outward": "out", "outwards": "out", "exit": "out", "leave": "out",
+  "inward": "in", "inwards": "in", "inside": "in", "enter": "in",
+  "outward": "out", "outwards": "out", "outside": "out", "exit": "out", "leave": "out",
 };
 
 export const DIRECTION_SYNONYMS: Record<string, string> = {
