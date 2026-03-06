@@ -1178,14 +1178,7 @@ export const YAML_VERB_SYNONYMS: Record<string, string> = {
   "new game": "new",
   "restart": "new",
   "start over": "new",
-  "directions": "directions",
-  "exits": "directions",
-  "where can i go": "directions",
-  "which way": "directions",
-  "paths": "directions",
-  "ways": "directions",
-  "available exits": "directions",
-  "show exits": "directions"
+  "debug": "debug"
 };
 
 // ============================================================

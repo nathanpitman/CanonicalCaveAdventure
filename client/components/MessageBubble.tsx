@@ -9,7 +9,7 @@ import Animated, {
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { Spacing, BorderRadius, Fonts } from "@/constants/theme";
 import { Message } from "@/data/gameState";
 
 interface MessageBubbleProps {
@@ -139,7 +139,7 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
           },
         ]}
       >
-        <ThemedText style={[styles.text, { color: getTextColor() }]}>
+        <ThemedText style={[styles.text, { color: getTextColor() }, message.mono ? { fontFamily: Fonts.mono, fontSize: 12, lineHeight: 18 } : undefined]}>
           {message.text}
         </ThemedText>
       </View>

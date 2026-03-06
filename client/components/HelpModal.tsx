@@ -135,12 +135,6 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
                 Tips
               </ThemedText>
               <View style={styles.tip}>
-                <Feather name="compass" size={16} color={theme.primary} />
-                <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
-                  Not sure where to go? Try typing "directions" for advice on your options.
-                </ThemedText>
-              </View>
-              <View style={styles.tip}>
                 <Feather name="zap" size={16} color={theme.primary} />
                 <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
                   Watch your lamp life - when it runs out, you're in real trouble if you're in the caves.

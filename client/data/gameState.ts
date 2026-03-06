@@ -10,6 +10,7 @@ export interface Message {
   text: string;
   timestamp: number;
   sceneId?: string;
+  mono?: boolean;
 }
 
 export interface PendingPrompt {
