@@ -46,6 +46,7 @@ export type Resolution =
   | { type: "blast" }
   | { type: "listen" }
   | { type: "debug" }
+  | { type: "about" }
   | { type: "fallback" };
 
 export interface ResolverContext {
@@ -174,6 +175,8 @@ export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution
       return { type: "back" };
     case "debug":
       return { type: "debug" };
+    case "about":
+      return { type: "about" };
     case "new":
       return { type: "new" };
     case "lamp_on":

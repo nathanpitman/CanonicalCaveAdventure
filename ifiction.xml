@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ifindex version="1.0" xmlns="http://babel.ifarchive.org/protocol/iFiction/">
+  <story>
+    <identification>
+      <ifid>0D7B0351-2021-45D1-BC24-6831248ECB77</ifid>
+      <format>html</format>
+    </identification>
+
+    <bibliographic>
+      <title>Canonical Cave Adventure</title>
+      <author>Nathan Pitman</author>
+      <language>en</language>
+      <headline>A modern recreation inspired by Colossal Cave Adventure</headline>
+      <genre>Adventure</genre>
+      <firstpublished>2026</firstpublished>
+      <description>A modern, mobile-friendly recreation of the original Colossal Cave Adventure. Explore a vast cave network, collect treasures, solve puzzles, and interact with the world through natural language commands.</description>
+    </bibliographic>
+
+    <contacts>
+      <url>https://nathanpitman.com</url>
+    </contacts>
+
+    <colophon>
+      <generator>Canonical Cave Adventure Build System</generator>
+      <generatorversion>1.0</generatorversion>
+      <originated>2026-01-01</originated>
+    </colophon>
+  </story>
+</ifindex>

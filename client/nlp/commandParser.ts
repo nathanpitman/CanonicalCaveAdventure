@@ -14,7 +14,7 @@ import {
 
 export interface ParsedCommand {
   raw: string;
-  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "blast" | "quit" | "listen" | "debug" | "unknown";
+  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "blast" | "quit" | "listen" | "debug" | "about" | "unknown";
   verb?: string;
   itemPhrase?: string;
   targetPhrase?: string;
@@ -111,6 +111,11 @@ function tryMeta(text: string, tokens: string[], out: ParsedCommand): boolean {
       text === "check surroundings") {
     out.intent = "look";
     out.verb = "look";
+    return true;
+  }
+
+  if (text === "about" || text === "version" || text === "info" || text === "credits") {
+    out.intent = "about";
     return true;
   }
 

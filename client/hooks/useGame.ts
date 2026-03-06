@@ -27,6 +27,7 @@ import {
 } from "@/data/story";
 import { parseInput } from "@/nlp/commandParser";
 import { resolve } from "@/nlp/actionResolver";
+import { IFID } from "@/ifid";
 import {
   WARN_TIME,
   BATTERY_LIFE_BONUS,
@@ -1665,6 +1666,16 @@ export function useGame() {
         case "debug": {
           const debugScene = SCENES[gameState.sceneId];
           addMessage("system", JSON.stringify(debugScene, null, 2), { mono: true });
+          return;
+        }
+
+        case "about": {
+          addMessage("system",
+            "Canonical Cave Adventure\n" +
+            "Author: Nathan Pitman\n" +
+            "Interactive Fiction Identifier (IFID): " + IFID + "\n\n" +
+            "A modern recreation inspired by the original Colossal Cave Adventure."
+          );
           return;
         }
 

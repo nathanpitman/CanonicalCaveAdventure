@@ -108,6 +108,19 @@ A lightweight client-side analytics system (`client/analytics.ts`) tracks game u
 - `document.title` updates dynamically on each scene change to `"Canonical / {Scene Title}"` for meaningful GA4 page title tracking
 - `window.debugAnalytics()` available in browser console for local debugging of in-memory analytics state
 
+## Interactive Fiction Metadata (IFID / iFiction)
+
+The game implements full IF metadata support for indexing by IFDB and other interactive fiction tools:
+
+- **IFID:** `0D7B0351-2021-45D1-BC24-6831248ECB77` (stored in `/ifid.txt`, must never change)
+- **Runtime Module:** `client/ifid.ts` exports the IFID constant and logs it on startup
+- **iFiction XML:** `/ifiction.xml` follows the Treaty of Babel iFiction specification
+- **HTML Meta Tags:** `web/index.html` includes `<meta name="ifid">` and `<meta name="generator">` tags
+- **Build Pipeline:** `tools/injectIfMeta.js` injects IF meta tags into `dist/index.html` post-build and copies `ifiction.xml` to `dist/`
+- **Deploy Workflow:** `.github/workflows/deploy.yml` runs `injectIfMeta.js` after the PWA injection step
+- **In-Game Commands:** `about`, `version`, `info`, and `credits` display game metadata including the IFID
+- **Documentation:** `/docs/ifid.md` explains the IFID system and stability rules
+
 ## External Dependencies
 
 - **React Native:** Frontend framework.

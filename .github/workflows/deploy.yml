@@ -39,6 +39,9 @@ jobs:
       - name: Inject PWA meta tags
         run: node tools/injectPwaMeta.js
 
+      - name: Inject IF metadata and copy ifiction.xml
+        run: node tools/injectIfMeta.js
+
       - name: Add SPA fallback and .nojekyll
         run: |
           cp dist/index.html dist/404.html
