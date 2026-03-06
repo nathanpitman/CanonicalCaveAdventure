@@ -152,6 +152,12 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
                   Explore thoroughly. Some items are essential to progress through the adventure.
                 </ThemedText>
               </View>
+              <View style={styles.tip}>
+                <Feather name="bar-chart-2" size={16} color={theme.primary} />
+                <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
+                  Type 'stats', 'achievements', or 'progress' to see a summary of your score, treasures found, lamp battery, lives remaining, milestones, and more.
+                </ThemedText>
+              </View>
             </View>
           </ScrollView>
         </View>
