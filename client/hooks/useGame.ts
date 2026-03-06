@@ -22,6 +22,7 @@ import {
   OBITUARIES,
   TURN_THRESHOLDS,
   LAMP_MESSAGES,
+  SOUND_MESSAGES,
   Action,
 } from "@/data/story";
 import { parseInput } from "@/nlp/commandParser";
@@ -1671,6 +1672,15 @@ export function useGame() {
           trackHelpOpened();
           addMessage("system", HELP_TEXT);
           return;
+
+        case "listen": {
+          const currentScene = getCurrentScene();
+          const soundKey = currentScene?.sound;
+          const soundText = soundKey ? (SOUND_MESSAGES[soundKey] || SOUND_MESSAGES["ALL_SILENT"]) : SOUND_MESSAGES["ALL_SILENT"];
+          addMessage("narration", soundText);
+          decreaseLampLife();
+          return;
+        }
 
         case "back":
           handleGoBack();

@@ -141,6 +141,12 @@ export function HelpModal({ visible, onClose }: HelpModalProps) {
                 </ThemedText>
               </View>
               <View style={styles.tip}>
+                <Feather name="volume-2" size={16} color={theme.primary} />
+                <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
+                  Try typing 'listen' to hear the sounds around you - they can give clues about your surroundings.
+                </ThemedText>
+              </View>
+              <View style={styles.tip}>
                 <Feather name="map" size={16} color={theme.primary} />
                 <ThemedText style={[styles.tipText, { color: theme.textSecondary }]}>
                   Explore thoroughly. Some items are essential to progress through the adventure.

@@ -45,6 +45,7 @@ export interface Scene {
   actions: Action[];
   items?: string[];
   sound?: string;
+  loud?: boolean;
   conditions?: Record<string, boolean>;
   hints?: number[];
 }
@@ -462,6 +463,20 @@ export const LAMP_MESSAGES: Record<string, string> = {
   "MISSING_BATTERIES": "Your lamp is getting dim, and you're out of spare batteries. You'd best start wrapping this up.",
   "LAMP_OFF": "Your lamp is now off.",
   "LAMP_ON": "Your lamp is now on."
+};
+
+export const SOUND_MESSAGES: Record<string, string> = {
+  "ALL_SILENT": "All is silent.",
+  "STREAM_GURGLES": "The stream is gurgling placidly.",
+  "WIND_WHISTLES": "The wind whistles coldly past your ears.",
+  "STREAM_SPLASHES": "The stream splashes loudly into the pool.",
+  "NO_MEANING": "You are unable to make anything of the splashing noise.",
+  "MURMURING_SNORING": "You can hear the murmuring of the beanstalks and the snoring of the dwarves.",
+  "SNAKES_HISSING": "A loud hissing emanates from the snake pit.",
+  "DULL_RUMBLING": "The air is filled with a dull rumbling sound.",
+  "LOUD_ROAR": "The roar is quite loud here.",
+  "TOTAL_ROAR": "The roaring is so loud that it drowns out all other sound.",
+  "WATERS_CRASHING": "The waters are crashing loudly against the shore."
 };
 
 export const ITEMS: Record<string, Item> = {
@@ -6917,6 +6932,7 @@ export const SCENES: Record<string, Scene> = {
       }
     ],
     "sound": "TOTAL_ROAR",
+    "loud": true,
     "conditions": {
       "NOARRR": true,
       "LIT": true,
@@ -9254,6 +9270,7 @@ export const SCENES: Record<string, Scene> = {
       }
     ],
     "sound": "TOTAL_ROAR",
+    "loud": true,
     "conditions": {
       "FLUID": true,
       "DEEP": true
