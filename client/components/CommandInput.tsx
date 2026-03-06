@@ -212,7 +212,7 @@ export function CommandInput({
 
   return (
     <>
-      <View style={{ backgroundColor: theme.backgroundDefault }}>
+      <View style={{ backgroundColor: theme.backgroundDefault, flexShrink: 0 }}>
         <GestureDetector gesture={panGesture}>
           <Animated.View
             style={[

@@ -27,7 +27,7 @@ import { Message } from "@/data/gameState";
 import { SCENES } from "@/data/story";
 import { trackRestartGame } from "@/analytics";
 
-const AT_BOTTOM_THRESHOLD = 80;
+const AT_BOTTOM_THRESHOLD = 150;
 
 export default function GameScreen() {
   const { theme } = useTheme();
@@ -48,6 +48,9 @@ export default function GameScreen() {
   const [visibleSceneId, setVisibleSceneId] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const userScrolledRef = useRef(false);
+  const isAutoScrollingRef = useRef(false);
+  const autoScrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevMessageCountRef = useRef(0);
 
   const currentScene = SCENES[gameState.sceneId];
   const currentSceneTitle = currentScene?.title || "Unknown";
@@ -59,25 +62,45 @@ export default function GameScreen() {
     return scene?.title || currentSceneTitle;
   })();
 
-  useEffect(() => {
-    if (messages.length > 0 && isAtBottom) {
-      setTimeout(() => {
-        flatListRef.current?.scrollToEnd({ animated: true });
-      }, 100);
+  const performAutoScroll = useCallback((animated = true) => {
+    if (autoScrollTimerRef.current) {
+      clearTimeout(autoScrollTimerRef.current);
+      autoScrollTimerRef.current = null;
     }
-  }, [messages.length, isAtBottom]);
+    isAutoScrollingRef.current = true;
+    flatListRef.current?.scrollToEnd({ animated });
+    if (!animated) {
+      autoScrollTimerRef.current = setTimeout(() => {
+        isAutoScrollingRef.current = false;
+      }, 50);
+    }
+  }, []);
+
+  const handleScrollEnd = useCallback(() => {
+    if (isAutoScrollingRef.current) {
+      isAutoScrollingRef.current = false;
+    }
+  }, []);
+
+  useEffect(() => {
+    const count = messages.length;
+    if (count > prevMessageCountRef.current && count > 0) {
+      if (!userScrolledRef.current) {
+        setTimeout(() => performAutoScroll(true), 100);
+      }
+    }
+    prevMessageCountRef.current = count;
+  }, [messages.length, performAutoScroll]);
 
   useEffect(() => {
     const event = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
     const sub = Keyboard.addListener(event, () => {
-      if (!userScrolledRef.current) {
-        setTimeout(() => {
-          flatListRef.current?.scrollToEnd({ animated: true });
-        }, 150);
+      if (!userScrolledRef.current && !isAutoScrollingRef.current) {
+        setTimeout(() => performAutoScroll(true), 150);
       }
     });
     return () => sub.remove();
-  }, []);
+  }, [performAutoScroll]);
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -86,6 +109,8 @@ export default function GameScreen() {
         contentSize.height - layoutMeasurement.height - contentOffset.y;
       const atBottom = distanceFromBottom <= AT_BOTTOM_THRESHOLD;
       setIsAtBottom(atBottom);
+
+      if (isAutoScrollingRef.current) return;
 
       if (!atBottom) {
         userScrolledRef.current = true;
@@ -113,16 +138,20 @@ export default function GameScreen() {
   ).current;
 
   const scrollToBottom = useCallback(() => {
-    flatListRef.current?.scrollToEnd({ animated: true });
-    setIsAtBottom(true);
     userScrolledRef.current = false;
-  }, []);
+    setIsAtBottom(true);
+    performAutoScroll(true);
+  }, [performAutoScroll]);
 
-  const handleContentSizeChange = useCallback(() => {
-    if (!userScrolledRef.current) {
-      flatListRef.current?.scrollToEnd({ animated: true });
+  const contentHeightRef = useRef(0);
+
+  const handleContentSizeChange = useCallback((w: number, h: number) => {
+    const prevHeight = contentHeightRef.current;
+    contentHeightRef.current = h;
+    if (h > prevHeight && !userScrolledRef.current && !isAutoScrollingRef.current) {
+      performAutoScroll(true);
     }
-  }, []);
+  }, [performAutoScroll]);
 
   const renderMessage = ({ item, index }: { item: Message; index: number }) => (
     <MessageBubble message={item} index={index} />
@@ -270,8 +299,12 @@ export default function GameScreen() {
             onScroll={handleScroll}
             scrollEventThrottle={16}
             onContentSizeChange={handleContentSizeChange}
+            onMomentumScrollEnd={handleScrollEnd}
+            onScrollEndDrag={handleScrollEnd}
             onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={viewabilityConfig}
+            keyboardShouldPersistTaps="handled"
+            automaticallyAdjustKeyboardInsets={false}
           />
 
           {!isAtBottom ? (
