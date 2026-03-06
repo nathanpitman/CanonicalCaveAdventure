@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM import/adventure.yaml - DO NOT EDIT
-// Generated: 2026-02-21T22:34:21.988Z
+// Generated: 2026-03-06T09:33:14.903Z
 // Canonical Open Adventure import with travel mechanics
 
 export interface ConditionalRoute {

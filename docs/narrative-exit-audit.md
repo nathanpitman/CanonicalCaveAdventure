@@ -1,6 +1,6 @@
 # Narrative Exit Audit Report
 
-Generated: 2026-02-21T22:34:23.799Z
+Generated: 2026-03-06T09:33:16.644Z
 
 Total gaps found: **221**
 

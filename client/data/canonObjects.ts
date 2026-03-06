@@ -1,5 +1,5 @@
 // AUTO-GENERATED FROM import/adventure.yaml - DO NOT EDIT MANUALLY
-// Generated: 2026-02-21T22:34:21.992Z
+// Generated: 2026-03-06T09:33:14.908Z
 // Run: npx tsx tools/importOpenAdventure.ts to regenerate
 
 import { TURN_THRESHOLDS } from "./generatedStory";

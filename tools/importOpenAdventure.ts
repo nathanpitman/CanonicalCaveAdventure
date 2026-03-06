@@ -1554,6 +1554,174 @@ ${scoreClassLines.join("\n")}
     }
   }
 
+  // ============================================================
+  // BUILD VERB SYNONYMS FROM ACTION VOCABULARY + NLP EXTENSIONS
+  // ============================================================
+  const ACTION_TO_VERB: Record<string, string> = {
+    "CARRY": "take", "DROP": "drop", "SAY": "say", "UNLOCK": "open",
+    "LOCK": "close", "LIGHT": "light", "EXTINGUISH": "extinguish",
+    "WAVE": "wave", "TAME": "tame", "GO": "go", "ATTACK": "attack",
+    "POUR": "pour", "EAT": "eat", "DRINK": "drink", "RUB": "rub",
+    "THROW": "throw", "QUIT": "quit", "FIND": "find",
+    "INVENTORY": "inventory", "FEED": "feed", "FILL": "fill",
+    "BLAST": "blast", "SCORE": "score", "BRIEF": "brief",
+    "READ": "read", "BREAK": "break", "WAKE": "wake",
+    "LISTEN": "listen", "HELP": "help", "DIG": "dig", "SWIM": "swim",
+  };
+
+  const VERB_NLP_EXTENSIONS: Record<string, string[]> = {
+    "CARRY": [
+      "grab", "pick", "collect", "acquire", "snag", "retrieve",
+      "nab", "snatch", "seize", "swipe", "pocket", "pluck",
+      "gather", "obtain", "hold", "fetch", "claim", "capture",
+    ],
+    "DROP": [
+      "discard", "put down", "abandon", "ditch", "throw away",
+      "lay down", "place", "deposit", "leave behind", "get rid of",
+    ],
+    "UNLOCK": [
+      "lift", "pry", "force", "unseal",
+    ],
+    "LOCK": [
+      "slam", "seal", "bar", "fasten",
+    ],
+    "ATTACK": [
+      "punch", "stab", "hack", "bash", "whack", "swing at", "assault", "battle",
+    ],
+    "BREAK": [
+      "shatter", "wreck", "crush", "bust", "demolish",
+    ],
+    "LIGHT": [
+      "burn", "ignite", "kindle", "spark", "set fire",
+    ],
+    "POUR": [
+      "spill", "splash", "tip",
+    ],
+    "FILL": [
+      "top off", "load",
+    ],
+    "DRINK": [
+      "swig", "chug", "imbibe", "slurp", "sample",
+    ],
+    "EAT": [
+      "munch", "chew", "bite", "nibble", "taste", "snack", "dine", "feast",
+      "swallow", "ingest",
+    ],
+    "THROW": [
+      "fling", "hurl", "lob", "launch", "chuck", "pitch", "heave",
+    ],
+    "WAVE": [
+      "brandish", "flourish",
+    ],
+    "RUB": [
+      "polish", "buff", "stroke", "caress", "wipe", "clean", "massage", "shine",
+    ],
+    "READ": [
+      "decipher", "translate",
+    ],
+    "HELP": [
+      "commands", "what can i do", "how to play", "instructions",
+      "hint", "what do i do", "stuck", "clue",
+    ],
+    "GO": [
+      "move", "head", "travel", "proceed", "crawl", "climb",
+      "return", "back", "enter", "exit", "leave",
+      "sprint", "dash", "wander", "venture", "trek", "hike", "stride",
+    ],
+  };
+
+  const EXTRA_VERB_GROUPS: Record<string, string[]> = {
+    "look": [
+      "look", "examine", "inspect", "check", "see",
+      "look around", "look at", "observe", "describe",
+      "where am i", "what do i see",
+      "study", "search", "scan", "view",
+      "peer", "gaze", "survey", "scrutinize",
+      "peek", "glance",
+      "what is here", "surroundings", "describe room",
+    ],
+    "inventory": [
+      "what do i have", "what am i carrying",
+      "items", "check inventory", "show inventory",
+      "my items", "bag", "backpack", "pockets",
+      "what am i holding", "check bag",
+      "possessions", "belongings",
+    ],
+    "use": [
+      "use", "apply", "activate",
+      "employ", "utilize", "operate", "try",
+      "wield", "engage", "interact", "work",
+    ],
+    "push": ["push", "shove", "press", "nudge", "bump"],
+    "pull": ["pull", "yank", "tug", "drag", "haul"],
+    "turn": ["turn"],
+    "cut": ["cut", "slash", "carve", "chop", "slice", "sever"],
+    "insert": ["insert"],
+    "give": ["give", "offer", "hand", "present", "donate", "pass"],
+    "empty": ["empty"],
+    "back": ["back", "go back", "return", "retreat", "turn back", "retrace"],
+    "new": ["new", "new game", "restart", "start over"],
+    "directions": [
+      "directions", "exits", "where can i go",
+      "which way", "paths", "ways",
+      "available exits", "show exits",
+    ],
+  };
+
+  const verbSynonyms: Record<string, string> = {};
+  for (const [actId, canonVerb] of Object.entries(ACTION_TO_VERB)) {
+    const yamlWords = ACTION_VOCABULARY[actId] || [];
+    for (const word of yamlWords) {
+      const w = word.toLowerCase();
+      if (w.length === 1 && w !== "i" && w !== "?") continue;
+      verbSynonyms[w] = canonVerb;
+    }
+    const nlpExtensions = VERB_NLP_EXTENSIONS[actId] || [];
+    for (const ext of nlpExtensions) {
+      verbSynonyms[ext.toLowerCase()] = canonVerb;
+    }
+  }
+  for (const [canonVerb, words] of Object.entries(EXTRA_VERB_GROUPS)) {
+    for (const word of words) {
+      verbSynonyms[word.toLowerCase()] = canonVerb;
+    }
+  }
+
+  const TARGET_FIRST_ACTION_IDS = new Set([
+    "UNLOCK", "BREAK", "LIGHT", "POUR", "LOCK", "THROW", "FILL", "DROP",
+    "FEED", "ATTACK", "EAT", "DRINK", "RUB", "WAVE", "READ",
+  ]);
+  const TARGET_FIRST_EXTRA_GROUPS = new Set([
+    "push", "pull", "cut", "insert", "give", "empty",
+  ]);
+  const targetFirstVerbs: string[] = [];
+  for (const actId of TARGET_FIRST_ACTION_IDS) {
+    const canonVerb = ACTION_TO_VERB[actId];
+    if (canonVerb) targetFirstVerbs.push(canonVerb);
+    const yamlWords = ACTION_VOCABULARY[actId] || [];
+    for (const word of yamlWords) {
+      const w = word.toLowerCase();
+      if (w.length === 1) continue;
+      if (!targetFirstVerbs.includes(w)) targetFirstVerbs.push(w);
+    }
+    const nlpExtensions = VERB_NLP_EXTENSIONS[actId] || [];
+    for (const ext of nlpExtensions) {
+      const w = ext.toLowerCase();
+      if (!targetFirstVerbs.includes(w)) targetFirstVerbs.push(w);
+    }
+  }
+  for (const groupName of TARGET_FIRST_EXTRA_GROUPS) {
+    const words = EXTRA_VERB_GROUPS[groupName] || [];
+    for (const word of words) {
+      const w = word.toLowerCase();
+      if (!targetFirstVerbs.includes(w)) targetFirstVerbs.push(w);
+    }
+  }
+
+  const goYamlWords = (ACTION_VOCABULARY["GO"] || []).map((w: string) => w.toLowerCase());
+  const goNlpExtensions = (VERB_NLP_EXTENSIONS["GO"] || []).map((w: string) => w.toLowerCase());
+  const moveVerbs: string[] = [...new Set([...goYamlWords, ...goNlpExtensions])];
+
   // Build maze scene IDs from location conditions
   const mazeSceneIds: string[] = [];
   for (const [locId, loc] of locations) {
@@ -1621,6 +1789,21 @@ export const YAML_DIRECTION_SYNONYMS: Record<string, string> = ${JSON.stringify(
 export const YAML_NOUN_SYNONYMS: Record<string, string[]> = ${JSON.stringify(nounSynonyms, null, 2)};
 
 // ============================================================
+// VERB SYNONYMS (derived from actions vocabulary + NLP extensions)
+// ============================================================
+export const YAML_VERB_SYNONYMS: Record<string, string> = ${JSON.stringify(verbSynonyms, null, 2)};
+
+// ============================================================
+// MOVE VERBS (derived from GO action + NLP extensions)
+// ============================================================
+export const YAML_MOVE_VERBS: string[] = ${JSON.stringify(moveVerbs, null, 2)};
+
+// ============================================================
+// TARGET-FIRST VERBS (verbs where the object typically precedes the action)
+// ============================================================
+export const YAML_TARGET_FIRST_VERBS: string[] = ${JSON.stringify(targetFirstVerbs, null, 2)};
+
+// ============================================================
 // MAZE SCENE IDS (derived from location conditions)
 // ============================================================
 export const YAML_MAZE_SCENE_IDS: string[] = ${JSON.stringify(mazeSceneIds, null, 2)};
@@ -1645,6 +1828,9 @@ export const SCORE_CLASSES: ScoreClass[] = ${JSON.stringify(SCORE_CLASSES, null,
   console.log(`Action vocabulary entries: ${Object.keys(ACTION_VOCABULARY).length}`);
   console.log(`Direction synonyms: ${Object.keys(directionSynonyms).length}`);
   console.log(`Noun synonym groups: ${Object.keys(nounSynonyms).length}`);
+  console.log(`Verb synonyms: ${Object.keys(verbSynonyms).length}`);
+  console.log(`Move verbs: ${moveVerbs.length}`);
+  console.log(`Target-first verbs: ${targetFirstVerbs.length}`);
   console.log(`Maze scene IDs: ${mazeSceneIds.length}`);
   console.log(`Score classes: ${SCORE_CLASSES.length}`);
 
