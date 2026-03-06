@@ -20,6 +20,13 @@ This document describes the compatibility between this implementation and the ca
 | Verb tokens | ✅ Full | All verb tokens create corresponding move actions |
 | `GRATE_CLOSED` condition | ✅ Full | Converted to `requiresFlag: "grateOpen"` |
 
+### Location Sounds
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| `sound` property | ✅ Full | All 11 sound labels mapped to text descriptions in `SOUND_MESSAGES`; LISTEN command displays the ambient sound for the current location, falls back to "All is silent." for scenes without a sound |
+| `loud` property | ⚠️ Data only | Imported and stored on scenes (`loud: true` on `breathtaking` and `resbottom`) but not yet consumed by the LISTEN handler — see Outstanding Gaps below |
+
 ### Objects
 
 | Feature | Status | Notes |
@@ -146,3 +153,13 @@ The following major systems have been fully implemented:
 | Troll bridge | ✅ Full | Pay with treasure or throw bear; feeding troll returns avarice quip |
 | Clam and oyster | ✅ Full | Open clam with trident to reveal pearl; clam transforms to oyster |
 | Bird and snake | ✅ Full | Drop bird in kinghall to chase snake away; rod prevents bird capture |
+| Location sounds / LISTEN | ⚠️ Partial | LISTEN command displays ambient sound text from `SOUND_MESSAGES`; `loud` property not yet consumed (see Outstanding Gaps) |
+
+## Outstanding Gaps
+
+### `loud` property on location sounds
+In the original Open Adventure, locations with `loud: true` suppress object-specific sounds. For example, the bird's singing would be drowned out at the volcano view or reservoir bottom because the location's roar is overwhelming. Currently:
+- The `loud` boolean is imported from the YAML and stored on the `Scene` interface in `generatedStory.ts`
+- Two scenes have `loud: true`: `breathtaking` (Breath-taking View, volcano) and `resbottom` (Bottom Of Reservoir)
+- The LISTEN handler in `useGame.ts` does not check `loud` — it always displays only the location sound regardless
+- To reach full parity, the handler should suppress any object-based sound descriptions (e.g., bird singing) when `scene.loud` is true, and allow them to be heard alongside the location sound when `loud` is false or absent
