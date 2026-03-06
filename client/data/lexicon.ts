@@ -242,6 +242,87 @@ function expandForms(word: string): string[] {
   return Array.from(all);
 }
 
+export const MAX_FUZZY_DISTANCE = 1.5;
+
+const QWERTY_ADJACENCY: Record<string, Set<string>> = {
+  q: new Set(["w", "a", "s"]),
+  w: new Set(["q", "e", "a", "s", "d"]),
+  e: new Set(["w", "r", "s", "d", "f"]),
+  r: new Set(["e", "t", "d", "f", "g"]),
+  t: new Set(["r", "y", "f", "g", "h"]),
+  y: new Set(["t", "u", "g", "h", "j"]),
+  u: new Set(["y", "i", "h", "j", "k"]),
+  i: new Set(["u", "o", "j", "k", "l"]),
+  o: new Set(["i", "p", "k", "l"]),
+  p: new Set(["o", "l"]),
+  a: new Set(["q", "w", "s", "z", "x"]),
+  s: new Set(["q", "w", "e", "a", "d", "z", "x", "c"]),
+  d: new Set(["w", "e", "r", "s", "f", "x", "c", "v"]),
+  f: new Set(["e", "r", "t", "d", "g", "c", "v", "b"]),
+  g: new Set(["r", "t", "y", "f", "h", "v", "b", "n"]),
+  h: new Set(["t", "y", "u", "g", "j", "b", "n", "m"]),
+  j: new Set(["y", "u", "i", "h", "k", "n", "m"]),
+  k: new Set(["u", "i", "o", "j", "l", "m"]),
+  l: new Set(["i", "o", "p", "k"]),
+  z: new Set(["a", "s", "x"]),
+  x: new Set(["a", "s", "d", "z", "c"]),
+  c: new Set(["s", "d", "f", "x", "v"]),
+  v: new Set(["d", "f", "g", "c", "b"]),
+  b: new Set(["f", "g", "h", "v", "n"]),
+  n: new Set(["g", "h", "j", "b", "m"]),
+  m: new Set(["h", "j", "k", "n"]),
+};
+
+export function keyboardSubstitutionCost(a: string, b: string): number {
+  if (a === b) return 0.0;
+  const neighbors = QWERTY_ADJACENCY[a];
+  if (neighbors && neighbors.has(b)) return 0.5;
+  return 1.0;
+}
+
+export function keyboardAwareEditDistance(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  if (Math.abs(m - n) > 2) return MAX_FUZZY_DISTANCE + 1;
+
+  let prev2: number[] | null = null;
+  let prev1 = new Array(n + 1);
+  let curr = new Array(n + 1);
+
+  for (let j = 0; j <= n; j++) prev1[j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    let rowMin = curr[0];
+
+    for (let j = 1; j <= n; j++) {
+      const cost = keyboardSubstitutionCost(a[i - 1], b[j - 1]);
+      curr[j] = Math.min(
+        prev1[j] + 1,
+        curr[j - 1] + 1,
+        prev1[j - 1] + cost
+      );
+      if (
+        i > 1 && j > 1 &&
+        a[i - 1] === b[j - 2] &&
+        a[i - 2] === b[j - 1] &&
+        prev2 !== null
+      ) {
+        curr[j] = Math.min(curr[j], prev2[j - 2] + cost);
+      }
+      if (curr[j] < rowMin) rowMin = curr[j];
+    }
+
+    if (rowMin > MAX_FUZZY_DISTANCE + 1) return MAX_FUZZY_DISTANCE + 1;
+
+    prev2 = prev1;
+    prev1 = curr;
+    curr = new Array(n + 1);
+  }
+
+  return prev1[n];
+}
+
 export function editDistanceAtMost2(a: string, b: string): number {
   const m = a.length;
   const n = b.length;
@@ -301,6 +382,7 @@ function getCandidateTokens(cand: FuzzyCandidate): string[] {
 interface MatchResult {
   candidate: FuzzyCandidate;
   distance: number;
+  keyboardDistance: number;
   matchedToken: string;
   inputToken: string;
 }
@@ -314,21 +396,26 @@ function findBestTokenMatch(
   for (const cand of candidates) {
     const candTokens = getCandidateTokens(cand);
     let bestDist = 3;
+    let bestKbDist = MAX_FUZZY_DISTANCE + 1;
     let bestToken = "";
 
     for (const ct of candTokens) {
       const d = editDistanceAtMost2(inputWord, ct);
-      if (d < bestDist) {
+      const kd = keyboardAwareEditDistance(inputWord, ct);
+
+      if (kd < bestKbDist || (kd === bestKbDist && d < bestDist)) {
         bestDist = d;
+        bestKbDist = kd;
         bestToken = ct;
         if (d === 0) break;
       }
     }
 
-    if (bestDist <= 2) {
+    if (bestKbDist <= MAX_FUZZY_DISTANCE || bestDist <= 2) {
       results.push({
         candidate: cand,
         distance: bestDist,
+        keyboardDistance: bestKbDist,
         matchedToken: bestToken,
         inputToken: inputWord,
       });
@@ -336,6 +423,7 @@ function findBestTokenMatch(
   }
 
   results.sort((a, b) => {
+    if (a.keyboardDistance !== b.keyboardDistance) return a.keyboardDistance - b.keyboardDistance;
     if (a.distance !== b.distance) return a.distance - b.distance;
     if (a.matchedToken[0] === a.inputToken[0] && b.matchedToken[0] !== b.inputToken[0]) return -1;
     if (b.matchedToken[0] === b.inputToken[0] && a.matchedToken[0] !== a.inputToken[0]) return 1;
@@ -382,6 +470,7 @@ export function resolveObjectToken(
   }
 
   allMatches.sort((a, b) => {
+    if (a.keyboardDistance !== b.keyboardDistance) return a.keyboardDistance - b.keyboardDistance;
     if (a.distance !== b.distance) return a.distance - b.distance;
     if (a.matchedToken[0] === a.inputToken[0] && b.matchedToken[0] !== b.inputToken[0]) return -1;
     if (b.matchedToken[0] === b.inputToken[0] && a.matchedToken[0] !== a.inputToken[0]) return 1;
@@ -389,6 +478,53 @@ export function resolveObjectToken(
   });
 
   const best = allMatches[0];
+  const kbDist = best.keyboardDistance;
+
+  if (kbDist <= MAX_FUZZY_DISTANCE) {
+    const tiedMatches = allMatches.filter(m => m.keyboardDistance === kbDist);
+    const uniqueCands = new Set(tiedMatches.map(m => m.candidate.id));
+    if (uniqueCands.size > 1) {
+      const bestByLevenshtein = tiedMatches.sort((a, b) => {
+        if (a.distance !== b.distance) return a.distance - b.distance;
+        if (a.matchedToken[0] === a.inputToken[0] && b.matchedToken[0] !== b.inputToken[0]) return -1;
+        if (b.matchedToken[0] === b.inputToken[0] && a.matchedToken[0] !== a.inputToken[0]) return 1;
+        return 0;
+      });
+      const topDist = bestByLevenshtein[0].distance;
+      const tiedAtTopDist = bestByLevenshtein.filter(m => m.distance === topDist);
+      const uniqueAtTop = new Set(tiedAtTopDist.map(m => m.candidate.id));
+      if (uniqueAtTop.size > 1) {
+        return { matchId: null, confidence: "none" };
+      }
+      const resolved = bestByLevenshtein[0];
+      if (kbDist <= 1.0 && resolved.inputToken.length >= 3) {
+        return {
+          matchId: resolved.candidate.id,
+          confidence: "corrected",
+          suggestion: resolved.candidate.name || resolved.candidate.id,
+          correctedFrom: resolved.inputToken,
+        };
+      }
+      return {
+        matchId: resolved.candidate.id,
+        confidence: "suggestion",
+        suggestion: resolved.candidate.name || resolved.candidate.id,
+      };
+    }
+    if (kbDist <= 1.0 && best.inputToken.length >= 3) {
+      return {
+        matchId: best.candidate.id,
+        confidence: "corrected",
+        suggestion: best.candidate.name || best.candidate.id,
+        correctedFrom: best.inputToken,
+      };
+    }
+    return {
+      matchId: best.candidate.id,
+      confidence: "suggestion",
+      suggestion: best.candidate.name || best.candidate.id,
+    };
+  }
 
   if (best.distance === 1) {
     const tiedAtD1 = allMatches.filter(m => m.distance === 1);

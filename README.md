@@ -57,6 +57,8 @@ The standout feature of CCA is its custom-built natural language processing (NLP
 
 **Fuzzy matching with typo correction** — A Damerau-Levenshtein edit-distance algorithm tolerates up to 2 character typos. If you mistype a command, the parser auto-corrects and tells you what it did — e.g. *(interpreting 'lampp' as 'lamp')*.
 
+**Keyboard-proximity-aware matching** — On top of standard edit distance, a QWERTY-aware algorithm recognizes that typos caused by hitting a neighboring key are more likely than distant key substitutions. Adjacent-key swaps (like *o↔p*, *i↔u*, *t↔y*) are penalized at half the cost of unrelated character swaps. This means *"go pit"* correctly resolves to *"go out"* because *p* is next to *o* and *i* is next to *u* on the keyboard — even though standard edit distance treats all substitutions equally.
+
 **"Did you mean?" suggestions** — When the parser is less confident about a fuzzy match, it offers a helpful suggestion instead of a dead end — e.g. *"You don't see that here. Did you mean 'keys'?"*
 
 **Singular & plural normalization** — *"keys"* matches *"key"*, *"torches"* matches *"torch"*. The parser automatically generates singular and plural word forms so either version works.
