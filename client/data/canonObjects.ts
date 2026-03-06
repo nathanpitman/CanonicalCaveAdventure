@@ -2,7 +2,10 @@
 // Generated: 2026-03-06T09:33:14.908Z
 // Run: npx tsx tools/importOpenAdventure.ts to regenerate
 
-import { TURN_THRESHOLDS } from "./generatedStory";
+import { TURN_THRESHOLDS, SCENES } from "./generatedStory";
+import { INITIAL_LAMP_LIMIT } from "./canonConstants";
+import { PROGRESS_MILESTONES } from "./progressMilestones";
+import type { GameState } from "./gameState";
 
 export const INVLIMIT = 7;
 
@@ -271,4 +274,71 @@ export function getScoreClass(score: number): string {
   if (score >= 121) return "Your score qualifies you as a novice class adventurer.";
   if (score >= 46) return "You are obviously a rank amateur. Better luck next time.";
   return "You are obviously a rank amateur.";
+}
+
+export function formatPlayerStats(state: GameState): string {
+  const { score, maxScore } = calculateScore(state);
+  const rank = getScoreClass(score);
+
+  const totalScenes = Object.keys(SCENES).length;
+  const uniqueVisited = Object.keys(state.visitCounts).length;
+
+  const initialLocations = buildInitialObjectLocations();
+  let treasuresFound = 0;
+  let treasuresDeposited = 0;
+  for (const tid of TREASURE_IDS) {
+    const loc = state.objectLocations[tid];
+    const inInventory = state.inventory.includes(tid);
+    const movedFromStart = loc !== initialLocations[tid];
+    if (inInventory || movedFromStart) {
+      treasuresFound++;
+    }
+    if (loc === TREASURE_DEPOSIT_LOCATION) {
+      treasuresDeposited++;
+    }
+  }
+
+  const lampRemaining = state.lamp.limit;
+  const lampPct = Math.round((lampRemaining / INITIAL_LAMP_LIMIT) * 100);
+
+  const livesUsed = state.deathState.numdie;
+  const livesRemaining = state.deathState.maxDeaths - livesUsed;
+
+  const milestonesTotal = PROGRESS_MILESTONES.length;
+  const milestonesHit = PROGRESS_MILESTONES.filter((m) =>
+    state.milestonesCompleted.includes(m)
+  ).length;
+
+  const hintsUsed = state.hintState.hintsGiven.length;
+  let hintPenalty = 0;
+  for (const hintNum of state.hintState.hintsGiven) {
+    hintPenalty += HINT_PENALTIES[hintNum] ?? 0;
+  }
+
+  const deepCaveReached = (state.dwarfState?.dflag ?? 0) > 0 || !!state.flags.reachedDeep;
+
+  const lines: string[] = [
+    "=== ADVENTURE PROGRESS ===",
+    "",
+    `Score: ${score} of ${maxScore}`,
+    `Rank: ${rank}`,
+    "",
+    `Turns taken: ${state.stats.turns}`,
+    `Locations explored: ${uniqueVisited} of ${totalScenes}`,
+    "",
+    `Treasures found: ${treasuresFound} of ${TREASURE_IDS.length}`,
+    `Treasures deposited: ${treasuresDeposited} of ${TREASURE_IDS.length}`,
+    `Items carried: ${state.inventory.length} of ${INVLIMIT}`,
+    "",
+    `Lamp battery: ${lampRemaining} of ${INITIAL_LAMP_LIMIT} remaining (${lampPct}%)`,
+    `Lives remaining: ${livesRemaining} of ${state.deathState.maxDeaths}`,
+    "",
+    `Milestones achieved: ${milestonesHit} of ${milestonesTotal}`,
+    `Hints used: ${hintsUsed}${hintPenalty > 0 ? ` (-${hintPenalty} points)` : ""}`,
+    `Deep cave: ${deepCaveReached ? "Reached" : "Not yet reached"}`,
+    "",
+    "==========================",
+  ];
+
+  return lines.join("\n");
 }

@@ -25,6 +25,7 @@ export type Resolution =
   | { type: "lamp_on" }
   | { type: "lamp_off" }
   | { type: "score" }
+  | { type: "stats" }
   | { type: "brief" }
   | { type: "wait" }
   | { type: "attack"; targetPhrase?: string }
@@ -198,6 +199,9 @@ export function resolve(parsed: ParsedCommand, ctx: ResolverContext): Resolution
 
     case "score":
       return { type: "score" };
+
+    case "stats":
+      return { type: "stats" };
 
     case "brief":
       return { type: "brief" };

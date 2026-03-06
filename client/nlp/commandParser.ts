@@ -14,7 +14,7 @@ import {
 
 export interface ParsedCommand {
   raw: string;
-  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "blast" | "quit" | "listen" | "debug" | "about" | "unknown";
+  intent: "move" | "use" | "take" | "drop" | "look" | "inventory" | "help" | "back" | "new" | "lamp_on" | "lamp_off" | "score" | "stats" | "brief" | "wait" | "attack" | "throw" | "feed" | "fill" | "pour" | "break" | "wave" | "open" | "unlock" | "drink" | "read" | "say" | "yes" | "eat" | "rub" | "close" | "blast" | "quit" | "listen" | "debug" | "about" | "unknown";
   verb?: string;
   itemPhrase?: string;
   targetPhrase?: string;
@@ -337,6 +337,10 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     out.intent = "score";
     return true;
   }
+  if (text === "stats" || text === "achievements" || text === "progress" || text === "status" || text === "show stats" || text === "show progress" || text === "show achievements" || text === "my progress" || text === "my stats") {
+    out.intent = "stats";
+    return true;
+  }
   if (text === "brief") {
     out.intent = "brief";
     return true;
@@ -423,6 +427,10 @@ function tryNewVerbs(text: string, tokens: string[], out: ParsedCommand): boolea
     }
     if (t === "score") {
       out.intent = "score";
+      return true;
+    }
+    if (t === "stats" || t === "achievements" || t === "progress" || t === "status") {
+      out.intent = "stats";
       return true;
     }
   }

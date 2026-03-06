@@ -59,6 +59,7 @@ import {
   DRAGON_LOCATIONS,
   calculateScore,
   getScoreClass,
+  formatPlayerStats,
 } from "@/data/canonObjects";
 import {
   processDwarfTurn,
@@ -1930,6 +1931,11 @@ export function useGame() {
           const result = calculateScore(gameState);
           const cls = getScoreClass(result.score);
           addMessage("system", `You have scored ${result.score} out of a possible ${result.maxScore}, in ${gameState.stats.turns} turns.\n${cls}`);
+          return;
+        }
+
+        case "stats": {
+          addMessage("system", formatPlayerStats(gameState), { mono: true });
           return;
         }
 
