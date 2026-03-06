@@ -494,7 +494,25 @@ export function resolveObjectToken(
       const tiedAtTopDist = bestByLevenshtein.filter(m => m.distance === topDist);
       const uniqueAtTop = new Set(tiedAtTopDist.map(m => m.candidate.id));
       if (uniqueAtTop.size > 1) {
-        return { matchId: null, confidence: "none" };
+        const uniqueTokens = new Set(tiedAtTopDist.map(m => m.matchedToken));
+        if (uniqueTokens.size > 1) {
+          return { matchId: null, confidence: "none" };
+        }
+        const directMatch = tiedAtTopDist.find(m => m.candidate.id === m.matchedToken);
+        const resolved = directMatch || bestByLevenshtein[0];
+        if (kbDist <= 1.0 && resolved.inputToken.length >= 3) {
+          return {
+            matchId: resolved.candidate.id,
+            confidence: "corrected",
+            suggestion: resolved.candidate.name || resolved.candidate.id,
+            correctedFrom: resolved.inputToken,
+          };
+        }
+        return {
+          matchId: resolved.candidate.id,
+          confidence: "suggestion",
+          suggestion: resolved.candidate.name || resolved.candidate.id,
+        };
       }
       const resolved = bestByLevenshtein[0];
       if (kbDist <= 1.0 && resolved.inputToken.length >= 3) {
@@ -530,7 +548,25 @@ export function resolveObjectToken(
     const tiedAtD1 = allMatches.filter(m => m.distance === 1);
     const uniqueCands = new Set(tiedAtD1.map(m => m.candidate.id));
     if (uniqueCands.size > 1) {
-      return { matchId: null, confidence: "none" };
+      const uniqueTokens = new Set(tiedAtD1.map(m => m.matchedToken));
+      if (uniqueTokens.size > 1) {
+        return { matchId: null, confidence: "none" };
+      }
+      const directMatch = tiedAtD1.find(m => m.candidate.id === m.matchedToken);
+      const resolved = directMatch || tiedAtD1[0];
+      if (resolved.inputToken.length >= 4) {
+        return {
+          matchId: resolved.candidate.id,
+          confidence: "corrected",
+          suggestion: resolved.candidate.name || resolved.candidate.id,
+          correctedFrom: resolved.inputToken,
+        };
+      }
+      return {
+        matchId: resolved.candidate.id,
+        confidence: "suggestion",
+        suggestion: resolved.candidate.name || resolved.candidate.id,
+      };
     }
     if (best.inputToken.length >= 4) {
       return {
@@ -551,7 +587,17 @@ export function resolveObjectToken(
     const tiedAtD2 = allMatches.filter(m => m.distance === 2);
     const uniqueCands = new Set(tiedAtD2.map(m => m.candidate.id));
     if (uniqueCands.size > 1) {
-      return { matchId: null, confidence: "none" };
+      const uniqueTokens = new Set(tiedAtD2.map(m => m.matchedToken));
+      if (uniqueTokens.size > 1) {
+        return { matchId: null, confidence: "none" };
+      }
+      const directMatch = tiedAtD2.find(m => m.candidate.id === m.matchedToken);
+      const resolved = directMatch || tiedAtD2[0];
+      return {
+        matchId: resolved.candidate.id,
+        confidence: "suggestion",
+        suggestion: resolved.candidate.name || resolved.candidate.id,
+      };
     }
     return {
       matchId: best.candidate.id,
