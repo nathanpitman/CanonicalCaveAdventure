@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="http://nathanpitman.com/CanonicalCaveAdventure/"><strong>Play Now</strong></a>
+  <a href="https://nathanpitman.github.io/CanonicalCaveAdventure/"><strong>Play Now</strong></a>
 </p>
 
 ---
