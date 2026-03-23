@@ -94,15 +94,17 @@ export default function GameScreen() {
       return;
     }
 
-    let lastNewId: string | null = null;
+    let lastTypewritableId: string | null = null;
     for (const msg of messages) {
       if (!seenMessageIdsRef.current.has(msg.id)) {
         seenMessageIdsRef.current.add(msg.id);
-        lastNewId = msg.id;
+        if (msg.type !== "action" && msg.type !== "nav-hint") {
+          lastTypewritableId = msg.id;
+        }
       }
     }
-    if (lastNewId !== null) {
-      setLatestNewMessageId(lastNewId);
+    if (lastTypewritableId !== null) {
+      setLatestNewMessageId(lastTypewritableId);
     }
   }, [messages, isLoading]);
 
