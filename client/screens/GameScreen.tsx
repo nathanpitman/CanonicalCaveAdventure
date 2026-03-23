@@ -47,7 +47,9 @@ export default function GameScreen() {
   const [helpVisible, setHelpVisible] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [visibleSceneId, setVisibleSceneId] = useState<string | null>(null);
-  const [latestNewMessageId, setLatestNewMessageId] = useState<string | null>(null);
+  const [activeTypingId, setActiveTypingId] = useState<string | null>(null);
+  const [pendingCommand, setPendingCommand] = useState<string | null>(null);
+  const typingQueueRef = useRef<string[]>([]);
   const flatListRef = useRef<FlatList>(null);
   const userScrolledRef = useRef(false);
   const isAutoScrollingRef = useRef(false);
@@ -89,6 +91,13 @@ export default function GameScreen() {
   useEffect(() => {
     if (isLoading) return;
 
+    if (messages.length === 0) {
+      typingQueueRef.current = [];
+      setActiveTypingId(null);
+      setPendingCommand(null);
+      return;
+    }
+
     if (!hasSeededAfterLoadRef.current) {
       hasSeededAfterLoadRef.current = true;
       if (isResumedGame) {
@@ -97,19 +106,31 @@ export default function GameScreen() {
       }
     }
 
-    let lastTypewritableId: string | null = null;
+    const newTypewritableIds: string[] = [];
     for (const msg of messages) {
       if (!seenMessageIdsRef.current.has(msg.id)) {
         seenMessageIdsRef.current.add(msg.id);
         if (msg.type !== "action" && msg.type !== "nav-hint") {
-          lastTypewritableId = msg.id;
+          newTypewritableIds.push(msg.id);
         }
       }
     }
-    if (lastTypewritableId !== null) {
-      setLatestNewMessageId(lastTypewritableId);
+
+    if (newTypewritableIds.length > 0) {
+      typingQueueRef.current.push(...newTypewritableIds);
+      setActiveTypingId((prev) => {
+        if (prev !== null) return prev;
+        return typingQueueRef.current.shift()!;
+      });
     }
   }, [messages, isLoading, isResumedGame]);
+
+  useEffect(() => {
+    if (activeTypingId === null && pendingCommand !== null) {
+      parseCommand(pendingCommand);
+      setPendingCommand(null);
+    }
+  }, [activeTypingId, pendingCommand, parseCommand]);
 
   useEffect(() => {
     const count = messages.length;
@@ -182,23 +203,30 @@ export default function GameScreen() {
     }
   }, [performAutoScroll]);
 
-  const handleTypingComplete = useCallback(() => {
-    setLatestNewMessageId(null);
+  const handleTypingComplete = useCallback((completedId: string) => {
+    setActiveTypingId((prev) => {
+      if (prev !== completedId) return prev;
+      if (typingQueueRef.current.length > 0) {
+        return typingQueueRef.current.shift()!;
+      }
+      return null;
+    });
   }, []);
 
   const renderMessage = useCallback(
     ({ item, index }: { item: Message; index: number }) => {
-      const isNew = item.id === latestNewMessageId;
+      const isNew = item.id === activeTypingId;
+      const msgId = item.id;
       return (
         <MessageBubble
           message={item}
           index={index}
           isNew={isNew}
-          onTypingComplete={isNew ? handleTypingComplete : undefined}
+          onTypingComplete={isNew ? () => handleTypingComplete(msgId) : undefined}
         />
       );
     },
-    [latestNewMessageId, handleTypingComplete]
+    [activeTypingId, handleTypingComplete]
   );
 
   if (isLoading) {
@@ -312,11 +340,20 @@ export default function GameScreen() {
       );
     }
 
+    const handleCommandSubmit = (cmd: string) => {
+      if (activeTypingId !== null) {
+        setPendingCommand(cmd);
+      } else {
+        parseCommand(cmd);
+      }
+    };
+
     return (
       <CommandInput
-        onSubmit={parseCommand}
+        onSubmit={handleCommandSubmit}
         onHelp={() => setHelpVisible(true)}
         onRestart={handleNewGame}
+        isPending={pendingCommand !== null}
       />
     );
   };

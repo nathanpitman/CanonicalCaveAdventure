@@ -13,6 +13,8 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
+  withRepeat,
+  withSequence,
   runOnJS,
   interpolate,
   Extrapolation,
@@ -29,6 +31,7 @@ interface CommandInputProps {
   onSubmit: (command: string) => void;
   onHelp: () => void;
   onRestart: () => void;
+  isPending?: boolean;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -54,6 +57,7 @@ export function CommandInput({
   onSubmit, 
   onHelp, 
   onRestart,
+  isPending = false,
 }: CommandInputProps) {
   const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
@@ -64,6 +68,7 @@ export function CommandInput({
   const inputRef = useRef<TextInput>(null);
   const buttonScale = useSharedValue(1);
   const placeholderOpacity = useSharedValue(1);
+  const pendingPulse = useSharedValue(1);
   
   const translateY = useSharedValue(0);
   const isExpanded = useSharedValue(false);
@@ -87,6 +92,21 @@ export function CommandInput({
 
     return () => clearInterval(interval);
   }, [isFocused, command, placeholderOpacity]);
+
+  useEffect(() => {
+    if (isPending) {
+      pendingPulse.value = withRepeat(
+        withSequence(
+          withTiming(0.35, { duration: 550 }),
+          withTiming(1, { duration: 550 })
+        ),
+        -1,
+        false
+      );
+    } else {
+      pendingPulse.value = withTiming(1, { duration: 200 });
+    }
+  }, [isPending, pendingPulse]);
 
   const placeholderAnimatedStyle = useAnimatedStyle(() => ({
     opacity: placeholderOpacity.value,
@@ -164,6 +184,10 @@ export function CommandInput({
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: buttonScale.value }],
+  }));
+
+  const pendingAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: pendingPulse.value,
   }));
 
   const handleButtonPressIn = () => {
@@ -265,22 +289,30 @@ export function CommandInput({
               </View>
               <AnimatedPressable
                 onPress={handleSubmit}
-                onPressIn={handleButtonPressIn}
-                onPressOut={handleButtonPressOut}
+                onPressIn={isPending ? undefined : handleButtonPressIn}
+                onPressOut={isPending ? undefined : handleButtonPressOut}
                 style={[
                   styles.sendButton,
                   {
-                    backgroundColor: command.trim() ? theme.primary : theme.backgroundTertiary,
+                    backgroundColor: isPending
+                      ? theme.backgroundTertiary
+                      : command.trim() ? theme.primary : theme.backgroundTertiary,
                   },
                   buttonAnimatedStyle,
                 ]}
                 testID="send-button"
               >
-                <Feather
-                  name="arrow-up"
-                  size={20}
-                  color={command.trim() ? theme.buttonText : theme.textDisabled}
-                />
+                {isPending ? (
+                  <Animated.View style={pendingAnimatedStyle}>
+                    <Feather name="clock" size={18} color={theme.textSecondary} />
+                  </Animated.View>
+                ) : (
+                  <Feather
+                    name="arrow-up"
+                    size={20}
+                    color={command.trim() ? theme.buttonText : theme.textDisabled}
+                  />
+                )}
               </AnimatedPressable>
             </View>
 
