@@ -94,6 +94,7 @@ export default function GameScreen() {
 
     if (messages.length === 0) {
       typingQueueRef.current = [];
+      seenMessageIdsRef.current = new Set();
       setActiveTypingId(null);
       setRevealedIds(new Set());
       setPendingCommand(null);
