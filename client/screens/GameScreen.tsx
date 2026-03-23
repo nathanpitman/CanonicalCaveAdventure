@@ -48,6 +48,7 @@ export default function GameScreen() {
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [visibleSceneId, setVisibleSceneId] = useState<string | null>(null);
   const [activeTypingId, setActiveTypingId] = useState<string | null>(null);
+  const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const [pendingCommand, setPendingCommand] = useState<string | null>(null);
   const typingQueueRef = useRef<string[]>([]);
   const flatListRef = useRef<FlatList>(null);
@@ -94,6 +95,7 @@ export default function GameScreen() {
     if (messages.length === 0) {
       typingQueueRef.current = [];
       setActiveTypingId(null);
+      setRevealedIds(new Set());
       setPendingCommand(null);
       return;
     }
@@ -101,7 +103,12 @@ export default function GameScreen() {
     if (!hasSeededAfterLoadRef.current) {
       hasSeededAfterLoadRef.current = true;
       if (isResumedGame) {
-        messages.forEach((m) => seenMessageIdsRef.current.add(m.id));
+        const seededRevealedIds = new Set<string>();
+        messages.forEach((m) => {
+          seenMessageIdsRef.current.add(m.id);
+          seededRevealedIds.add(m.id);
+        });
+        setRevealedIds(seededRevealedIds);
         return;
       }
     }
@@ -204,6 +211,11 @@ export default function GameScreen() {
   }, [performAutoScroll]);
 
   const handleTypingComplete = useCallback((completedId: string) => {
+    setRevealedIds((prev) => {
+      const next = new Set(prev);
+      next.add(completedId);
+      return next;
+    });
     setActiveTypingId((prev) => {
       if (prev !== completedId) return prev;
       if (typingQueueRef.current.length > 0) {
@@ -216,17 +228,21 @@ export default function GameScreen() {
   const renderMessage = useCallback(
     ({ item, index }: { item: Message; index: number }) => {
       const isNew = item.id === activeTypingId;
+      const isInstant = item.type === "action" || item.type === "nav-hint";
+      const isPendingReveal = !isInstant && !isNew && !revealedIds.has(item.id);
       const msgId = item.id;
       return (
         <MessageBubble
+          key={isPendingReveal ? `${item.id}-p` : item.id}
           message={item}
           index={index}
           isNew={isNew}
+          isPendingReveal={isPendingReveal}
           onTypingComplete={isNew ? () => handleTypingComplete(msgId) : undefined}
         />
       );
     },
-    [activeTypingId, handleTypingComplete]
+    [activeTypingId, revealedIds, handleTypingComplete]
   );
 
   if (isLoading) {

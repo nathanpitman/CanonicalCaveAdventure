@@ -17,6 +17,7 @@ interface MessageBubbleProps {
   message: Message;
   index: number;
   isNew?: boolean;
+  isPendingReveal?: boolean;
   onTypingComplete?: () => void;
 }
 
@@ -35,7 +36,7 @@ function useBlinkingCursor(isTyping: boolean): boolean {
   return visible;
 }
 
-export function MessageBubble({ message, index, isNew = false, onTypingComplete }: MessageBubbleProps) {
+export function MessageBubble({ message, index, isNew = false, isPendingReveal = false, onTypingComplete }: MessageBubbleProps) {
   const { theme } = useTheme();
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(20);
@@ -63,6 +64,10 @@ export function MessageBubble({ message, index, isNew = false, onTypingComplete 
   const { displayedText, isTyping } = useTypewriter(message.text, shouldTypewrite, onTypingComplete);
   const cursorVisible = useBlinkingCursor(isTyping);
   const textWithCursor = isTyping ? displayedText + (cursorVisible ? "\u258b" : " ") : displayedText;
+
+  if (isPendingReveal) {
+    return null;
+  }
 
   if (isPlayerCommand) {
     const bubbleColor = theme.primaryDim;
