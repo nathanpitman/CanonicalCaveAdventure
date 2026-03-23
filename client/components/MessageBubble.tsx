@@ -17,6 +17,7 @@ interface MessageBubbleProps {
   message: Message;
   index: number;
   isNew?: boolean;
+  onTypingComplete?: () => void;
 }
 
 function useBlinkingCursor(isTyping: boolean): boolean {
@@ -34,7 +35,7 @@ function useBlinkingCursor(isTyping: boolean): boolean {
   return visible;
 }
 
-export function MessageBubble({ message, index, isNew = false }: MessageBubbleProps) {
+export function MessageBubble({ message, index, isNew = false, onTypingComplete }: MessageBubbleProps) {
   const { theme } = useTheme();
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(20);
@@ -59,7 +60,7 @@ export function MessageBubble({ message, index, isNew = false }: MessageBubblePr
   const isNavHint = message.type === "nav-hint";
   const shouldTypewrite = isNew && !isPlayerCommand && !isNavHint;
 
-  const { displayedText, isTyping } = useTypewriter(message.text, shouldTypewrite);
+  const { displayedText, isTyping } = useTypewriter(message.text, shouldTypewrite, onTypingComplete);
   const cursorVisible = useBlinkingCursor(isTyping);
   const textWithCursor = isTyping ? displayedText + (cursorVisible ? "\u258b" : " ") : displayedText;
 

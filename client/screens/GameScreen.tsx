@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -46,7 +46,7 @@ export default function GameScreen() {
   const [helpVisible, setHelpVisible] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [visibleSceneId, setVisibleSceneId] = useState<string | null>(null);
-  const [latestTypewritableId, setLatestTypewritableId] = useState<string | null>(null);
+  const [latestNewMessageId, setLatestNewMessageId] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const userScrolledRef = useRef(false);
   const isAutoScrollingRef = useRef(false);
@@ -85,8 +85,6 @@ export default function GameScreen() {
     }
   }, []);
 
-  const TYPEWRITABLE_TYPES = useMemo(() => new Set(["narration", "system", "warning"]), []);
-
   useEffect(() => {
     if (isLoading) return;
 
@@ -96,19 +94,17 @@ export default function GameScreen() {
       return;
     }
 
-    let lastTypewritable: string | null = null;
+    let lastNewId: string | null = null;
     for (const msg of messages) {
       if (!seenMessageIdsRef.current.has(msg.id)) {
         seenMessageIdsRef.current.add(msg.id);
-        if (TYPEWRITABLE_TYPES.has(msg.type)) {
-          lastTypewritable = msg.id;
-        }
+        lastNewId = msg.id;
       }
     }
-    if (lastTypewritable !== null) {
-      setLatestTypewritableId(lastTypewritable);
+    if (lastNewId !== null) {
+      setLatestNewMessageId(lastNewId);
     }
-  }, [messages, isLoading, TYPEWRITABLE_TYPES]);
+  }, [messages, isLoading]);
 
   useEffect(() => {
     const count = messages.length;
@@ -181,11 +177,23 @@ export default function GameScreen() {
     }
   }, [performAutoScroll]);
 
+  const handleTypingComplete = useCallback(() => {
+    setLatestNewMessageId(null);
+  }, []);
+
   const renderMessage = useCallback(
-    ({ item, index }: { item: Message; index: number }) => (
-      <MessageBubble message={item} index={index} isNew={item.id === latestTypewritableId} />
-    ),
-    [latestTypewritableId]
+    ({ item, index }: { item: Message; index: number }) => {
+      const isNew = item.id === latestNewMessageId;
+      return (
+        <MessageBubble
+          message={item}
+          index={index}
+          isNew={isNew}
+          onTypingComplete={isNew ? handleTypingComplete : undefined}
+        />
+      );
+    },
+    [latestNewMessageId, handleTypingComplete]
   );
 
   if (isLoading) {
