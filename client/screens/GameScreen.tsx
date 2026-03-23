@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import {
   View,
   StyleSheet,
@@ -46,11 +46,14 @@ export default function GameScreen() {
   const [helpVisible, setHelpVisible] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [visibleSceneId, setVisibleSceneId] = useState<string | null>(null);
+  const [latestTypewritableId, setLatestTypewritableId] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const userScrolledRef = useRef(false);
   const isAutoScrollingRef = useRef(false);
   const autoScrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevMessageCountRef = useRef(0);
+  const seenMessageIdsRef = useRef<Set<string>>(new Set());
+  const hasSeededAfterLoadRef = useRef(false);
 
   const currentScene = SCENES[gameState.sceneId];
   const currentSceneTitle = currentScene?.title || "Unknown";
@@ -81,6 +84,31 @@ export default function GameScreen() {
       isAutoScrollingRef.current = false;
     }
   }, []);
+
+  const TYPEWRITABLE_TYPES = useMemo(() => new Set(["narration", "system", "warning"]), []);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!hasSeededAfterLoadRef.current) {
+      hasSeededAfterLoadRef.current = true;
+      messages.forEach((m) => seenMessageIdsRef.current.add(m.id));
+      return;
+    }
+
+    let lastTypewritable: string | null = null;
+    for (const msg of messages) {
+      if (!seenMessageIdsRef.current.has(msg.id)) {
+        seenMessageIdsRef.current.add(msg.id);
+        if (TYPEWRITABLE_TYPES.has(msg.type)) {
+          lastTypewritable = msg.id;
+        }
+      }
+    }
+    if (lastTypewritable !== null) {
+      setLatestTypewritableId(lastTypewritable);
+    }
+  }, [messages, isLoading, TYPEWRITABLE_TYPES]);
 
   useEffect(() => {
     const count = messages.length;
@@ -153,8 +181,11 @@ export default function GameScreen() {
     }
   }, [performAutoScroll]);
 
-  const renderMessage = ({ item, index }: { item: Message; index: number }) => (
-    <MessageBubble message={item} index={index} />
+  const renderMessage = useCallback(
+    ({ item, index }: { item: Message; index: number }) => (
+      <MessageBubble message={item} index={index} isNew={item.id === latestTypewritableId} />
+    ),
+    [latestTypewritableId]
   );
 
   if (isLoading) {

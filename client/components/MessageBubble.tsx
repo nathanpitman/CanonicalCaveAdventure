@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -11,13 +11,30 @@ import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius, Fonts } from "@/constants/theme";
 import { Message } from "@/data/gameState";
+import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface MessageBubbleProps {
   message: Message;
   index: number;
+  isNew?: boolean;
 }
 
-export function MessageBubble({ message, index }: MessageBubbleProps) {
+function useBlinkingCursor(isTyping: boolean): boolean {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (!isTyping) {
+      setVisible(true);
+      return;
+    }
+    const id = setInterval(() => setVisible((v) => !v), 500);
+    return () => clearInterval(id);
+  }, [isTyping]);
+
+  return visible;
+}
+
+export function MessageBubble({ message, index, isNew = false }: MessageBubbleProps) {
   const { theme } = useTheme();
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(20);
@@ -39,6 +56,12 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
   }));
 
   const isPlayerCommand = message.type === "action";
+  const isNavHint = message.type === "nav-hint";
+  const shouldTypewrite = isNew && !isPlayerCommand && !isNavHint;
+
+  const { displayedText, isTyping } = useTypewriter(message.text, shouldTypewrite);
+  const cursorVisible = useBlinkingCursor(isTyping);
+  const textWithCursor = isTyping ? displayedText + (cursorVisible ? "\u258b" : " ") : displayedText;
 
   if (isPlayerCommand) {
     const bubbleColor = theme.primaryDim;
@@ -72,7 +95,7 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
     );
   }
 
-  if (message.type === "nav-hint") {
+  if (isNavHint) {
     return (
       <Animated.View style={[styles.navHintRow, animatedStyle]}>
         <ThemedText
@@ -140,7 +163,7 @@ export function MessageBubble({ message, index }: MessageBubbleProps) {
         ]}
       >
         <ThemedText style={[styles.text, { color: getTextColor() }, message.mono ? { fontFamily: Fonts.mono, fontSize: 12, lineHeight: 18 } : undefined]}>
-          {message.text}
+          {textWithCursor}
         </ThemedText>
       </View>
     </Animated.View>
