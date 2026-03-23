@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withDelay,
-} from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -15,7 +9,6 @@ import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface MessageBubbleProps {
   message: Message;
-  index: number;
   isNew?: boolean;
   isPendingReveal?: boolean;
   onTypingComplete?: () => void;
@@ -36,26 +29,8 @@ function useBlinkingCursor(isTyping: boolean): boolean {
   return visible;
 }
 
-export function MessageBubble({ message, index, isNew = false, isPendingReveal = false, onTypingComplete }: MessageBubbleProps) {
+export function MessageBubble({ message, isNew = false, isPendingReveal = false, onTypingComplete }: MessageBubbleProps) {
   const { theme } = useTheme();
-  const opacity = useSharedValue(0);
-  const translateY = useSharedValue(20);
-
-  useEffect(() => {
-    opacity.value = withDelay(
-      Math.min(index * 50, 200),
-      withSpring(1, { damping: 20, stiffness: 200 })
-    );
-    translateY.value = withDelay(
-      Math.min(index * 50, 200),
-      withSpring(0, { damping: 20, stiffness: 200 })
-    );
-  }, [index, opacity, translateY]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: translateY.value }],
-  }));
 
   const isPlayerCommand = message.type === "action";
   const isNavHint = message.type === "nav-hint";
@@ -74,7 +49,7 @@ export function MessageBubble({ message, index, isNew = false, isPendingReveal =
     const textColor = theme.text;
 
     return (
-      <Animated.View style={[styles.playerRow, animatedStyle]}>
+      <View style={styles.playerRow}>
         <View style={styles.playerBubbleWrapper}>
           <View
             style={[
@@ -97,13 +72,13 @@ export function MessageBubble({ message, index, isNew = false, isPendingReveal =
             ]}
           />
         </View>
-      </Animated.View>
+      </View>
     );
   }
 
   if (isNavHint) {
     return (
-      <Animated.View style={[styles.navHintRow, animatedStyle]}>
+      <View style={styles.navHintRow}>
         <ThemedText
           style={[
             styles.navHintText,
@@ -112,7 +87,7 @@ export function MessageBubble({ message, index, isNew = false, isPendingReveal =
         >
           {message.text}
         </ThemedText>
-      </Animated.View>
+      </View>
     );
   }
 
@@ -157,7 +132,7 @@ export function MessageBubble({ message, index, isNew = false, isPendingReveal =
   const messageStyles = getMessageStyles();
 
   return (
-    <Animated.View style={[styles.narratorRow, animatedStyle]}>
+    <View style={styles.narratorRow}>
       <View
         style={[
           styles.container,
@@ -172,7 +147,7 @@ export function MessageBubble({ message, index, isNew = false, isPendingReveal =
           {textWithCursor}
         </ThemedText>
       </View>
-    </Animated.View>
+    </View>
   );
 }
 

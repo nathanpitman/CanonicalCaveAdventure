@@ -227,7 +227,7 @@ export default function GameScreen() {
   }, []);
 
   const renderMessage = useCallback(
-    ({ item, index }: { item: Message; index: number }) => {
+    ({ item }: { item: Message }) => {
       const isNew = item.id === activeTypingId;
       const isInstant = item.type === "action" || item.type === "nav-hint";
       const isPendingReveal = !isInstant && !isNew && !revealedIds.has(item.id);
@@ -236,7 +236,6 @@ export default function GameScreen() {
         <MessageBubble
           key={isPendingReveal ? `${item.id}-p` : item.id}
           message={item}
-          index={index}
           isNew={isNew}
           isPendingReveal={isPendingReveal}
           onTypingComplete={isNew ? () => handleTypingComplete(msgId) : undefined}
