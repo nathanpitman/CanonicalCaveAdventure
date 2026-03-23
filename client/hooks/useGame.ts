@@ -187,6 +187,7 @@ export function useGame() {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isResumedGame, setIsResumedGame] = useState(false);
   const [gameOver, setGameOver] = useState<"escaped" | "died" | null>(null);
   const initialized = useRef(false);
 
@@ -2912,6 +2913,7 @@ export function useGame() {
           rngSeed: saveData.gameState.rngSeed ?? initialGameState.rngSeed,
         };
         setGameState(migratedState);
+        setIsResumedGame(true);
         const filteredMessages = saveData.messages.filter(
           (m: Message) => m.text !== "Continuing your journey..."
         );
@@ -2966,6 +2968,7 @@ export function useGame() {
     gameState,
     messages,
     isLoading,
+    isResumedGame,
     gameOver,
     milestonesCompletedCount,
     isCurrentlyDark,

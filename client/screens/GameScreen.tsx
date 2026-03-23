@@ -36,6 +36,7 @@ export default function GameScreen() {
     gameState,
     messages,
     isLoading,
+    isResumedGame,
     gameOver,
     milestonesCompletedCount,
     parseCommand,
@@ -90,8 +91,10 @@ export default function GameScreen() {
 
     if (!hasSeededAfterLoadRef.current) {
       hasSeededAfterLoadRef.current = true;
-      messages.forEach((m) => seenMessageIdsRef.current.add(m.id));
-      return;
+      if (isResumedGame) {
+        messages.forEach((m) => seenMessageIdsRef.current.add(m.id));
+        return;
+      }
     }
 
     let lastTypewritableId: string | null = null;
@@ -106,7 +109,7 @@ export default function GameScreen() {
     if (lastTypewritableId !== null) {
       setLatestNewMessageId(lastTypewritableId);
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, isResumedGame]);
 
   useEffect(() => {
     const count = messages.length;
