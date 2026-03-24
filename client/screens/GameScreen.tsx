@@ -403,6 +403,7 @@ export default function GameScreen() {
     }
 
     const handleCommandSubmit = (cmd: string) => {
+      userScrolledRef.current = false;
       if (activeTypingId !== null) {
         setPendingCommand(cmd);
       } else {
