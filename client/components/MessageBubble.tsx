@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -79,6 +80,12 @@ export function MessageBubble({ message, isNew = false, isPendingReveal = false,
   if (isNavHint) {
     return (
       <View style={styles.navHintRow}>
+        <Feather
+          name="compass"
+          size={12}
+          color={theme.textSecondary}
+          style={styles.navHintIcon}
+        />
         <ThemedText
           style={[
             styles.navHintText,
@@ -205,6 +212,7 @@ const styles = StyleSheet.create({
   },
   navHintRow: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "flex-start",
     marginBottom: Spacing.md,
     marginTop: -Spacing.sm,
@@ -212,9 +220,13 @@ const styles = StyleSheet.create({
     paddingLeft: Spacing.sm,
     opacity: 0.7,
   },
+  navHintIcon: {
+    marginRight: 5,
+  },
   navHintText: {
     fontSize: 13,
     lineHeight: 18,
     fontStyle: "italic",
+    flexShrink: 1,
   },
 });

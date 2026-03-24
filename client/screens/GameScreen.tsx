@@ -49,11 +49,13 @@ export default function GameScreen() {
   const [visibleSceneId, setVisibleSceneId] = useState<string | null>(null);
   const [activeTypingId, setActiveTypingId] = useState<string | null>(null);
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
+  const [pendingNavHintIds, setPendingNavHintIds] = useState<Set<string>>(new Set());
   const [pendingCommand, setPendingCommand] = useState<string | null>(null);
   const typingQueueRef = useRef<string[]>([]);
   const flatListRef = useRef<FlatList>(null);
   const userScrolledRef = useRef(false);
   const isAutoScrollingRef = useRef(false);
+  const isTypingActiveRef = useRef(false);
   const autoScrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevMessageCountRef = useRef(0);
   const seenMessageIdsRef = useRef<Set<string>>(new Set());
@@ -97,6 +99,7 @@ export default function GameScreen() {
       seenMessageIdsRef.current = new Set();
       setActiveTypingId(null);
       setRevealedIds(new Set());
+      setPendingNavHintIds(new Set());
       setPendingCommand(null);
       return;
     }
@@ -115,17 +118,27 @@ export default function GameScreen() {
     }
 
     const newTypewritableIds: string[] = [];
+    const newNavHintIds: string[] = [];
     for (const msg of messages) {
       if (!seenMessageIdsRef.current.has(msg.id)) {
         seenMessageIdsRef.current.add(msg.id);
         if (msg.type !== "action" && msg.type !== "nav-hint") {
           newTypewritableIds.push(msg.id);
+        } else if (msg.type === "nav-hint") {
+          newNavHintIds.push(msg.id);
         }
       }
     }
 
     if (newTypewritableIds.length > 0) {
       typingQueueRef.current.push(...newTypewritableIds);
+      if (newNavHintIds.length > 0) {
+        setPendingNavHintIds((prev) => {
+          const next = new Set(prev);
+          newNavHintIds.forEach((id) => next.add(id));
+          return next;
+        });
+      }
       setActiveTypingId((prev) => {
         if (prev !== null) return prev;
         return typingQueueRef.current.shift()!;
@@ -139,6 +152,16 @@ export default function GameScreen() {
       setPendingCommand(null);
     }
   }, [activeTypingId, pendingCommand, parseCommand]);
+
+  useEffect(() => {
+    if (activeTypingId === null) {
+      setPendingNavHintIds((prev) => (prev.size > 0 ? new Set() : prev));
+    }
+  }, [activeTypingId]);
+
+  useEffect(() => {
+    isTypingActiveRef.current = activeTypingId !== null;
+  }, [activeTypingId]);
 
   useEffect(() => {
     const count = messages.length;
@@ -206,8 +229,12 @@ export default function GameScreen() {
   const handleContentSizeChange = useCallback((w: number, h: number) => {
     const prevHeight = contentHeightRef.current;
     contentHeightRef.current = h;
-    if (h > prevHeight && !userScrolledRef.current && !isAutoScrollingRef.current) {
-      performAutoScroll(true);
+    if (h > prevHeight && !userScrolledRef.current) {
+      if (isTypingActiveRef.current) {
+        flatListRef.current?.scrollToEnd({ animated: false });
+      } else if (!isAutoScrollingRef.current) {
+        performAutoScroll(true);
+      }
     }
   }, [performAutoScroll]);
 
@@ -229,8 +256,11 @@ export default function GameScreen() {
   const renderMessage = useCallback(
     ({ item }: { item: Message }) => {
       const isNew = item.id === activeTypingId;
-      const isInstant = item.type === "action" || item.type === "nav-hint";
-      const isPendingReveal = !isInstant && !isNew && !revealedIds.has(item.id);
+      const isAction = item.type === "action";
+      const isNavHint = item.type === "nav-hint";
+      const isPendingReveal =
+        (!isAction && !isNavHint && !isNew && !revealedIds.has(item.id)) ||
+        (isNavHint && pendingNavHintIds.has(item.id));
       const msgId = item.id;
       return (
         <MessageBubble
@@ -242,7 +272,7 @@ export default function GameScreen() {
         />
       );
     },
-    [activeTypingId, revealedIds, handleTypingComplete]
+    [activeTypingId, revealedIds, pendingNavHintIds, handleTypingComplete]
   );
 
   if (isLoading) {
