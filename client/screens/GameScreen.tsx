@@ -84,6 +84,10 @@ export default function GameScreen() {
     }
   }, []);
 
+  const handleScrollBeginDrag = useCallback(() => {
+    userScrolledRef.current = true;
+  }, []);
+
   const handleScrollEnd = useCallback(() => {
     if (isAutoScrollingRef.current) {
       isAutoScrollingRef.current = false;
@@ -426,6 +430,7 @@ export default function GameScreen() {
             showsVerticalScrollIndicator={false}
             onScroll={handleScroll}
             scrollEventThrottle={16}
+            onScrollBeginDrag={handleScrollBeginDrag}
             onContentSizeChange={handleContentSizeChange}
             onMomentumScrollEnd={handleScrollEnd}
             onScrollEndDrag={handleScrollEnd}
