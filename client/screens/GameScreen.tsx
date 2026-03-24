@@ -177,11 +177,11 @@ export default function GameScreen() {
     if (activeTypingId === null || userScrolledRef.current) return;
     const interval = setInterval(() => {
       if (!userScrolledRef.current) {
-        flatListRef.current?.scrollToEnd({ animated: false });
+        performAutoScroll(false);
       }
     }, 30);
     return () => clearInterval(interval);
-  }, [activeTypingId]);
+  }, [activeTypingId, performAutoScroll]);
 
   useEffect(() => {
     const count = messages.length;
