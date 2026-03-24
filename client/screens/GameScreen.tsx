@@ -95,6 +95,17 @@ export default function GameScreen() {
   }, []);
 
   useEffect(() => {
+    if (Platform.OS !== "web") return;
+    const onWheel = (e: WheelEvent) => {
+      if (e.deltaY < 0) {
+        userScrolledRef.current = true;
+      }
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
+
+  useEffect(() => {
     if (isLoading) return;
 
     if (messages.length === 0) {
