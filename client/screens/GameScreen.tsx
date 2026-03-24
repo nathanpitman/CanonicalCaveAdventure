@@ -55,7 +55,6 @@ export default function GameScreen() {
   const flatListRef = useRef<FlatList>(null);
   const userScrolledRef = useRef(false);
   const isAutoScrollingRef = useRef(false);
-  const isTypingActiveRef = useRef(false);
   const autoScrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevMessageCountRef = useRef(0);
   const seenMessageIdsRef = useRef<Set<string>>(new Set());
@@ -160,7 +159,13 @@ export default function GameScreen() {
   }, [activeTypingId]);
 
   useEffect(() => {
-    isTypingActiveRef.current = activeTypingId !== null;
+    if (activeTypingId === null || userScrolledRef.current) return;
+    const interval = setInterval(() => {
+      if (!userScrolledRef.current) {
+        flatListRef.current?.scrollToEnd({ animated: false });
+      }
+    }, 30);
+    return () => clearInterval(interval);
   }, [activeTypingId]);
 
   useEffect(() => {
@@ -229,12 +234,8 @@ export default function GameScreen() {
   const handleContentSizeChange = useCallback((w: number, h: number) => {
     const prevHeight = contentHeightRef.current;
     contentHeightRef.current = h;
-    if (h > prevHeight && !userScrolledRef.current) {
-      if (isTypingActiveRef.current) {
-        flatListRef.current?.scrollToEnd({ animated: false });
-      } else if (!isAutoScrollingRef.current) {
-        performAutoScroll(true);
-      }
+    if (h > prevHeight && !userScrolledRef.current && !isAutoScrollingRef.current) {
+      performAutoScroll(true);
     }
   }, [performAutoScroll]);
 
